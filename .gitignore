@@ -1,0 +1,33 @@
+# Built artifacts
+*.apk
+*.aar
+*.ap_
+*.aab
+/build
+/*/build
+
+# Gradle files
+.gradle/
+local.properties
+CapturedHints.txt
+
+# Android Studio / IntelliJ IDEA files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Keystores (NEVER commit your signing keys!)
+*.jks
+*.keystore
+*.p12
+
+# Google Services configuration (Uncomment if you want to keep Firebase keys private)
+# google-services.json
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
