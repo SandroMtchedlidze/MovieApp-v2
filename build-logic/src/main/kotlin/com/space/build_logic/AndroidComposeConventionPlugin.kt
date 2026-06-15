@@ -21,7 +21,7 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
             }
 
             pluginManager.withPlugin("com.android.library") {
-                extensions.findByType<LibraryExtension>()?.buildFeatures {
+                extensions.findByType<com.android.build.api.dsl.LibraryExtension>()?.buildFeatures {
                     compose = true
                 }
             }

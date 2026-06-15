@@ -3,5 +3,5 @@ plugins {
 }
 
 android {
-    namespace = "com.example.feature_details"
+    namespace = "com.space.feature_details"
 }
