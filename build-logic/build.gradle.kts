@@ -36,14 +36,6 @@ gradlePlugin {
             id = "movieapp.android.feature"
             implementationClass = "com.space.build_logic.AndroidFeatureConventionPlugin"
         }
-//        register("koin") {
-//            id = "movieapp.koin"
-//            implementationClass = "com.space.build_logic.KoinConventionPlugin"
-//        }
-//        register("retrofit") {
-//            id = "movieapp.retrofit"
-//            implementationClass = "com.space.build_logic.RetrofitConventionPlugin"
-//        }
 
     }
 
