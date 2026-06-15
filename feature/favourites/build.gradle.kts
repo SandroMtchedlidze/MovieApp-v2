@@ -3,5 +3,5 @@ plugins {
 }
 
 android {
-    namespace = "com.example.feature_favourites"
+    namespace = "com.space.feature_favourites"
 }
