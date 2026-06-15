@@ -1,4 +1,4 @@
-package com.example.build_logic
+package com.space.build_logic
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -13,7 +13,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("movieapp.android.library")
                 apply("movieapp.android.compose")
-                apply("movieapp.koin")
+
             }
 
             val libs = extensions.getByType<VersionCatalogsExtension>()
@@ -23,6 +23,9 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findBundle("coroutines").get())
                 add("implementation", project(":core:common"))
                 add("implementation", project(":core:ui"))
+                add("implementation", libs.findBundle("koin").get())
+                add("implementation", libs.findBundle("retrofit").get())
+
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.build_logic
+package com.space.build_logic
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -25,7 +25,6 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
                     compose = true
                 }
             }
-
 
 
             val libs = extensions.getByType<VersionCatalogsExtension>()

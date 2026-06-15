@@ -1,6 +1,6 @@
 [versions]
-agp = "8.9.0"
-kotlin = "2.0.0"
+agp = "9.1.1"
+kotlin = "2.3.20"
 coreKtx = "1.13.1"
 lifecycle = "2.8.2"
 activityCompose = "1.9.0"
@@ -11,7 +11,6 @@ coroutines = "1.8.1"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
 kotlinxSerialization = "1.7.1"
-retrofitKotlinxSerializer = "1.0.0"
 minSdk = "24"
 targetSdk = "34"
 compileSdk = "34"
@@ -39,7 +38,7 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 
-junit = { group = "junit", name = "junit", version.ref = "junit" }
+
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
@@ -71,7 +70,6 @@ retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.r
 okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-retrofit-kotlinx-serialization = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofitKotlinxSerializer" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
 
 [plugins]
@@ -88,5 +86,5 @@ jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrai
 
 compose = ["androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-material3", "androidx-compose-runtime", "androidx-compose-foundation"]
 coroutines = ["kotlinx-coroutines-android", "kotlinx-coroutines-core"]
-retrofit = ["retrofit-core", "okhttp-core", "okhttp-logging", "kotlinx-serialization-json", "retrofit-kotlinx-serialization"]
+retrofit = ["retrofit-core", "okhttp-core", "okhttp-logging", "kotlinx-serialization-json",]
 koin = ["koin-android", "koin-compose", "koin-core"]
