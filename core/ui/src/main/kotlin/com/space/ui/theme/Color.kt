@@ -23,4 +23,6 @@ object Color {
     val Neutral08Whisper = Color(0xFFEAEAEA)
 
     val PureWhite = Color(0xFFFFFFFF)
+
+    val Black = Color(0xFF000000)
 }

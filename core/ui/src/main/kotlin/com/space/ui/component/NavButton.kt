@@ -15,9 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
-import com.example.ui.theme.MovieAppTheme
-import com.example.ui.theme.Radius
-import com.example.ui.theme.Spacing
+import com.space.ui.theme.MovieAppTheme
+import com.space.ui.theme.Radius
+import com.space.ui.theme.Spacing
 
 
 @Composable
