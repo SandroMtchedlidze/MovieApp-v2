@@ -1,4 +1,4 @@
-package com.example.ui.theme
+package com.space.ui.theme
 
 
 import androidx.compose.material3.MaterialTheme
@@ -10,14 +10,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.Color.Neutral01Black
-import com.example.ui.theme.Color.Neutral02DarkestGrey
-import com.example.ui.theme.Color.Neutral03DarkGrey
-import com.example.ui.theme.Color.Neutral04Grey
-import com.example.ui.theme.Color.Neutral05LightGrey
-import com.example.ui.theme.Color.Neutral06LighterGrey
-import com.example.ui.theme.Color.Neutral08Whisper
-import com.example.ui.theme.Color.YellowPrimary
+import com.space.ui.theme.Color.Neutral01Black
+import com.space.ui.theme.Color.Neutral02DarkestGrey
+import com.space.ui.theme.Color.Neutral03DarkGrey
+import com.space.ui.theme.Color.Neutral04Grey
+import com.space.ui.theme.Color.Neutral05LightGrey
+import com.space.ui.theme.Color.Neutral06LighterGrey
+import com.space.ui.theme.Color.Neutral08Whisper
+import com.space.ui.theme.Color.YellowPrimary
 
 
 @Immutable
@@ -39,7 +39,6 @@ data class MovieAppTypography(
     val titleLarge: TextStyle,
     val titleMedium: TextStyle,
     val bodyMedium: TextStyle
-
 )
 
 
