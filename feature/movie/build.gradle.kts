@@ -3,5 +3,5 @@ plugins {
 }
 
 android {
-    namespace = "com.example.feature_movie"
+    namespace = "com.space.feature_movie"
 }
