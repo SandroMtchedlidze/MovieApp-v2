@@ -21,4 +21,5 @@ object Spacing {
 
     val spacing20 = 20.dp
 
+    val spacing42 = 42.dp
 }
