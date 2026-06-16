@@ -5,8 +5,8 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
-import com.android.build.gradle.LibraryExtension
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.kotlin.dsl.findByType
 
 class AndroidComposeConventionPlugin : Plugin<Project> {
@@ -21,7 +21,7 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
             }
 
             pluginManager.withPlugin("com.android.library") {
-                extensions.findByType<com.android.build.api.dsl.LibraryExtension>()?.buildFeatures {
+                extensions.findByType<LibraryExtension>()?.buildFeatures {
                     compose = true
                 }
             }

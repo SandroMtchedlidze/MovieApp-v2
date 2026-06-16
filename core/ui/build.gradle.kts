@@ -1,11 +1,11 @@
 plugins {
-    id("movieapp.android.library")
-    id("movieapp.android.compose")
+    alias(libs.plugins.movie.android.library)
+    alias(libs.plugins.movie.android.compose)
 }
 
 android {
-    namespace = "com.space.core_ui"
+    namespace = "com.space.core.ui"
 }
 dependencies {
-    implementation("androidx.compose.ui:ui-text-google-fonts:1.11.1")
+    implementation(libs.androidx.compose.ui.text.google.fonts)
 }
