@@ -1,7 +1,7 @@
 plugins {
-    id("movieapp.android.feature")
+    alias(libs.plugins.movie.android.feature)
 }
 
 android {
-    namespace = "com.space.feature_favourites"
+    namespace = "com.space.feature.favourites"
 }
