@@ -41,7 +41,6 @@ data class MovieAppTypography(
     val bodyMedium: TextStyle
 )
 
-
 val LocalMovieAppColors = staticCompositionLocalOf {
     MovieAppColors(
         Color.Unspecified,
@@ -56,7 +55,6 @@ val LocalMovieAppColors = staticCompositionLocalOf {
         Color.Unspecified
     )
 }
-
 val LocalMovieAppTypography = staticCompositionLocalOf {
     MovieAppTypography(
         TextStyle.Default,
@@ -89,23 +87,24 @@ fun MovieAppTheme(content: @Composable () -> Unit) {
         bodyMedium = TextStyle(
             fontFamily = MontserratFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            lineHeight = 18.sp,
-            letterSpacing = 0.sp
+            fontSize = TextSizing.size14,
+            lineHeight = TextSizing.size18,
+            letterSpacing = TextSizing.size0
+
         ),
         titleMedium = TextStyle(
             fontFamily = MontserratFamily,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
-            lineHeight = 21.sp,
-            letterSpacing = 0.sp
+            fontSize = TextSizing.size16,
+            lineHeight = TextSizing.size20,
+            letterSpacing = TextSizing.size0
         ),
         titleLarge = TextStyle(
             fontFamily = MontserratFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            lineHeight = 26.sp,
-            letterSpacing = 0.sp
+            fontSize = TextSizing.size20,
+            lineHeight = TextSizing.size26,
+            letterSpacing = TextSizing.size0
         )
     )
 
