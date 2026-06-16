@@ -9,6 +9,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import com.space.ui.theme.Color.Black
 import com.space.ui.theme.Color.Neutral01Black
 import com.space.ui.theme.Color.Neutral02DarkestGrey
 import com.space.ui.theme.Color.Neutral03DarkGrey
@@ -16,8 +17,16 @@ import com.space.ui.theme.Color.Neutral04Grey
 import com.space.ui.theme.Color.Neutral05LightGrey
 import com.space.ui.theme.Color.Neutral06LighterGrey
 import com.space.ui.theme.Color.Neutral08Whisper
+import com.space.ui.theme.Color.PureWhite
 import com.space.ui.theme.Color.YellowPrimary
 
+val colors: MovieAppColors
+    @Composable
+    get() = MovieAppTheme.colors
+
+val typography: MovieAppTypography
+    @Composable
+    get() = MovieAppTheme.typography
 
 @Immutable
 data class MovieAppColors(
@@ -30,7 +39,9 @@ data class MovieAppColors(
     val textSecondary: Color,
     val textTertiary: Color,
     val textHint: Color,
-    val border: Color
+    val border: Color,
+    val pureBlack: Color,
+    val pureWhite: Color
 )
 
 @Immutable
@@ -51,7 +62,9 @@ val LocalMovieAppColors = staticCompositionLocalOf {
         Color.Unspecified,
         Color.Unspecified,
         Color.Unspecified,
-        Color.Unspecified
+        Color.Unspecified,
+        pureBlack = Color.Unspecified,
+        pureWhite = Color.Unspecified
     )
 }
 val LocalMovieAppTypography = staticCompositionLocalOf {
@@ -79,7 +92,9 @@ fun MovieAppTheme(content: @Composable () -> Unit) {
         textSecondary = Neutral05LightGrey,
         textTertiary = Neutral06LighterGrey,
         textHint = Neutral04Grey,
-        border = Neutral03DarkGrey
+        border = Neutral03DarkGrey,
+        pureBlack = Black,
+        pureWhite = PureWhite
     )
 
     val customTypography = MovieAppTypography(

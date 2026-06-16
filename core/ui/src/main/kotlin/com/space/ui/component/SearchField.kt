@@ -1,6 +1,5 @@
 package com.space.ui.component
 
-
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,25 +26,36 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import com.space.core_ui.R
+import com.space.core.ui.R
 import com.space.ui.theme.Color.Neutral05LightGrey
 import com.space.ui.theme.Color.PureWhite
-import com.space.ui.theme.MovieAppTheme
 import com.space.ui.theme.Radius
 import com.space.ui.theme.Spacing
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.space.ui.theme.Sizing
+import com.space.ui.theme.colors
+import com.space.ui.theme.typography
 
+/**
+ * Custom search field with cancel button and filter button at the end.
+ * When focused filter icon disappears and cancel button appears.
+ * When unfocused cancel button disappears and filter appears.
+ *
+ *
+ * @param query Displays current text value.
+ * @param onQueryChanged Callback triggered when text is changed.
+ * @param onCancelClicked Callback triggered when cancel button is clicked while in focus.
+ * @param onFilterClicked Callback triggered when filter icon is clicked while un focused.
+ */
 @Composable
 fun SearchField(
     query: String,
+    modifier: Modifier = Modifier,
     onQueryChanged: (String) -> Unit,
     onCancelClicked: () -> Unit,
     onFilterClicked: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
-
     var isFocused by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
@@ -54,40 +64,38 @@ fun SearchField(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        //search input text field
         BasicTextField(
             value = query,
             onValueChange = onQueryChanged,
             modifier = Modifier
                 .weight(1f)
-                .height(36.dp)
+                .height(Sizing.size36)
                 .background(
-                    color = MovieAppTheme.colors.surface,
+                    color = colors.surface,
                     shape = Radius.Radius25
                 )
                 .onFocusChanged { isFocused = it.isFocused }
                 .padding(horizontal = Spacing.spacing16),
-
             singleLine = true,
-            textStyle = MovieAppTheme.typography.bodyMedium.copy(
-                color = MovieAppTheme.colors.textSecondary
-
+            textStyle = typography.bodyMedium.copy(
+                color = colors.textSecondary
             ),
-            cursorBrush = SolidColor(MovieAppTheme.colors.primary),
+            cursorBrush = SolidColor(colors.pureWhite),
             decorationBox = { innerTextField ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         painter = painterResource(R.drawable.search),
                         contentDescription = null,
                         tint = Neutral05LightGrey,
-                        modifier = Modifier.size(14.dp),
+                        modifier = Modifier.size(Sizing.size14),
                     )
                     Spacer(Modifier.width(Spacing.spacing8))
-
                     Box {
                         if (query.isEmpty()) {
                             Text(
-                                text = "Search",
-                                style = MovieAppTheme.typography.bodyMedium,
+                                text = stringResource(R.string.search),
+                                style = typography.bodyMedium,
                                 color = Neutral05LightGrey
                             )
                         }
@@ -96,12 +104,12 @@ fun SearchField(
                 }
             }
         )
-
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(Spacing.spacing8))
+        //shows cancel button when search field is focused.
         AnimatedVisibility(visible = isFocused) {
             Text(
-                text = "Cancel",
-                style = MovieAppTheme.typography.bodyMedium,
+                text = stringResource(R.string.cancel),
+                style = typography.bodyMedium,
                 color = PureWhite,
                 modifier = Modifier
                     .padding(
@@ -113,18 +121,18 @@ fun SearchField(
                     }
             )
         }
+        //shows filter icon when search field is un focused.
         AnimatedVisibility(visible = !isFocused) {
             val interactionSource = remember { MutableInteractionSource() }
             val isPressed by interactionSource.collectIsPressedAsState()
-
             Icon(
                 painter = painterResource(R.drawable.fillter),
-                contentDescription = "filter option",
-                tint = if (isPressed) Color.Black else MovieAppTheme.colors.primary,
+                contentDescription = stringResource(R.string.filter_option),
+                tint = if (isPressed) colors.pureBlack else colors.primary,
                 modifier = modifier
-                    .size(36.dp)
+                    .size(Sizing.size36)
                     .background(
-                        color = if (isPressed) MovieAppTheme.colors.primary else Color.Black,
+                        color = if (isPressed) colors.primary else colors.pureBlack,
                         shape = CircleShape
                     )
                     .clickable(

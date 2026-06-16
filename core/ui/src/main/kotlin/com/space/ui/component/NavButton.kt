@@ -1,5 +1,6 @@
 package com.space.ui.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -13,38 +14,54 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.unit.dp
-import com.space.ui.theme.MovieAppTheme
+import androidx.compose.ui.res.painterResource
 import com.space.ui.theme.Radius
+import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
+import com.space.ui.theme.colors
+import com.space.ui.theme.typography
 
+
+/**
+ * Custom navigation button.
+ * when focused changes background color.
+ * Unfocused state dark background color and white text color.
+ * Focused state yellow background color and dark text color.
+ *
+ *
+ * @param selected controls navigation and button content and background color.
+ * @param label takes string to display button content name.
+ * @param iconResId takes icon from resource to display.
+ * @param modifier controls visual for button.
+ * @param onClick controls navigation.
+ */
 
 @Composable
 fun NavButton(
     selected: Boolean,
     label: String,
-    iconPainter: Painter,
+    @DrawableRes iconResId: Int,        //used DrawableRes annotation for safety.
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
+    // controls background color
     val backgroundColor = if (selected) {
-        MovieAppTheme.colors.primary
+        colors.primary
     } else {
-        MovieAppTheme.colors.surface
+        colors.surface
     }
     val borderStroke = if (selected) {
         null
     } else {
-        BorderStroke(1.dp, MovieAppTheme.colors.border)
+        BorderStroke(Sizing.size1, colors.border)
     }
-
+    //controls text color inside button
     val contentColor = if (selected) {
-        MovieAppTheme.colors.onPrimary
+        colors.onPrimary
     } else {
-        MovieAppTheme.colors.onSurface
+        colors.onSurface
     }
-
+    //surface connects everything together icon and text
     Surface(
         onClick = onClick,
         modifier = modifier,
@@ -61,22 +78,17 @@ fun NavButton(
             horizontalArrangement = Arrangement.Center
         ) {
             Icon(
-                painter = iconPainter,
+                painter = painterResource(id = iconResId),
                 contentDescription = label,
                 tint = contentColor,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(Sizing.size16)
             )
-
             Spacer(modifier = Modifier.width(Spacing.spacing10))
-
-
-
             Text(
                 text = label,
-                style = MovieAppTheme.typography.bodyMedium,
+                style = typography.bodyMedium,
                 color = contentColor
             )
         }
     }
-
 }
