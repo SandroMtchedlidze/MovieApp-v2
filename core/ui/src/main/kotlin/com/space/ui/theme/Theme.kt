@@ -9,7 +9,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import com.space.ui.theme.Color.Neutral01Black
 import com.space.ui.theme.Color.Neutral02DarkestGrey
 import com.space.ui.theme.Color.Neutral03DarkGrey
