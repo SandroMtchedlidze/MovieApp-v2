@@ -20,5 +20,4 @@ object Spacing {
     val spacing16 = 16.dp
 
     val spacing20 = 20.dp
-
 }
