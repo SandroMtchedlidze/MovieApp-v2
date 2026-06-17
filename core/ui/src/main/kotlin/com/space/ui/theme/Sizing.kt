@@ -25,4 +25,10 @@ object Sizing {
     val size36 = 36.dp
 
     val size42 = 42.dp
+
+    val size164 = 164.dp
+
+    val size226 = 226.dp
+
+    val size270 = 270.dp
 }

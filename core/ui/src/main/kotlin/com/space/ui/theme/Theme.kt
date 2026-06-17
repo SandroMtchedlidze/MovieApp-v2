@@ -41,11 +41,13 @@ data class MovieAppColors(
     val textHint: Color,
     val border: Color,
     val pureBlack: Color,
-    val pureWhite: Color
+    val pureWhite: Color,
+    val transparent: Color
 )
 
 @Immutable
 data class MovieAppTypography(
+    val titleSmall: TextStyle,
     val titleLarge: TextStyle,
     val titleMedium: TextStyle,
     val bodyMedium: TextStyle
@@ -64,11 +66,13 @@ val LocalMovieAppColors = staticCompositionLocalOf {
         Color.Unspecified,
         Color.Unspecified,
         pureBlack = Color.Unspecified,
-        pureWhite = Color.Unspecified
+        pureWhite = Color.Unspecified,
+        transparent = Color.Unspecified
     )
 }
 val LocalMovieAppTypography = staticCompositionLocalOf {
     MovieAppTypography(
+        TextStyle.Default,
         TextStyle.Default,
         TextStyle.Default,
         TextStyle.Default
@@ -94,10 +98,18 @@ fun MovieAppTheme(content: @Composable () -> Unit) {
         textHint = Neutral04Grey,
         border = Neutral03DarkGrey,
         pureBlack = Black,
-        pureWhite = PureWhite
+        pureWhite = PureWhite,
+        transparent = Color.Transparent
     )
 
     val customTypography = MovieAppTypography(
+        titleSmall = TextStyle(
+            fontFamily = MontserratFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = TextSizing.size12,
+            lineHeight = TextSizing.size16,
+            letterSpacing = TextSizing.size1
+        ),
         bodyMedium = TextStyle(
             fontFamily = MontserratFamily,
             fontWeight = FontWeight.Medium,

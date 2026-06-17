@@ -8,4 +8,5 @@ android {
 }
 dependencies {
     implementation(libs.androidx.compose.ui.text.google.fonts)
+    implementation(libs.coil.compose)
 }
