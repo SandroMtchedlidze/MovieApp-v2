@@ -9,7 +9,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.space.ui.theme.Color.Black
 import com.space.ui.theme.Color.Neutral01Black
 import com.space.ui.theme.Color.Neutral02DarkestGrey
 import com.space.ui.theme.Color.Neutral03DarkGrey
@@ -17,16 +16,8 @@ import com.space.ui.theme.Color.Neutral04Grey
 import com.space.ui.theme.Color.Neutral05LightGrey
 import com.space.ui.theme.Color.Neutral06LighterGrey
 import com.space.ui.theme.Color.Neutral08Whisper
-import com.space.ui.theme.Color.PureWhite
 import com.space.ui.theme.Color.YellowPrimary
 
-val colors: MovieAppColors
-    @Composable
-    get() = MovieAppTheme.colors
-
-val typography: MovieAppTypography
-    @Composable
-    get() = MovieAppTheme.typography
 
 @Immutable
 data class MovieAppColors(
@@ -47,7 +38,6 @@ data class MovieAppColors(
 
 @Immutable
 data class MovieAppTypography(
-    val titleSmall: TextStyle,
     val titleLarge: TextStyle,
     val titleMedium: TextStyle,
     val bodyMedium: TextStyle
@@ -72,7 +62,6 @@ val LocalMovieAppColors = staticCompositionLocalOf {
 }
 val LocalMovieAppTypography = staticCompositionLocalOf {
     MovieAppTypography(
-        TextStyle.Default,
         TextStyle.Default,
         TextStyle.Default,
         TextStyle.Default
@@ -103,15 +92,8 @@ fun MovieAppTheme(content: @Composable () -> Unit) {
     )
 
     val customTypography = MovieAppTypography(
-        titleSmall = TextStyle(
-            fontFamily = MontserratFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = TextSizing.size12,
-            lineHeight = TextSizing.size16,
-            letterSpacing = TextSizing.size1
-        ),
         bodyMedium = TextStyle(
-            fontFamily = MontserratFamily,
+            fontFamily = MontserratFontFamily,
             fontWeight = FontWeight.Medium,
             fontSize = TextSizing.size14,
             lineHeight = TextSizing.size18,
@@ -119,14 +101,14 @@ fun MovieAppTheme(content: @Composable () -> Unit) {
 
         ),
         titleMedium = TextStyle(
-            fontFamily = MontserratFamily,
+            fontFamily = MontserratFontFamily,
             fontWeight = FontWeight.SemiBold,
             fontSize = TextSizing.size16,
             lineHeight = TextSizing.size20,
             letterSpacing = TextSizing.size0
         ),
         titleLarge = TextStyle(
-            fontFamily = MontserratFamily,
+            fontFamily = MontserratFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = TextSizing.size20,
             lineHeight = TextSizing.size26,

@@ -1,7 +1,6 @@
 package com.space.ui.theme
 
 import androidx.compose.ui.unit.sp
-
 object TextSizing {
     val size1 = 1.sp
     val size0 = 0.sp
@@ -13,4 +12,3 @@ object TextSizing {
     val size20 = 20.sp
     val size26 = 26.sp
 }
-

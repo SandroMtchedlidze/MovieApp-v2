@@ -1,7 +1,6 @@
 package com.space.ui.theme
 
 import androidx.compose.ui.graphics.Color
-
 object Color {
 
     val YellowPrimary = Color(0xFFFFC44A)
