@@ -1,33 +1,18 @@
 package com.space.ui.theme
-
-import androidx.compose.ui.unit.dp
 object Sizing {
-    val size1 = 1.dp
-    val size2 = 2.dp
-
-    val size4 = 4.dp
-
-    val size6 = 6.dp
-
-    val size8 = 8.dp
-
-    val size10 = 10.dp
-
-    val size12 = 12.dp
-
-    val size14 = 14.dp
-
-    val size16 = 16.dp
-
-    val size20 = 20.dp
-
-    val size36 = 36.dp
-
-    val size42 = 42.dp
-
-    val size164 = 164.dp
-
-    val size226 = 226.dp
-
-    val size270 = 270.dp
+    val size1 = Dimensions.dimension01
+    val size2 = Dimensions.dimension02
+    val size4 = Dimensions.dimension04
+    val size6 = Dimensions.dimension06
+    val size8 = Dimensions.dimension08
+    val size10 = Dimensions.dimension10
+    val size12 = Dimensions.dimension12
+    val size14 = Dimensions.dimension14
+    val size16 = Dimensions.dimension16
+    val size20 = Dimensions.dimension20
+    val size36 = Dimensions.dimension36
+    val size42 = Dimensions.dimension42
+    val size164 = Dimensions.dimension164
+    val size226 = Dimensions.dimension226
+    val size270 = Dimensions.dimension270
 }
