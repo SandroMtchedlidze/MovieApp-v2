@@ -19,25 +19,19 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
                     compose = true
                 }
             }
-
             pluginManager.withPlugin("com.android.library") {
                 extensions.findByType<LibraryExtension>()?.buildFeatures {
                     compose = true
                 }
             }
-
-
             val libs = extensions.getByType<VersionCatalogsExtension>()
                 .named("libs")
-
             dependencies {
                 val bom = libs.findLibrary("androidx-compose-bom").get()
                 add("implementation", platform(bom))
                 add("implementation", libs.findBundle("compose").get())
                 add("debugImplementation", libs.findLibrary("androidx-compose-ui-tooling").get())
-
             }
-
         }
     }
 }
