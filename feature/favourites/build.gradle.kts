@@ -5,3 +5,6 @@ plugins {
 android {
     namespace = "com.space.feature.favourites"
 }
+dependencies {
+    implementation(project(":navigation"))
+}

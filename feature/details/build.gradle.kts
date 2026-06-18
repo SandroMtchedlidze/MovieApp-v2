@@ -5,3 +5,6 @@ plugins {
 android {
     namespace = "com.space.feature.details"
 }
+dependencies {
+    implementation(project(":navigation"))
+}
