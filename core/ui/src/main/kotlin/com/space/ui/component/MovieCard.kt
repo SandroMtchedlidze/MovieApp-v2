@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,7 +58,6 @@ fun MovieCard(
             .fillMaxWidth()
             .clickable { onClick(movie.id) }
     ) {
-
         Column {
             Box(
                 modifier = Modifier
@@ -123,7 +123,7 @@ fun MovieCard(
                             R.drawable.favourite_unchecked
                         ),
                         contentDescription = if (movie.isFavourite) "Remove from favourites" else "Add to favourites",
-                        tint = colors.primary
+                        tint = Color.Unspecified
                     )
                 }
             }
