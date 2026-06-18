@@ -1,7 +1,6 @@
 package com.space.ui.theme
 
 import androidx.compose.ui.unit.dp
-
 object Sizing {
     val size1 = 1.dp
     val size2 = 2.dp

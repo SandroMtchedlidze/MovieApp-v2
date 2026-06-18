@@ -1,7 +1,6 @@
 package com.space.ui.theme
 
 import androidx.compose.ui.unit.dp
-
 object Spacing {
 
     val spacing2 = 2.dp

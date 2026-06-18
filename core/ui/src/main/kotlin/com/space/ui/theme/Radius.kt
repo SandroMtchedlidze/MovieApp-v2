@@ -2,7 +2,6 @@ package com.space.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
-
 object Radius {
     val radius2 = RoundedCornerShape(2.dp)
 

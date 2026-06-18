@@ -1,7 +1,6 @@
 package com.space.ui.component
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,13 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import com.space.ui.theme.MovieAppTheme.colors
+import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Radius
 import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
-import com.space.ui.theme.colors
-import com.space.ui.theme.typography
-
-
+import androidx.compose.ui.graphics.Color
 /**
  * Custom navigation button.
  * when focused changes background color.
@@ -35,7 +33,6 @@ import com.space.ui.theme.typography
  * @param modifier controls visual for button.
  * @param onClick controls navigation.
  */
-
 @Composable
 fun NavButton(
     selected: Boolean,
@@ -44,30 +41,14 @@ fun NavButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-    // controls background color
-    val backgroundColor = if (selected) {
-        colors.primary
-    } else {
-        colors.surface
-    }
-    val borderStroke = if (selected) {
-        null
-    } else {
-        BorderStroke(Sizing.size1, colors.border)
-    }
-    //controls text color inside button
-    val contentColor = if (selected) {
-        colors.onPrimary
-    } else {
-        colors.onSurface
-    }
+    //controls colors data class
+    val colorGroup = if (selected) NavButtonColors.selected() else NavButtonColors.unselected()
     //surface connects everything together icon and text
     Surface(
         onClick = onClick,
         modifier = modifier,
         shape = Radius.radius8,
-        color = backgroundColor,
-        border = borderStroke
+        color = colorGroup.backgroundColor,
     ) {
         Row(
             modifier = Modifier.padding(
@@ -80,14 +61,35 @@ fun NavButton(
             Icon(
                 painter = painterResource(id = iconResId),
                 contentDescription = label,
-                tint = contentColor,
+                tint = colorGroup.contentColor,
                 modifier = Modifier.size(Sizing.size16)
             )
             Spacer(modifier = Modifier.width(Spacing.spacing10))
             Text(
                 text = label,
                 style = typography.bodyMedium,
-                color = contentColor
+                color = colorGroup.contentColor
+            )
+        }
+    }
+}
+data class NavButtonColors(
+    val backgroundColor: Color,
+    val contentColor: Color
+) {
+    companion object {
+        @Composable
+        fun selected(): NavButtonColors {
+            return NavButtonColors(
+                backgroundColor = colors.primary,
+                contentColor = colors.onPrimary
+            )
+        }
+        @Composable
+        fun unselected(): NavButtonColors {
+            return NavButtonColors(
+                backgroundColor = colors.surface,
+                contentColor = colors.onSurface,
             )
         }
     }

@@ -33,10 +33,9 @@ import com.space.ui.theme.Radius
 import com.space.ui.theme.Spacing
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.ui.res.stringResource
+import com.space.ui.theme.MovieAppTheme.colors
+import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Sizing
-import com.space.ui.theme.colors
-import com.space.ui.theme.typography
-
 /**
  * Custom search field with cancel button and filter button at the end.
  * When focused filter icon disappears and cancel button appears.

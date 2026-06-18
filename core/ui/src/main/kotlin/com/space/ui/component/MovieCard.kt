@@ -29,23 +29,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.space.core.ui.R
+import com.space.ui.theme.MovieAppTheme.colors
+import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Radius
 import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
 import com.space.ui.theme.TextSizing
-import com.space.ui.theme.colors
-import com.space.ui.theme.typography
-data class MovieCardUiModel(
-    val id: Int,
-    val title: String,
-    val releaseDate: String,
-    val genre: String,
-    val posterUrl: String,
-    val isFavourite: Boolean = false
-)
-private val CardShape = Radius.radius16
-private val GenreSignShape = Radius.radius22
-
+/**
+ * Movie grid for home page with 2 columns.
+ * Displays movie image , genre , title, release date.
+ * Has favourite button which adds movie to favourite page.
+ *
+ * @param movie takes movie model from api.
+ * @param modifier to be applied to the root of the composable.
+ * @param onClick takes user to details page.
+ * @param onFavouriteClick marks movie as favourite.
+ */
 @Composable
 fun MovieCard(
     movie: MovieCardUiModel,
@@ -64,7 +63,7 @@ fun MovieCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(2f / 3f)
-                    .clip(CardShape)
+                    .clip(Radius.radius16)
 
             ) {
                 AsyncImage(
@@ -84,7 +83,7 @@ fun MovieCard(
                     modifier = modifier
                         .align(Alignment.TopEnd)
                         .padding(top = Spacing.spacing10, end = Spacing.spacing12)
-                        .clip(GenreSignShape)
+                        .clip(Radius.radius22)
                         .background(colors.primary)
                         .padding(
                             top = Spacing.spacing4,
@@ -156,3 +155,12 @@ fun MovieGrid(
         }
     }
 }
+//this ui model is for temporary testing
+data class MovieCardUiModel(
+    val id: Int,
+    val title: String,
+    val releaseDate: String,
+    val genre: String,
+    val posterUrl: String,
+    val isFavourite: Boolean = false
+)
