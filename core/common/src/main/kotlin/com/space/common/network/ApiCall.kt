@@ -4,6 +4,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
+///this working on this api call any suggestions will be appreciated
 suspend fun <T> apiCall(
     apiCall: suspend () -> Response<T>
 ): ApiResult<T> {

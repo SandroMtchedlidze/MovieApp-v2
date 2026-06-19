@@ -34,3 +34,4 @@ fun includeAllModules(vararg groupDirs: String) {
     }
 }
 include(":navigation")
+include(":di")

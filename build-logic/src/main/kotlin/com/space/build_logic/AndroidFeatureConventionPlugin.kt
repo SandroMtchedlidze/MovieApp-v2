@@ -12,7 +12,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("movieapp.android.library")
                 apply("movieapp.android.compose")
-
             }
             val libs = extensions.getByType<VersionCatalogsExtension>()
                 .named("libs")
