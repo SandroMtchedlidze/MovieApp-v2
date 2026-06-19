@@ -1,5 +1,4 @@
 plugins {
-//    id("movieapp.android.library")
     alias(libs.plugins.movie.android.library)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -9,4 +8,5 @@ android {
 
 dependencies {
     api(libs.bundles.coroutines)
+    implementation(libs.retrofit.core)
 }
