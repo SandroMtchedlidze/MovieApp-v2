@@ -50,6 +50,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>()
                 .named("libs")
             dependencies {
+                add("implementation", project(":core:navigation"))
                 add("implementation", libs.findBundle("koin").get())
                 add("implementation", libs.findBundle("retrofit").get())
             }
