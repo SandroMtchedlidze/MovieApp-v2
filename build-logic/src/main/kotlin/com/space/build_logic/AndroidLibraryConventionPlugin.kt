@@ -16,7 +16,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 apply("com.android.library")
             }
             extensions.configure<LibraryExtension> {
-                compileSdk = 36
+                compileSdk = 37
                 defaultConfig {
                     minSdk = 24
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
