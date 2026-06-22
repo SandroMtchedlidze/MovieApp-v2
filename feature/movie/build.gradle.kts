@@ -4,6 +4,3 @@ plugins {
 android {
     namespace = "com.space.feature.movie"
 }
-dependencies {
-    implementation(project(":core:navigation"))
-}
