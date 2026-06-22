@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.MovieApp" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.MovieAppStarting" parent="Theme.SplashScreen">
+    <style name="Theme.MovieAppSplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/black</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/imdb_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.MovieApp</item>

@@ -24,8 +24,11 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MovieApp"
+
 include(":app")
+
 includeAllModules("core", "feature")
+
 fun includeAllModules(vararg groupDirs: String) {
     groupDirs.forEach { group ->
         File(rootDir, group).listFiles()?.filter { it.isDirectory }?.forEach {
@@ -34,4 +37,3 @@ fun includeAllModules(vararg groupDirs: String) {
     }
 }
 include(":navigation")
-include(":di")

@@ -14,7 +14,7 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
     implementation(project(":core:ui"))
-    implementation(project(":navigation"))
+    implementation(project(":core:navigation"))
     implementation(project(":feature:movie"))
     implementation(project(":feature:details"))
     implementation(project(":feature:favourites"))
