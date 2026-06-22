@@ -6,5 +6,5 @@ android {
     namespace = "com.space.feature.favourites"
 }
 dependencies {
-    implementation(project(":navigation"))
+    implementation(project(":core:navigation"))
 }

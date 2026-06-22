@@ -1,4 +1,4 @@
-package com.space.movieapp.navigaiton
+package com.space.movieapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
@@ -8,6 +8,7 @@ import com.space.movie.navigaiton.movieEntries
 import com.space.navigation.MovieRoute
 import com.space.favourites.navigation.favouritesEntry
 import com.space.navigation.FavouritesRoute
+
 @Composable
 fun AppNavHost() {
     val backStack = rememberNavBackStack(MovieRoute)
@@ -18,7 +19,8 @@ fun AppNavHost() {
             movieEntries({}, {
                 backStack.add(FavouritesRoute)
             })
-            favouritesEntry(onNavigateToDetails = {},
+            favouritesEntry(
+                onNavigateToDetails = {},
                 onBack = { backStack.removeLastOrNull() })
         }
     )

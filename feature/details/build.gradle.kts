@@ -6,5 +6,5 @@ android {
     namespace = "com.space.feature.details"
 }
 dependencies {
-    implementation(project(":navigation"))
+    implementation(project(":core:navigation"))
 }
