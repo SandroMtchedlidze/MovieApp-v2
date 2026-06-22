@@ -27,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.space.core.ui.R
@@ -37,6 +36,7 @@ import com.space.ui.theme.Radius
 import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
 import com.space.ui.theme.TextSizing
+
 /**
  * Movie grid for home page with 2 columns.
  * Displays movie image , genre , title, release date.
@@ -54,85 +54,79 @@ fun MovieCard(
     onClick: (Int) -> Unit,
     onFavouriteClick: (Int) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick(movie.id) }
-    ) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2f / 3f)
-                    .clip(Radius.radius16)
+    Column {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .aspectRatio(2f / 3f)
+                .clip(Radius.radius16)
 
+        ) {
+            AsyncImage(
+                model = movie.posterUrl,
+                contentDescription = movie.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Text(
+                text = movie.genre,
+                color = colors.background,
+                style = typography.titleMedium.copy(
+                    fontSize = TextSizing.size10,
+                    lineHeight = TextSizing.size14,
+                    letterSpacing = TextSizing.size1
+                ),
+                modifier = modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = Spacing.spacing10, end = Spacing.spacing12)
+                    .clip(Radius.radius22)
+                    .background(colors.primary)
+                    .padding(
+                        top = Spacing.spacing4,
+                        start = Spacing.spacing12,
+                        end = Spacing.spacing12, bottom = Spacing.spacing4
+                    )
+            )
+        }
+        Spacer(Modifier.height(Spacing.spacing12))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                AsyncImage(
-                    model = movie.posterUrl,
-                    contentDescription = movie.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
                 Text(
-                    text = movie.genre,
-                    color = colors.background,
-                    style = typography.titleMedium.copy(
-                        fontSize = TextSizing.size10,
-                        lineHeight = TextSizing.size14,
-                        letterSpacing = TextSizing.size1
-                    ),
-                    modifier = modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = Spacing.spacing10, end = Spacing.spacing12)
-                        .clip(Radius.radius22)
-                        .background(colors.primary)
-                        .padding(
-                            top = Spacing.spacing4,
-                            start = Spacing.spacing12,
-                            end = Spacing.spacing12, bottom = Spacing.spacing4
-                        )
+                    text = movie.title,
+                    style = typography.bodyMedium.copy(letterSpacing = TextSizing.size1),
+                    color = colors.onBackground,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(Spacing.spacing2))
+                Text(
+                    text = movie.releaseDate,
+                    style = typography.titleSmall,
+                    color = colors.textHint,
                 )
             }
-            Spacer(Modifier.height(Spacing.spacing12))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top
+            IconButton(
+                onClick = { onFavouriteClick(movie.id) },
+                modifier = Modifier.size(Sizing.size20)
             ) {
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = movie.title,
-                        style = typography.bodyMedium.copy(letterSpacing = TextSizing.size1),
-                        color = colors.onBackground,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.height(Spacing.spacing2))
-                    Text(
-                        text = movie.releaseDate,
-                        style = typography.titleSmall,
-                        color = colors.textHint,
-                    )
-                }
-                IconButton(
-                    onClick = { onFavouriteClick(movie.id) },
-                    modifier = Modifier.size(Sizing.size20)
-                ) {
-                    Icon(
-                        painter = if (movie.isFavourite) painterResource(R.drawable.favourite_checked) else painterResource(
-                            R.drawable.favourite_unchecked
-                        ),
-                        contentDescription = if (movie.isFavourite) stringResource(R.string.remove_from_favourites) else stringResource(
-                            R.string.add_to_favourites
-                        ),
-                        tint = Color.Unspecified
-                    )
-                }
+                Icon(
+                    painter = if (movie.isFavourite) painterResource(R.drawable.favourite_checked) else painterResource(
+                        R.drawable.favourite_unchecked
+                    ),
+                    contentDescription = if (movie.isFavourite) "Remove from favourites" else "Add to favourites",
+                    tint = Color.Unspecified
+                )
             }
         }
     }
+
 }
+
 @Composable
 fun MovieGrid(
     movies: List<MovieCardUiModel>,
@@ -158,6 +152,7 @@ fun MovieGrid(
         }
     }
 }
+
 //this ui model is for temporary testing
 data class MovieCardUiModel(
     val id: Int,
