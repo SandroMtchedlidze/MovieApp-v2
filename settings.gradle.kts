@@ -27,6 +27,8 @@ rootProject.name = "MovieApp"
 
 include(":app")
 
+include(":di")
+
 includeAllModules("core", "feature")
 
 fun includeAllModules(vararg groupDirs: String) {
@@ -36,4 +38,3 @@ fun includeAllModules(vararg groupDirs: String) {
         }
     }
 }
-include(":di")
