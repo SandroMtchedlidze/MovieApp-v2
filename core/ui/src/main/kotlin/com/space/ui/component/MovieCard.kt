@@ -60,7 +60,6 @@ fun MovieCard(
                 .fillMaxWidth()
                 .aspectRatio(2f / 3f)
                 .clip(Radius.radius16)
-
         ) {
             AsyncImage(
                 model = movie.posterUrl,

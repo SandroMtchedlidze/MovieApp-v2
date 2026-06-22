@@ -7,6 +7,8 @@ import org.koin.dsl.module
 val useCaseModule = module {
     factory {
         GetTopRatedMoviesUseCase(repository = get())
+    }
+    factory {
         GetGenresUseCase(repository = get())
     }
 }

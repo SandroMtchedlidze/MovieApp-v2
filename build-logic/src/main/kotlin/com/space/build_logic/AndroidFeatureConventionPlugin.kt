@@ -22,8 +22,8 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", project(":core:ui"))
                 add("implementation", libs.findBundle("koin").get())
                 add("implementation", libs.findBundle("retrofit").get())
-                add("implementation" , libs.findLibrary("androidx-navigation3-runtime").get())
-                add("implementation" , libs.findLibrary("androidx-navigation3-ui").get())
+                add("implementation", libs.findLibrary("androidx-navigation3-runtime").get())
+                add("implementation", libs.findLibrary("androidx-navigation3-ui").get())
             }
         }
     }

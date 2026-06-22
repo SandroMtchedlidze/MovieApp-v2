@@ -8,6 +8,7 @@ import com.space.movie.domain.usecase.GetTopRatedMoviesUseCase
 import com.space.movie.presentation.contract.MovieEvent
 import com.space.movie.presentation.contract.MovieSideEffect
 import com.space.movie.presentation.contract.MovieState
+import com.space.movie.presentation.model.toUiModel
 import kotlinx.coroutines.launch
 
 class MovieViewModel(
@@ -38,7 +39,7 @@ class MovieViewModel(
                 is ApiResult.Success -> updateState {
                     copy(
                         isLoading = false,
-                        movies = result.data
+                        movies = result.data.map { it.toUiModel() }
                     )
                 }
 

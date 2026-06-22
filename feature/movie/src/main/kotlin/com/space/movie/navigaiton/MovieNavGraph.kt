@@ -11,8 +11,7 @@ fun EntryProviderScope<NavKey>.movieEntries(
 ) {
     entry<MovieRoute> {
         MovieScreen(
-            onNavigateToFavourites = onNavigateToFavourites,
-            onNavigateToDetails = onNavigateToDetails
+            onMovieClicked = onNavigateToDetails,
         )
     }
 }
