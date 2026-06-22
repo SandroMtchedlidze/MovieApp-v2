@@ -1,7 +1,8 @@
-package com.space.movie.data.remote.dto
+package com.space.movie.data.remote.dto.movie
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
 @Serializable
 data class MovieResponseDto(
     val page : Int,

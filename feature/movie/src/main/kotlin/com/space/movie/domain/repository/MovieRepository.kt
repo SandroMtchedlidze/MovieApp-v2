@@ -5,4 +5,5 @@ import com.space.movie.domain.model.Movie
 
 interface MovieRepository {
     suspend fun getTopRatedMovies(page: Int): ApiResult<List<Movie>>
+    suspend fun getGenres() : ApiResult<Map<Int,String>>
 }

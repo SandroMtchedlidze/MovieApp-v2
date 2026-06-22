@@ -2,6 +2,7 @@ package com.space.di.data
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.space.di.BuildConfig
+import com.space.movie.data.remote.api.GenreApi
 import com.space.movie.data.remote.api.MovieApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -29,5 +30,8 @@ val networkModule = module {
     }
     single<MovieApi> {
         get<Retrofit>().create(MovieApi::class.java)
+    }
+    single<GenreApi> {
+        get<Retrofit>().create(GenreApi::class.java)
     }
 }

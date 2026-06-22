@@ -1,6 +1,6 @@
 package com.space.movie.data.remote.api
 
-import com.space.movie.data.remote.dto.MovieResponseDto
+import com.space.movie.data.remote.dto.movie.MovieResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

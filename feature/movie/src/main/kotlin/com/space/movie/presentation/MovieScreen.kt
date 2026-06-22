@@ -1,4 +1,4 @@
-package com.space.movie
+package com.space.movie.presentation
 
 import androidx.compose.runtime.Composable
 
