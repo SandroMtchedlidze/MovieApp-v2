@@ -18,7 +18,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             dependencies {
                 add("implementation", project(":core:navigation"))
                 add("implementation", libs.findBundle("coroutines").get())
-                add("implementation", project(":core:common"))
                 add("implementation", project(":core:ui"))
                 add("implementation", libs.findBundle("koin").get())
                 add("implementation", libs.findBundle("retrofit").get())

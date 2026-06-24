@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.movie.android.application)
     alias(libs.plugins.movie.android.compose)
@@ -17,6 +15,6 @@ dependencies {
     implementation(project(":feature:movie"))
     implementation(project(":feature:details"))
     implementation(project(":feature:favourites"))
-    implementation(project(":di"))
-    implementation(project(":core:common"))
+    implementation(project(":feature:movie:data"))
+    implementation(project(":feature:movie:presentation"))
 }
