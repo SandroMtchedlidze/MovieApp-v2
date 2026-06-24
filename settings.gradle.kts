@@ -23,6 +23,8 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "MovieApp"
 
 include(":app")
@@ -40,3 +42,4 @@ fun includeAllModules(vararg groupDirs: String) {
             }
     }
 }
+include(":feature:home:api")

@@ -124,7 +124,6 @@ fun MovieCard(
         }
     }
 }
-//ufro abstractuli
 @Composable
 fun MovieGrid(
     movies: List<MovieCardUiModel>,

@@ -6,7 +6,7 @@ android {
     namespace = "com.space.presentaton"
 }
 dependencies {
-    implementation(project(":feature:movie:domain"))
-    implementation(project(":core:networking"))
-    implementation(project(":core:presentation"))
+    implementation(projects.feature.home.domain)
+    implementation(projects.core.networking)
+    implementation(projects.core.presentation)
 }

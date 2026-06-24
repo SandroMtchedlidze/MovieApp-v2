@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":feature:movie:domain"))
+    implementation(project(":feature:home:domain"))
     implementation(project(":core:networking"))
     implementation(libs.retrofit.kotlinx.serialization)
 }

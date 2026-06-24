@@ -5,27 +5,27 @@ import com.space.domain.usecase.GetGenresUseCase
 import com.space.domain.usecase.GetTopRatedMoviesUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
-import com.space.presentaton.contract.MovieEvent
-import com.space.presentaton.contract.MovieSideEffect
-import com.space.presentaton.contract.MovieState
+import com.space.presentaton.contract.HomeEvent
+import com.space.presentaton.contract.HomeSideEffect
+import com.space.presentaton.contract.HomeState
 import com.space.presentaton.mapper.toUiModel
 import kotlinx.coroutines.launch
 
-class MovieVm(
+class HomeVm(
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     private val getGenresUseCase: GetGenresUseCase
-) : BaseViewModel<MovieState, MovieEvent, MovieSideEffect>(
-    initialState = MovieState()
+) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
+    initialState = HomeState()
 ) {
     init {
-        onEvent(MovieEvent.LoadMovies)
+        onEvent(HomeEvent.LoadMovies)
     }
 
-    override fun onEvent(event: MovieEvent) {
+    override fun onEvent(event: HomeEvent) {
         when (event) {
-            is MovieEvent.LoadMovies -> loadMovies()
-            is MovieEvent.OnMovieClicked -> emitSideEffect(
-                MovieSideEffect.NavigateToDetails(event.movieId)
+            is HomeEvent.LoadMovies -> loadMovies()
+            is HomeEvent.OnHomeClicked -> emitSideEffect(
+                HomeSideEffect.NavigateToDetails(event.movieId)
             )
         }
     }
