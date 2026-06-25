@@ -8,12 +8,13 @@ import com.space.presentation.base.BaseViewModel
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
-import com.space.presentaton.mapper.toUiModel
+import com.space.presentaton.mapper.MovieResponseToUiModel
 import kotlinx.coroutines.launch
 
 class HomeVm(
     private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
-    private val getGenresUseCase: GetGenresUseCase
+    private val getGenresUseCase: GetGenresUseCase,
+    private val movieUiMapper: MovieResponseToUiModel
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
@@ -43,7 +44,7 @@ class HomeVm(
                             is ApiResult.Success -> updateState {
                                 copy(
                                     isLoading = false,
-                                    movies = movieResult.data.map { it.toUiModel() })
+                                    movies = movieResult.data.map { movieUiMapper.mapToUiModel(it) })
                             }
 
                             is ApiResult.Error -> updateState {

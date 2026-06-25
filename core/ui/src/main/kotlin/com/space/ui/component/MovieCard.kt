@@ -60,6 +60,7 @@ fun MovieCard(
                 .fillMaxWidth()
                 .aspectRatio(2f / 3f)
                 .clip(Radius.radius16)
+                .clickable { onClick(movie.id) }
         ) {
             AsyncImage(
                 model = movie.posterUrl,
@@ -124,6 +125,7 @@ fun MovieCard(
         }
     }
 }
+
 @Composable
 fun MovieGrid(
     movies: List<MovieCardUiModel>,

@@ -41,7 +41,6 @@ private fun MovieScreenContent(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxSize()
