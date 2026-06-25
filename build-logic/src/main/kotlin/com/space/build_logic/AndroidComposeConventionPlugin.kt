@@ -37,7 +37,6 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
                 add("debugImplementation", libs.findLibrary("androidx-compose-ui-tooling").get())
 
             }
-
         }
     }
 }
