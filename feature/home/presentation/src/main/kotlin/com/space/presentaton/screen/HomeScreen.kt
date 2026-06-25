@@ -99,7 +99,6 @@ private fun MovieGrid(
     ) {
         items(
             count = movies.itemCount,
-            key = movies.itemKey { it.id }
         ) { index ->
             movies[index]?.let { movie ->
                 MovieCard(
