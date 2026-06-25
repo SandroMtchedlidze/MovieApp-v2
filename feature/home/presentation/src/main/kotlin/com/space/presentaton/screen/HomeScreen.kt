@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
@@ -27,7 +26,6 @@ import com.space.ui.component.MovieCardUiModel
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.Spacing
 import org.koin.androidx.compose.koinViewModel
-
 
 @Composable
 fun MovieScreen(

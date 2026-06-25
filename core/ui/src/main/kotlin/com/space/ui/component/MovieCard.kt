@@ -26,9 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.space.core.ui.R
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
@@ -63,30 +65,35 @@ fun MovieCard(
                 .clickable { onClick(movie.id) }
         ) {
             AsyncImage(
-                model = movie.posterUrl,
+                model = ImageRequest.Builder(LocalContext.current).data(movie.posterUrl)
+                    .crossfade(true).build(),
                 contentDescription = movie.title,
                 contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.placeholder),
+                error = painterResource(R.drawable.placeholder),
                 modifier = Modifier.fillMaxSize()
             )
-            Text(
-                text = movie.genre,
-                color = colors.background,
-                style = typography.titleMedium.copy(
-                    fontSize = TextSizing.size10,
-                    lineHeight = TextSizing.size14,
-                    letterSpacing = TextSizing.size1
-                ),
-                modifier = modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = Spacing.spacing10, end = Spacing.spacing12)
-                    .clip(Radius.radius22)
-                    .background(colors.primary)
-                    .padding(
-                        top = Spacing.spacing4,
-                        start = Spacing.spacing12,
-                        end = Spacing.spacing12, bottom = Spacing.spacing4
-                    )
-            )
+            if (movie.genre.isNotEmpty()) {
+                Text(
+                    text = movie.genre,
+                    color = colors.background,
+                    style = typography.titleMedium.copy(
+                        fontSize = TextSizing.size10,
+                        lineHeight = TextSizing.size14,
+                        letterSpacing = TextSizing.size1
+                    ),
+                    modifier = modifier
+                        .align(Alignment.TopEnd)
+                        .padding(top = Spacing.spacing10, end = Spacing.spacing12)
+                        .clip(Radius.radius22)
+                        .background(colors.primary)
+                        .padding(
+                            top = Spacing.spacing4,
+                            start = Spacing.spacing12,
+                            end = Spacing.spacing12, bottom = Spacing.spacing4
+                        )
+                )
+            }
         }
         Spacer(Modifier.height(Spacing.spacing12))
         Row(
