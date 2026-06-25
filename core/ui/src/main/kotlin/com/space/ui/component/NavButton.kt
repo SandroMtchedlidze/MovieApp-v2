@@ -20,6 +20,10 @@ import com.space.ui.theme.Radius
 import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import com.space.core.ui.R
+import com.space.ui.theme.MovieAppTheme
+
 /**
  * Custom navigation button.
  * when focused changes background color.

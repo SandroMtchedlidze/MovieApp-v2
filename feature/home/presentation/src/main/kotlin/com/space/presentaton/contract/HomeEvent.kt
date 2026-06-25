@@ -1,6 +1,5 @@
 package com.space.presentaton.contract
 
 sealed class HomeEvent {
-    data object LoadMovies : HomeEvent()
-    data class OnHomeClicked(val movieId: Int) : HomeEvent()
+    data class OnMovieClicked(val movieId: Int) : HomeEvent()
 }

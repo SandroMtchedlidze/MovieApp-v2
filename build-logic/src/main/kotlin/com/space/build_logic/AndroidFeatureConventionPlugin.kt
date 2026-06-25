@@ -23,6 +23,8 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", libs.findBundle("retrofit").get())
                 add("implementation", libs.findLibrary("androidx-navigation3-runtime").get())
                 add("implementation", libs.findLibrary("androidx-navigation3-ui").get())
+                add("implementation", libs.findLibrary("androidx-paging").get())
+                add("implementation", libs.findLibrary("androidx-paging-compose").get())
             }
         }
     }

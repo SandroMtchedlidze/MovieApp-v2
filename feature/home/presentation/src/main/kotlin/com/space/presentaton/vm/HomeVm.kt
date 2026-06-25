@@ -1,62 +1,48 @@
 package com.space.presentaton.vm
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.space.domain.usecase.GetGenresUseCase
-import com.space.domain.usecase.GetTopRatedMoviesUseCase
+import com.space.domain.usecase.GetMoviesUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.mapper.MovieResponseToUiModel
-import kotlinx.coroutines.launch
+import com.space.ui.component.MovieCardUiModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class HomeVm(
-    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val getMoviesUseCase: GetMoviesUseCase,
     private val getGenresUseCase: GetGenresUseCase,
     private val movieUiMapper: MovieResponseToUiModel
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
-    init {
-        onEvent(HomeEvent.LoadMovies)
-    }
+    val movies: Flow<PagingData<MovieCardUiModel>> = flow {
+        getGenresUseCase().collect { result ->
+            if (result is ApiResult.Success || result is ApiResult.Error) {
+                emitAll(
+                    getMoviesUseCase()
+                        .map { pagingData ->
+                            pagingData.map { movieUiMapper.mapToUiModel(it) }
+                        }
+                )
+            }
+        }
+    }.cachedIn(viewModelScope)
 
     override fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.LoadMovies -> loadMovies()
-            is HomeEvent.OnHomeClicked -> emitSideEffect(
+            is HomeEvent.OnMovieClicked -> emitSideEffect(
                 HomeSideEffect.NavigateToDetails(event.movieId)
             )
-        }
-    }
-
-    private fun loadMovies() {
-        viewModelScope.launch {
-            getGenresUseCase().collect { result ->
-                if (result is ApiResult.Success || result is ApiResult.Error) {
-                    getTopRatedMoviesUseCase().collect { movieResult ->
-                        when (movieResult) {
-                            is ApiResult.Loading -> updateState {
-                                copy(isLoading = movieResult.isLoading)
-                            }
-
-                            is ApiResult.Success -> updateState {
-                                copy(
-                                    isLoading = false,
-                                    movies = movieResult.data.map { movieUiMapper.mapToUiModel(it) })
-                            }
-
-                            is ApiResult.Error -> updateState {
-                                copy(
-                                    isLoading = false,
-                                    errorMessage = movieResult.networkError.name
-                                )
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }

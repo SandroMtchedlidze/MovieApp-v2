@@ -10,7 +10,7 @@ val presentationModule = module {
     viewModel<HomeVm> {
         HomeVm(
             getGenresUseCase = get(),
-            getTopRatedMoviesUseCase = get(),
+            getMoviesUseCase = get(),
             movieUiMapper = get()
         )
     }

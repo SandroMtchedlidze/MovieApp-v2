@@ -1,8 +1,12 @@
 package com.space.data.remote.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.space.data.remote.api.GenreApi
 import com.space.data.remote.api.MovieApi
 import com.space.data.remote.mapper.MovieMapper
+import com.space.data.remote.paging.MoviePagingSource
 import com.space.domain.model.MovieResponse
 import com.space.domain.repository.MovieRepository
 import com.space.networking.network.ApiResult
@@ -16,17 +20,21 @@ class MovieRepositoryImpl(
     private val genreApi: GenreApi,
     private val movieMapper: MovieMapper
 ) : MovieRepository {
-    override suspend fun getTopRatedMovies(page: Int): Flow<ApiResult<List<MovieResponse>>> {
-        return apiCall { movieApi.getMovies(page) }.map { result ->
-            when (result) {
-                is ApiResult.Success -> ApiResult.Success(
-                    result.data.results.map { movieMapper.mapToDomain(it, genreCache) }
+    override fun getMovies(): Flow<PagingData<MovieResponse>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                prefetchDistance = 5,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                MoviePagingSource(
+                    movieApi,
+                    genreCache,
+                    movieMapper
                 )
-
-                is ApiResult.Error -> result
-                is ApiResult.Loading -> result
             }
-        }
+        ).flow
     }
 
     private var genreCache: Map<Int, String> = emptyMap()

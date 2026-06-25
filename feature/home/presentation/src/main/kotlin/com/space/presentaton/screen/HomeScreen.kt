@@ -1,8 +1,12 @@
 package com.space.presentaton.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,13 +15,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
-import com.space.ui.component.MovieGrid
+import com.space.ui.component.MovieCard
+import com.space.ui.component.MovieCardUiModel
 import com.space.ui.theme.MovieAppTheme.colors
+import com.space.ui.theme.Spacing
 import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
 fun MovieScreen(
@@ -25,6 +35,7 @@ fun MovieScreen(
     onMovieClicked: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val movies = viewModel.movies.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
@@ -33,11 +44,12 @@ fun MovieScreen(
             }
         }
     }
-    MovieScreenContent(state = state, onEvent = viewModel::onEvent)
+    MovieScreenContent(movies = movies, state = state, onEvent = viewModel::onEvent)
 }
 
 @Composable
 private fun MovieScreenContent(
+    movies: LazyPagingItems<MovieCardUiModel>,
     state: HomeState,
     onEvent: (HomeEvent) -> Unit
 ) {
@@ -62,9 +74,38 @@ private fun MovieScreenContent(
 
             else -> {
                 MovieGrid(
-                    movies = state.movies,
-                    onMovieClick = { onEvent(HomeEvent.OnHomeClicked(it)) },
-                    onFavouriteClick = {}
+                    movies = movies,
+                    onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
+                    onFavouriteClicked = { }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MovieGrid(
+    movies: LazyPagingItems<MovieCardUiModel>,
+    onMovieClicked: (Int) -> Unit,
+    onFavouriteClicked: (Int) -> Unit
+) {
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.spacing16),
+        verticalArrangement = Arrangement.spacedBy(Spacing.spacing22),
+        contentPadding = PaddingValues(Spacing.spacing16),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(
+            count = movies.itemCount,
+            key = movies.itemKey { it.id }
+        ) { index ->
+            movies[index]?.let { movie ->
+                MovieCard(
+                    movie = movie,
+                    onClick = onMovieClicked,
+                    onFavouriteClick = onFavouriteClicked
                 )
             }
         }

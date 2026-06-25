@@ -1,15 +1,15 @@
 package com.space.domain.usecase
 
-
+import androidx.paging.PagingData
 import com.space.domain.model.MovieResponse
 import com.space.domain.repository.MovieRepository
 import com.space.networking.network.ApiResult
 import kotlinx.coroutines.flow.Flow
 
-class GetTopRatedMoviesUseCase(
+class GetMoviesUseCase(
     private val repository: MovieRepository
 ) {
-    suspend operator fun invoke(page: Int = 1): Flow<ApiResult<List<MovieResponse>>> {
-        return repository.getTopRatedMovies(page)
+    operator fun invoke(): Flow<PagingData<MovieResponse>> {
+        return repository.getMovies()
     }
 }
