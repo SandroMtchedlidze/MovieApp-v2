@@ -25,7 +25,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 add("implementation", project(":core:ui"))
                 add("implementation", libs.findBundle("koin").get())
                 add("implementation", libs.findBundle("retrofit").get())
-
             }
         }
     }
