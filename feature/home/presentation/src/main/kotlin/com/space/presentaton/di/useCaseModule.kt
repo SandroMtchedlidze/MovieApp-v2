@@ -2,6 +2,7 @@ package com.space.presentaton.di
 
 import com.space.domain.usecase.GetGenresUseCase
 import com.space.domain.usecase.GetMoviesUseCase
+import com.space.domain.usecase.SearchMoviesUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -11,4 +12,5 @@ val useCaseModule = module {
     factory {
         GetGenresUseCase(repository = get())
     }
+    factory { SearchMoviesUseCase(repository = get()) }
 }

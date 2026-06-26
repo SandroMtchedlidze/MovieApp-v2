@@ -10,4 +10,10 @@ interface MovieApi {
     suspend fun getMovies(
         @Query("page") page: Int = 1
     ): Response<MovieResponseDto>
+
+    @GET("search/movies")
+    suspend fun searchMovies(
+        @Query("query") query: String,
+        @Query("page") page: Int = 1
+    ): Response<MovieResponseDto>
 }

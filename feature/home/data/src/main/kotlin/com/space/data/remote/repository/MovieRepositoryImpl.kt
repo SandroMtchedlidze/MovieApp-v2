@@ -13,20 +13,22 @@ import com.space.networking.network.ApiResult
 import com.space.networking.network.apiCall
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 
 class MovieRepositoryImpl(
     private val movieApi: MovieApi,
     private val genreApi: GenreApi,
     private val movieMapper: MovieMapper
 ) : MovieRepository {
+
+    private val defaultPagingConfig = PagingConfig(
+        pageSize = 20,
+        prefetchDistance = 5,
+        enablePlaceholders = false
+    )
+
     override fun getMovies(): Flow<PagingData<MovieResponse>> {
         return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                prefetchDistance = 5,
-                enablePlaceholders = false
-            ),
+            defaultPagingConfig,
             pagingSourceFactory = {
                 MoviePagingSource(
                     movieApi,
@@ -56,5 +58,18 @@ class MovieRepositoryImpl(
                 is ApiResult.Error -> emit(result)
             }
         }
+    }
+
+    override fun searchMovies(query: String): Flow<PagingData<MovieResponse>> {
+        return Pager(
+            defaultPagingConfig,
+            pagingSourceFactory = {
+                MoviePagingSource(
+                    movieApi,
+                    genreCache,
+                    movieMapper
+                )
+            }
+        ).flow
     }
 }
