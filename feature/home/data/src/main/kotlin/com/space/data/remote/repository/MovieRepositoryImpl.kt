@@ -7,6 +7,7 @@ import com.space.data.remote.api.GenreApi
 import com.space.data.remote.api.MovieApi
 import com.space.data.remote.mapper.MovieMapper
 import com.space.data.remote.paging.MoviePagingSource
+import com.space.data.remote.paging.SearchPagingSource
 import com.space.domain.model.MovieResponse
 import com.space.domain.repository.MovieRepository
 import com.space.networking.network.ApiResult
@@ -64,10 +65,11 @@ class MovieRepositoryImpl(
         return Pager(
             defaultPagingConfig,
             pagingSourceFactory = {
-                MoviePagingSource(
+                SearchPagingSource(
                     movieApi,
-                    genreCache,
-                    movieMapper
+                    query = query,
+                    genreCache = genreCache,
+                    movieMapper = movieMapper
                 )
             }
         ).flow

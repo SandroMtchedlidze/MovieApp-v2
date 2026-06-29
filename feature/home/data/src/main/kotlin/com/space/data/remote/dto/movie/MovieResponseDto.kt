@@ -19,6 +19,6 @@ data class MovieDto(
     @SerialName("genre_ids")
     val genreIds: List<Int>,
     @SerialName("release_date")
-    val releaseDate: String,
-    val title: String
+    val releaseDate: String?,
+    val title: String?
 )

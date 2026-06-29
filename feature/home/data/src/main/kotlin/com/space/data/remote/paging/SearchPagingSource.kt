@@ -27,9 +27,9 @@ class SearchPagingSource(
                 query = query,
                 page = page
             )
+
             val movies = response.body()?.results
                 ?.map { movieMapper.mapToDomain(it, genreCache) } ?: emptyList()
-
             LoadResult.Page(
                 data = movies,
                 prevKey = if (page == 1) null else page - 1,

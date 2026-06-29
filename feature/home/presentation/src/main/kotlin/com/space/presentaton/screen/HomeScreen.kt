@@ -48,6 +48,11 @@ fun MovieScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movies = viewModel.movies.collectAsLazyPagingItems()
 
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(Unit) {
+        focusManager.clearFocus(force = true)
+    }
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
             when (sideEffect) {
@@ -64,11 +69,6 @@ private fun MovieScreenContent(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
-    LaunchedEffect(Unit) {
-        focusManager.clearFocus()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +79,7 @@ private fun MovieScreenContent(
             query = state.searchQuery,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Spacing.spacing16),
+                .padding(horizontal = Spacing.spacing16, vertical = Spacing.spacing16),
             onQueryChanged = { onEvent(HomeEvent.OnSearchQueryChanged(it)) },
             onCancelClicked = { onEvent(HomeEvent.OnSearchCleared) },
             onFilterClicked = {}
@@ -92,6 +92,7 @@ private fun MovieScreenContent(
             modifier = Modifier.padding(horizontal = Spacing.spacing16)
         )
         Spacer(Modifier.height(Spacing.spacing16))
+
         when (movies.loadState.refresh) {
             is LoadState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -129,8 +130,6 @@ private fun MovieGrid(
     onMovieClicked: (Int) -> Unit,
     onFavouriteClicked: (Int) -> Unit
 ) {
-
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(Spacing.spacing16),

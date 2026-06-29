@@ -1,6 +1,5 @@
 package com.space.ui.component
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -121,7 +120,7 @@ fun SearchField(
         )
         Spacer(Modifier.width(Spacing.spacing8))
         //shows cancel button when search field is focused.
-        AnimatedVisibility(visible = isFocused) {
+        if (isFocused) {
             Text(
                 text = stringResource(R.string.cancel),
                 style = typography.bodyMedium,
@@ -137,7 +136,7 @@ fun SearchField(
             )
         }
         //shows filter icon when search field is un focused.
-        AnimatedVisibility(visible = !isFocused) {
+        if (!isFocused) {
             val interactionSource = remember { MutableInteractionSource() }
             val isPressed by interactionSource.collectIsPressedAsState()
             Icon(

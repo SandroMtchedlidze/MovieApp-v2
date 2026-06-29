@@ -9,10 +9,10 @@ class MovieResponseToUiModel {
     fun mapToUiModel(movie: MovieResponse): MovieCardUiModel {
         return MovieCardUiModel(
             id = movie.id,
-            title = movie.title,
+            title = movie.title ?: "",
             posterUrl = "$POSTER_BASE_URL${movie.posterPath}",
             genre = movie.genre.firstOrNull() ?: "",
-            releaseDate = movie.releaseDate
+            releaseDate = movie.releaseDate ?: ""
         )
     }
 }

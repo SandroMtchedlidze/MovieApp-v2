@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -37,24 +38,23 @@ class HomeVm(
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val movies: Flow<PagingData<MovieCardUiModel>> = flow {
-        getGenresUseCase().collect { result ->
-            if (result is ApiResult.Success || result is ApiResult.Error) {
-                emitAll(
-                    searchQuery
-                        .debounce(300.milliseconds)
-                        .flatMapLatest { query ->
-                            if (query.isEmpty()) {
-                                getMoviesUseCase()
-                            } else {
-                                searchMoviesUseCase(query)
-                            }
-                        }
-                        .map { pagingData ->
-                            pagingData.map { movieUiMapper.mapToUiModel(it) }
-                        }
-                )
-            }
+        getGenresUseCase().first {
+            it is ApiResult.Success || it is ApiResult.Error
         }
+        emitAll(
+            searchQuery
+                .debounce(300.milliseconds)
+                .flatMapLatest { query ->
+                    if (query.isEmpty()) {
+                        getMoviesUseCase()
+                    } else {
+                        searchMoviesUseCase(query)
+                    }
+                }
+                .map { pagingData ->
+                    pagingData.map { movieUiMapper.mapToUiModel(it) }
+                }
+        )
     }.cachedIn(viewModelScope)
 
     override fun onEvent(event: HomeEvent) {
@@ -64,8 +64,8 @@ class HomeVm(
             )
 
             is HomeEvent.OnSearchCleared -> {
-                updateState { copy(searchQuery = "") }
                 searchQuery.value = ""
+                updateState { copy(searchQuery = "") }
             }
 
             is HomeEvent.OnSearchQueryChanged -> {
