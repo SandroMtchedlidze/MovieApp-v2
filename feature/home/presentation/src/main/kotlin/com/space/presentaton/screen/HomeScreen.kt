@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
@@ -36,6 +36,7 @@ import com.space.ui.component.MovieCardUiModel
 import com.space.ui.component.SearchField
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
+import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
 import com.space.ui.theme.TextSizing
 import org.koin.androidx.compose.koinViewModel
@@ -48,11 +49,6 @@ fun MovieScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movies = viewModel.movies.collectAsLazyPagingItems()
 
-    val focusManager = LocalFocusManager.current
-
-    LaunchedEffect(Unit) {
-        focusManager.clearFocus(force = true)
-    }
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
             when (sideEffect) {
@@ -72,27 +68,31 @@ private fun MovieScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = Spacing.spacing16)
             .background(colors.background)
+            .statusBarsPadding()
+            .padding(top = Sizing.size22)
     ) {
         SearchField(
             query = state.searchQuery,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = Spacing.spacing16, vertical = Spacing.spacing16),
+                .padding(horizontal = Spacing.spacing16),
             onQueryChanged = { onEvent(HomeEvent.OnSearchQueryChanged(it)) },
-            onCancelClicked = { onEvent(HomeEvent.OnSearchCleared) },
-            onFilterClicked = {}
+            onCancelClicked = {
+                onEvent(HomeEvent.OnSearchCleared)
+            },
+            onFilterClicked = { }
         )
         Spacer(Modifier.height(Spacing.spacing16))
         Text(
             text = stringResource(R.string.movies),
-            style = typography.titleLarge.copy(letterSpacing = TextSizing.size1),
+            style = typography.titleLarge.copy(
+                letterSpacing = TextSizing.size1,
+                fontSize = TextSizing.size18, lineHeight = TextSizing.size18
+            ),
             color = colors.primary,
             modifier = Modifier.padding(horizontal = Spacing.spacing16)
         )
-        Spacer(Modifier.height(Spacing.spacing16))
-
         when (movies.loadState.refresh) {
             is LoadState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize()) {

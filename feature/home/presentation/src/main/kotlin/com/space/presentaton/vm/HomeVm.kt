@@ -17,7 +17,6 @@ import com.space.ui.component.MovieCardUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
@@ -34,21 +33,19 @@ class HomeVm(
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
-    private val searchQuery = MutableStateFlow("")
-
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val movies: Flow<PagingData<MovieCardUiModel>> = flow {
         getGenresUseCase().first {
             it is ApiResult.Success || it is ApiResult.Error
         }
         emitAll(
-            searchQuery
+            state
                 .debounce(300.milliseconds)
-                .flatMapLatest { query ->
-                    if (query.isEmpty()) {
+                .flatMapLatest {
+                    if (state.value.searchQuery.isEmpty()) {
                         getMoviesUseCase()
                     } else {
-                        searchMoviesUseCase(query)
+                        searchMoviesUseCase(state.value.searchQuery)
                     }
                 }
                 .map { pagingData ->
@@ -57,6 +54,10 @@ class HomeVm(
         )
     }.cachedIn(viewModelScope)
 
+    //yvelaze swrafi versia orive ertad jobia
+    //flows funcqciebi mova re search o
+    //combine zip,
+    //distinct untill change.
     override fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnMovieClicked -> emitSideEffect(
@@ -64,13 +65,11 @@ class HomeVm(
             )
 
             is HomeEvent.OnSearchCleared -> {
-                searchQuery.value = ""
                 updateState { copy(searchQuery = "") }
             }
 
             is HomeEvent.OnSearchQueryChanged -> {
                 updateState { copy(searchQuery = event.query) }
-                searchQuery.value = event.query
             }
         }
     }
