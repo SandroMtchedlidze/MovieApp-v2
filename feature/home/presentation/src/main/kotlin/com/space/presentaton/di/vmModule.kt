@@ -12,6 +12,7 @@ val presentationModule = module {
             getGenresUseCase = get(),
             getMoviesUseCase = get(),
             searchMoviesUseCase = get(),
+            filterUseCase = get(),
             movieUiMapper = get()
         )
     }

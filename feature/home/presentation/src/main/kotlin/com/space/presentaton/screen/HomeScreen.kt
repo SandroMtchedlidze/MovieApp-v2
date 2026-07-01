@@ -1,5 +1,6 @@
 package com.space.presentaton.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
+import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
 import com.space.ui.component.SearchField
@@ -74,6 +76,7 @@ private fun MovieScreenContent(
     ) {
         SearchField(
             query = state.searchQuery,
+            isFilterActive = state.isFilterVisible,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = Spacing.spacing16),
@@ -81,8 +84,21 @@ private fun MovieScreenContent(
             onCancelClicked = {
                 onEvent(HomeEvent.OnSearchCleared)
             },
-            onFilterClicked = { }
+            onFilterClicked = { onEvent(HomeEvent.OnFilterClicked) }
         )
+        AnimatedVisibility(
+            visible = state.isFilterVisible,
+        ) {
+            Column {
+                Spacer(Modifier.height(Spacing.spacing12))
+                GenreRow(
+                    genres = state.genres,
+                    selectedGenreId = state.selectedGenreId,
+                    onGenreSelected = { onEvent(HomeEvent.OnGenreSelected(it)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
         Spacer(Modifier.height(Spacing.spacing16))
         Text(
             text = stringResource(R.string.movies),

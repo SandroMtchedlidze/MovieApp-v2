@@ -5,9 +5,10 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface MovieApi {
-    @GET("movie/popular")
-    suspend fun getMovies(
+interface DiscoverApi {
+    @GET("discover/movie")
+    suspend fun discoverMovies(
+        @Query("with_genres") genreId: Int,
         @Query("page") page: Int
     ): Response<MovieResponseDto>
 }

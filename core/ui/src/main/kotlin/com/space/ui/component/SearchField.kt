@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +52,7 @@ import com.space.ui.theme.Spacing
 fun SearchField(
     query: String,
     modifier: Modifier = Modifier,
+    isFilterActive: Boolean = false,
     onQueryChanged: (String) -> Unit,
     onCancelClicked: () -> Unit,
     onFilterClicked: () -> Unit,
@@ -122,15 +121,15 @@ fun SearchField(
             )
         } else {
             val interactionSource = remember { MutableInteractionSource() }
-            val isPressed by interactionSource.collectIsPressedAsState()
+            // val isPressed by interactionSource.collectIsPressedAsState()
             Icon(
                 painter = painterResource(R.drawable.fillter),
                 contentDescription = stringResource(R.string.filter_option),
-                tint = if (isPressed) colors.pureBlack else colors.primary,
+                tint = if (isFilterActive) colors.pureBlack else colors.primary,
                 modifier = Modifier
                     .size(Sizing.size36)
                     .background(
-                        color = if (isPressed) colors.primary else colors.pureBlack,
+                        color = if (isFilterActive) colors.primary else colors.pureBlack,
                         shape = CircleShape
                     )
                     .clickable(
