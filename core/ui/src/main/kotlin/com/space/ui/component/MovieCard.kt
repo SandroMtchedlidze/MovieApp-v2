@@ -124,7 +124,6 @@ fun MovieCard(
             }
         }
     }
-
 }
 
 @Composable

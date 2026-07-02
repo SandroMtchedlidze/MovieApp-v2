@@ -12,16 +12,14 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
             }
-
             extensions.configure<ApplicationExtension> {
-                compileSdk = 35
+                compileSdk = 37
 
                 defaultConfig {
                     minSdk = 24
@@ -29,9 +27,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     versionCode = 1
                     versionName = "1.0"
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
                 }
-
                 buildTypes {
                     release {
                         isMinifyEnabled = true
@@ -52,8 +48,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         with(target) {
             val libs = extensions.getByType<VersionCatalogsExtension>()
                 .named("libs")
-
             dependencies {
+                add("implementation", project(":core:navigation"))
                 add("implementation", libs.findBundle("koin").get())
                 add("implementation", libs.findBundle("retrofit").get())
             }

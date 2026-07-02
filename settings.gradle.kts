@@ -24,7 +24,9 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MovieApp"
+
 include(":app")
+
 includeAllModules("core", "feature")
 
 fun includeAllModules(vararg groupDirs: String) {
