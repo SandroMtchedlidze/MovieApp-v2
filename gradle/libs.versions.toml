@@ -5,7 +5,7 @@ coreKtx = "1.13.1"
 lifecycle = "2.8.2"
 activityCompose = "1.9.0"
 composeBom = "2025.01.00"
-koin = "4.2.1"
+koin = "4.2.2"
 coroutines = "1.8.1"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
@@ -97,10 +97,10 @@ movie-android-library = { id = "movieapp.android.library" }
 movie-android-compose = { id = "movieapp.android.compose" }
 movie-android-feature = { id = "movieapp.android.feature" }
 movie-android-application = { id = "movieapp.android.application" }
-movie-kotlin = {id = "movieapp.kotlin.library"}
+movie-kotlin = { id = "movieapp.kotlin.library" }
 [bundles]
 
 compose = ["androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-material3", "androidx-compose-runtime", "androidx-compose-foundation"]
 coroutines = ["kotlinx-coroutines-android", "kotlinx-coroutines-core"]
-retrofit = ["retrofit-core", "okhttp-core", "okhttp-logging", "kotlinx-serialization-json",]
+retrofit = ["retrofit-core", "okhttp-core", "okhttp-logging", "kotlinx-serialization-json", ]
 koin = ["koin-android", "koin-compose", "koin-core"]

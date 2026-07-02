@@ -35,6 +35,8 @@ val repositoryModule = module {
         FilterRepositoryImpl(
             discoverApi = get(),
             movieMapper = get()
+            movieMapper = get(),
+            responseHandler = get()
         )
     }
 }

@@ -17,7 +17,7 @@ class MovieApplication : Application() {
                 networkModule,
                 repositoryModule,
                 useCaseModule,
-                presentationModule
+                presentationModule,
             )
         }
     }

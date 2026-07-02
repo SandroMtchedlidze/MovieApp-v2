@@ -6,6 +6,8 @@ import com.space.data.remote.api.DiscoverApi
 import com.space.data.remote.api.GenreApi
 import com.space.data.remote.api.MovieApi
 import com.space.data.remote.api.SearchApi
+import com.space.networking.network.ResponseHandler
+import com.space.networking.network.ResponseHandlerImpl
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -42,5 +44,8 @@ val networkModule = module {
     }
     single<DiscoverApi> {
         get<Retrofit>().create(DiscoverApi::class.java)
+    }
+    single<ResponseHandler> {
+        ResponseHandlerImpl()
     }
 }
