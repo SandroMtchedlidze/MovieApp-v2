@@ -12,7 +12,8 @@ val repositoryModule = module {
         MovieRepositoryImpl(
             movieApi = get(),
             genreApi = get(),
-            movieMapper = get()
+            movieMapper = get(),
+            responseHandler = get()
         )
     }
 }

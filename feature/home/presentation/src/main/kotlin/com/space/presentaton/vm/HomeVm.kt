@@ -53,11 +53,6 @@ class HomeVm(
                 }
         )
     }.cachedIn(viewModelScope)
-
-    //yvelaze swrafi versia orive ertad jobia
-    //flows funcqciebi mova re search o
-    //combine zip,
-    //distinct untill change.
     override fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnMovieClicked -> emitSideEffect(

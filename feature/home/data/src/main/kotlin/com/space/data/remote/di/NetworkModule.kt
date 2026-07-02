@@ -4,6 +4,8 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.space.data.BuildConfig
 import com.space.data.remote.api.GenreApi
 import com.space.data.remote.api.MovieApi
+import com.space.networking.network.ResponseHandler
+import com.space.networking.network.ResponseHandlerImpl
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -34,5 +36,8 @@ val networkModule = module {
     }
     single<GenreApi> {
         get<Retrofit>().create(GenreApi::class.java)
+    }
+    single<ResponseHandler> {
+        ResponseHandlerImpl()
     }
 }

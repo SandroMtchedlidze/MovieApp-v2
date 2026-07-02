@@ -11,14 +11,15 @@ import com.space.data.remote.paging.SearchPagingSource
 import com.space.domain.model.MovieResponse
 import com.space.domain.repository.MovieRepository
 import com.space.networking.network.ApiResult
-import com.space.networking.network.apiCall
+import com.space.networking.network.ResponseHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class MovieRepositoryImpl(
     private val movieApi: MovieApi,
     private val genreApi: GenreApi,
-    private val movieMapper: MovieMapper
+    private val movieMapper: MovieMapper,
+    private val responseHandler: ResponseHandler
 ) : MovieRepository {
 
     private val defaultPagingConfig = PagingConfig(
@@ -48,7 +49,7 @@ class MovieRepositoryImpl(
             emit(ApiResult.Success(genreCache))
             return@flow
         }
-        apiCall { genreApi.getGenres() }.collect { result ->
+        responseHandler.apiCall { genreApi.getGenres() }.collect { result ->
             when (result) {
                 is ApiResult.Loading -> emit(result)
                 is ApiResult.Success -> {
