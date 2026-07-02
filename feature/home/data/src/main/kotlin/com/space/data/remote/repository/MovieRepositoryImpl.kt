@@ -8,6 +8,7 @@ import com.space.data.remote.mapper.MovieMapper
 import com.space.data.remote.paging.MoviePagingSource
 import com.space.domain.model.MovieResponse
 import com.space.domain.repository.MovieRepository
+import com.space.networking.network.ResponseHandler
 import kotlinx.coroutines.flow.Flow
 
 val defaultPagingConfig = PagingConfig(
@@ -19,6 +20,7 @@ val defaultPagingConfig = PagingConfig(
 class MovieRepositoryImpl(
     private val movieApi: MovieApi,
     private val movieMapper: MovieMapper,
+    private val responseHandler: ResponseHandler
 ) : MovieRepository {
 
 
@@ -29,7 +31,8 @@ class MovieRepositoryImpl(
                 MoviePagingSource(
                     movieApi,
                     genreCache,
-                    movieMapper
+                    movieMapper,
+                    responseHandler
                 )
             }
         ).flow

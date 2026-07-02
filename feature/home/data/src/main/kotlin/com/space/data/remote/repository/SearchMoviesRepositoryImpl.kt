@@ -7,11 +7,13 @@ import com.space.data.remote.mapper.MovieMapper
 import com.space.data.remote.paging.SearchPagingSource
 import com.space.domain.model.MovieResponse
 import com.space.domain.repository.SearchMoviesRepository
+import com.space.networking.network.ResponseHandler
 import kotlinx.coroutines.flow.Flow
 
 class SearchMoviesRepositoryImpl(
     private val searchApi: SearchApi,
-    private val movieMapper: MovieMapper
+    private val movieMapper: MovieMapper,
+    private val responseHandler: ResponseHandler
 ) : SearchMoviesRepository {
 
     override fun searchMovies(query: String): Flow<PagingData<MovieResponse>> {
@@ -22,7 +24,8 @@ class SearchMoviesRepositoryImpl(
                     searchApi,
                     query = query,
                     genreCache = genreCache,
-                    movieMapper = movieMapper
+                    movieMapper = movieMapper,
+                    responseHandler
                 )
             }
         ).flow

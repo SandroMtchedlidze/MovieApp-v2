@@ -5,12 +5,15 @@ import androidx.paging.PagingState
 import com.space.data.remote.api.SearchApi
 import com.space.data.remote.mapper.MovieMapper
 import com.space.domain.model.MovieResponse
+import com.space.networking.network.PagingResult
+import com.space.networking.network.ResponseHandler
 
 class SearchPagingSource(
     private val searchApi: SearchApi,
     private val query: String,
     private val genreCache: Map<Int, String>,
-    private val movieMapper: MovieMapper
+    private val movieMapper: MovieMapper,
+    private val responseHandler: ResponseHandler
 ) : PagingSource<Int, MovieResponse>() {
 
     override fun getRefreshKey(state: PagingState<Int, MovieResponse>): Int? {
@@ -22,22 +25,17 @@ class SearchPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResponse> {
         val page = params.key ?: 1
-        return try {
-            val response = searchApi.searchMovies(
-                query = query,
-                page = page
+        return when (val result =
+            responseHandler.pagingApiCall { searchApi.searchMovies(query, page) }) {
+            is PagingResult.Success -> LoadResult.Page(
+                data = result.data.results.map { dto -> movieMapper.mapToDomain(dto, genreCache) },
+                prevKey = if (page == 0) null else page - 1,
+                nextKey = if (result.data.results.isEmpty()) null else page + 1
             )
 
-            val movies = response.body()?.results
-                ?.map { movieMapper.mapToDomain(it, genreCache) } ?: emptyList()
-            LoadResult.Page(
-                data = movies,
-                prevKey = if (page == 1) null else page - 1,
-                nextKey = if (movies.isEmpty()) null else page + 1
-
+            is PagingResult.Error -> LoadResult.Error(
+                Exception(result.message ?: result.error.name)
             )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
         }
     }
 }

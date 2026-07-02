@@ -17,7 +17,8 @@ val repositoryModule = module {
     single<MovieRepository> {
         MovieRepositoryImpl(
             movieApi = get(),
-            movieMapper = get()
+            movieMapper = get(),
+            responseHandler = get()
         )
     }
     single<GenreRepository> {
@@ -29,13 +30,15 @@ val repositoryModule = module {
     single<SearchMoviesRepository> {
         SearchMoviesRepositoryImpl(
             searchApi = get(),
-            movieMapper = get()
+            movieMapper = get(),
+            responseHandler = get()
         )
     }
     single<FilterRepository> {
         FilterRepositoryImpl(
             discoverApi = get(),
-            movieMapper = get()
+            movieMapper = get(),
+            responseHandler = get()
         )
     }
 }
