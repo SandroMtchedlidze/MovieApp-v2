@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -51,9 +52,11 @@ import com.space.ui.theme.Spacing
 @Composable
 fun SearchField(
     query: String,
+    isFocused: Boolean,
     modifier: Modifier = Modifier,
     isFilterActive: Boolean = false,
     onQueryChanged: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
     onCancelClicked: () -> Unit,
     onFilterClicked: () -> Unit,
 ) {
@@ -78,7 +81,8 @@ fun SearchField(
             BasicTextField(
                 modifier = Modifier
                     .focusRequester(focusRequester)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .onFocusChanged { onFocusChanged(it.isFocused) },
                 value = query,
                 onValueChange = onQueryChanged,
                 singleLine = true,
@@ -108,7 +112,7 @@ fun SearchField(
             )
         }
 
-        if (query.isNotEmpty()) {
+        if (query.isNotEmpty() || isFocused) {
             Text(
                 text = stringResource(R.string.cancel),
                 style = typography.bodyMedium,
@@ -121,7 +125,6 @@ fun SearchField(
             )
         } else {
             val interactionSource = remember { MutableInteractionSource() }
-            // val isPressed by interactionSource.collectIsPressedAsState()
             Icon(
                 painter = painterResource(R.drawable.fillter),
                 contentDescription = stringResource(R.string.filter_option),

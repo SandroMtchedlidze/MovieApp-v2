@@ -90,13 +90,15 @@ private fun MovieScreenContent(
                 SearchField(
                     query = state.searchQuery,
                     isFilterActive = state.isFilterVisible,
+                    isFocused = state.isSearchFocused,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = Spacing.spacing16)
                         .padding(top = Spacing.spacing16),
                     onQueryChanged = { onEvent(HomeEvent.OnSearchQueryChanged(it)) },
                     onCancelClicked = { onEvent(HomeEvent.OnSearchCleared) },
-                    onFilterClicked = { onEvent(HomeEvent.OnFilterClicked) }
+                    onFilterClicked = { onEvent(HomeEvent.OnFilterClicked) },
+                    onFocusChanged = { onEvent(HomeEvent.OnSearchFocusedChanged(it)) }
                 )
                 AnimatedVisibility(
                     visible = state.isFilterVisible,

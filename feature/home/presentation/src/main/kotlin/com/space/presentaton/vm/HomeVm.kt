@@ -85,6 +85,10 @@ class HomeVm(
             is HomeEvent.OnFilterClicked -> {
                 updateState { copy(isFilterVisible = !isFilterVisible) }
             }
+
+            is HomeEvent.OnSearchFocusedChanged -> {
+                updateState { copy(isSearchFocused = event.isFocused) }
+            }
         }
     }
 

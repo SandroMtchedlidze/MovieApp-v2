@@ -6,4 +6,5 @@ sealed class HomeEvent {
     data object OnSearchCleared : HomeEvent()
     data class OnGenreSelected(val genreId: Int) : HomeEvent()
     data object OnFilterClicked : HomeEvent()
+    data class OnSearchFocusedChanged(val isFocused: Boolean) : HomeEvent()
 }
