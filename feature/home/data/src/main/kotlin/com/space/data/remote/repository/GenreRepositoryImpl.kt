@@ -27,7 +27,6 @@ class GenreRepositoryImpl(
                     genreCache = result.data.genres.associate { it.id to it.name }
                     emit(ApiResult.Success(genreCache))
                 }
-
                 is ApiResult.Error -> emit(result)
             }
         }

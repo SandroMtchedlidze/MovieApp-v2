@@ -84,7 +84,7 @@ private fun MovieScreenContent(
     ) {
         AnimatedVisibility(
             visible = isScrollingUp,
-            ) {
+        ) {
             Column {
                 SearchField(
                     query = state.searchQuery,
