@@ -23,6 +23,7 @@ val repositoryModule = module {
     single<GenreRepository> {
         GenreRepositoryImpl(
             genreApi = get(),
+            responseHandler = get()
         )
     }
     single<SearchMoviesRepository> {
@@ -35,8 +36,6 @@ val repositoryModule = module {
         FilterRepositoryImpl(
             discoverApi = get(),
             movieMapper = get()
-            movieMapper = get(),
-            responseHandler = get()
         )
     }
 }
