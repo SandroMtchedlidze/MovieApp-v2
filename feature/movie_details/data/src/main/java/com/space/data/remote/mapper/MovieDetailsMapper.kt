@@ -9,7 +9,7 @@ class MovieDetailsMapper {
             id = dto.id,
             title = dto.title ?: "",
             posterPath = dto.posterPath ?: "",
-            releaseDate = dto.releaseDate?.take(4),
+            releaseDate = dto.releaseDate,
             genre = dto.genres.firstOrNull()?.name,
             rating = dto.rating,
             overview = dto.overview,

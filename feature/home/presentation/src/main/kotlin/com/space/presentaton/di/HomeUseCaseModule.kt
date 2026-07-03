@@ -6,7 +6,7 @@ import com.space.domain.usecase.GetMoviesUseCase
 import com.space.domain.usecase.SearchMoviesUseCase
 import org.koin.dsl.module
 
-val useCaseModule = module {
+val homeUseCaseModule = module {
     factory {
         GetMoviesUseCase(repository = get())
     }

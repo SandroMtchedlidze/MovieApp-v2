@@ -43,4 +43,6 @@ dependencies {
     implementation(projects.core.networking)
     implementation(projects.feature.movieDetails)
     implementation(projects.feature.movieDetails.data)
+    implementation(projects.feature.movieDetails.presentation)
+    implementation(projects.feature.movieDetails.api)
 }

@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 android {
-    namespace = "com.space.presentaton"
+    namespace = "com.space.home.presentaton"
 }
 dependencies {
     implementation(projects.feature.home.domain)

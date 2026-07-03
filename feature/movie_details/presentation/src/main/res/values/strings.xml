@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="back">Back</string>
+    <string name="about_movie">About movie</string>
+    <string name="back">back</string>
+    <string name="retry">retry</string>
+    <string name="favourites">favourites</string>
+    <string name="unknownTitle">Unknown title</string>
+    <string name="emptyText">-</string>
+    <string name="overview">No overview for this film</string>
 </resources>

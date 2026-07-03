@@ -6,8 +6,10 @@ import com.space.data.remote.di.movieDetailsApiModule
 import com.space.data.remote.di.movieDetailsRepositoryModule
 import com.space.data.remote.di.movieFeatureApiModule
 import com.space.networking.di.networkModule
-import com.space.presentaton.di.presentationModule
-import com.space.presentaton.di.useCaseModule
+import com.space.presentation.di.movieDetailsUseCaseModule
+import com.space.presentation.di.movieDetailsVmModule
+import com.space.presentaton.di.homeUseCaseModule
+import com.space.presentaton.di.homeVmModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -19,11 +21,13 @@ class MovieApplication : Application() {
             modules(
                 networkModule(BuildConfig.TMDB_TOKEN),
                 homeRepositoryModule,
-                useCaseModule,
-                presentationModule,
+                homeUseCaseModule,
+                homeVmModule,
                 movieFeatureApiModule,
                 movieDetailsApiModule,
-                movieDetailsRepositoryModule
+                movieDetailsRepositoryModule,
+                movieDetailsVmModule,
+                movieDetailsUseCaseModule
             )
         }
     }
