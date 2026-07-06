@@ -22,9 +22,11 @@ fun AppNavHost() {
             }, {
                 backStack.add(FavouritesRoute)
             })
-            movieDetailsEntries(
-                onNavigateBack = { backStack.removeLastOrNull() }
-            )
+            movieDetailsEntries {
+                if (backStack.size > 1) {
+                    backStack.removeLastOrNull()
+                }
+            }
         }
     )
 }

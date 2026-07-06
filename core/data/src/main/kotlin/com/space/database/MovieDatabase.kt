@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import com.space.database.dao.FavouriteMovieDao
 import com.space.database.entity.FavouriteMovieEntity
 
-
 @Database(
     entities = [FavouriteMovieEntity::class],
     version = 1,
