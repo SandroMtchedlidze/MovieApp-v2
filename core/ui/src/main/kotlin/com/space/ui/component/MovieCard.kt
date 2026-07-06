@@ -56,7 +56,7 @@ fun MovieCard(
     movie: MovieCardUiModel,
     modifier: Modifier = Modifier,
     onClick: (Int) -> Unit,
-    onFavouriteClick: (Int) -> Unit
+    onFavouriteClick: () -> Unit
 ) {
     Column {
         Box(
@@ -120,15 +120,15 @@ fun MovieCard(
                 )
             }
             IconButton(
-                onClick = { onFavouriteClick(movie.id) },
+                onClick = { onFavouriteClick() },
                 modifier = Modifier.size(Sizing.size20)
             ) {
                 Icon(
-                    painter = if (movie.isFavourite) painterResource(R.drawable.favourite_checked) else painterResource(
-                        R.drawable.favourite_unchecked
+                    painter = if (movie.isFavourite) painterResource(R.drawable.homechecked) else painterResource(
+                        R.drawable.homeunchecked
                     ),
                     contentDescription = if (movie.isFavourite) "Remove from favourites" else "Add to favourites",
-                    tint = Color.Unspecified
+                    tint = if (movie.isFavourite) colors.primary else Color.Unspecified
                 )
             }
         }

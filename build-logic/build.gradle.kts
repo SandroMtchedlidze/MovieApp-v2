@@ -14,7 +14,7 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.compiler.gradlePlugin)
-
+    implementation(libs.ksp.gradlePlugin)
 }
 
 gradlePlugin {
@@ -39,6 +39,10 @@ gradlePlugin {
         register("kotlinLibrary") {
             id= "movieapp.kotlin.library"
             implementationClass = "com.space.build_logic.KotlinLibraryConventionPlugin"
+        }
+        register("androidRoom") {
+            id = "movieapp.android.room"
+            implementationClass = "com.space.build_logic.AndroidRoomConventionPlugin"
         }
     }
 }

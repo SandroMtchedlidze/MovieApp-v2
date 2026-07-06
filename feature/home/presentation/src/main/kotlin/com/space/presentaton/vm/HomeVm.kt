@@ -5,19 +5,23 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.space.domain.usecase.FilterUseCase
+import com.space.domain.usecase.GetAllFavouritesUseCase
 import com.space.domain.usecase.GetGenresUseCase
 import com.space.domain.usecase.GetMoviesUseCase
 import com.space.domain.usecase.SearchMoviesUseCase
+import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.mapper.MovieResponseToUiModel
+import com.space.presentaton.mapper.MovieUiModelToDomain
 import com.space.ui.component.MovieCardUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -30,7 +34,10 @@ class HomeVm(
     private val getGenresUseCase: GetGenresUseCase,
     private val movieUiMapper: MovieResponseToUiModel,
     private val searchMoviesUseCase: SearchMoviesUseCase,
-    private val filterUseCase: FilterUseCase
+    private val filterUseCase: FilterUseCase,
+    private val getAllFavouritesUseCase: GetAllFavouritesUseCase,
+    private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
+    private val mapperToDomain: MovieUiModelToDomain
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
@@ -59,6 +66,20 @@ class HomeVm(
             }
         }.cachedIn(viewModelScope)
 
+    val merged: Flow<PagingData<MovieCardUiModel>> = movies.combine(
+        getAllFavouritesUseCase()
+    ) { pagingData, favouriteEntities ->
+        val favouriteIds = favouriteEntities.map { it.movieId }.toSet()
+
+        pagingData.map { movieCardUiModel ->
+            movieCardUiModel.copy(
+                isFavourite = favouriteIds.contains(
+                    movieCardUiModel.id
+                )
+            )
+        }
+    }.cachedIn(viewModelScope)
+
     override fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnMovieClicked -> emitSideEffect(
@@ -85,6 +106,13 @@ class HomeVm(
 
             is HomeEvent.OnSearchFocusedChanged -> {
                 updateState { copy(isSearchFocused = event.isFocused) }
+            }
+
+            is HomeEvent.OnFavouriteClicked -> {
+                viewModelScope.launch {
+                    val domainMovie = mapperToDomain.uiModelToDomain(event.movie)
+                    toggleFavouriteUseCase(domainMovie)
+                }
             }
         }
     }

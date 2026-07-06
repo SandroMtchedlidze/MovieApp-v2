@@ -11,4 +11,5 @@ dependencies {
     implementation(projects.core.presentation)
     implementation(projects.feature.movieDetails.domain)
     implementation(libs.coil.compose)
+    implementation(projects.core.domain)
 }

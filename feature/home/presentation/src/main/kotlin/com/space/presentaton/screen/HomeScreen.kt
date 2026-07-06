@@ -53,7 +53,7 @@ fun MovieScreen(
     onMovieClicked: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val movies = viewModel.movies.collectAsLazyPagingItems()
+    val merged = viewModel.merged.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
@@ -62,7 +62,7 @@ fun MovieScreen(
             }
         }
     }
-    MovieScreenContent(movies = movies, state = state, onEvent = viewModel::onEvent)
+    MovieScreenContent(movies = merged, state = state, onEvent = viewModel::onEvent)
 }
 
 @Composable
@@ -150,7 +150,7 @@ private fun MovieScreenContent(
                 MovieGrid(
                     movies = movies,
                     onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
-                    onFavouriteClicked = { },
+                    onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) },
                     gridState = gridState
                 )
             }
@@ -163,7 +163,7 @@ private fun MovieGrid(
     movies: LazyPagingItems<MovieCardUiModel>,
     gridState: LazyGridState,
     onMovieClicked: (Int) -> Unit,
-    onFavouriteClicked: (Int) -> Unit
+    onFavouriteClicked: (MovieCardUiModel) -> Unit
 ) {
     LazyVerticalGrid(
         state = gridState,
@@ -180,7 +180,7 @@ private fun MovieGrid(
                 MovieCard(
                     movie = movie,
                     onClick = onMovieClicked,
-                    onFavouriteClick = onFavouriteClicked
+                    onFavouriteClick = { onFavouriteClicked(movie) }
                 )
             }
         }

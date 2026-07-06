@@ -82,7 +82,11 @@ fun MovieDetailsScreen(
         isLoading = state.isLoading,
         errorMessage = state.errorMessage,
         onBackClick = { viewModel.onEvent(MovieDetailsEvent.OnBackClicked) },
-        onFavoriteClick = { viewModel.onEvent(MovieDetailsEvent.OnFavouriteClicked) },
+        onFavoriteClick = {
+            state.movie?.let { currentMovie ->
+                viewModel.onEvent(MovieDetailsEvent.OnFavouriteClicked(currentMovie))
+            }
+        },
         onRetryClick = { viewModel.onEvent(MovieDetailsEvent.OnRetryClicked) }
     )
 }
@@ -194,10 +198,12 @@ private fun MovieDetailsScreenContent(
                                 )
                                 IconButton(onClick = onFavoriteClick) {
                                     Icon(
-                                        painter = painterResource(R.drawable.favourite),
+                                        painter = if (isFavorite) painterResource(R.drawable.detailschecked) else painterResource(
+                                            R.drawable.detailsunchecked
+                                        ),
                                         contentDescription = stringResource
                                             (com.space.movie.details.presentation.R.string.favourites),
-                                        tint = if (isFavorite) colors.primary else Color.Unspecified
+                                        tint = Color.Unspecified
                                     )
                                 }
                             }
