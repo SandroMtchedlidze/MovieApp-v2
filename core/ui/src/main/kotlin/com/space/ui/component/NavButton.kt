@@ -13,16 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Radius
 import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import com.space.core.ui.R
-import com.space.ui.theme.MovieAppTheme
 
 /**
  * Custom navigation button.
@@ -57,7 +54,7 @@ fun NavButton(
         Row(
             modifier = Modifier.padding(
                 vertical = Spacing.spacing10,
-                horizontal = Spacing.spacing42
+                horizontal = Spacing.spacing16
             ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
@@ -77,6 +74,7 @@ fun NavButton(
         }
     }
 }
+
 data class NavButtonColors(
     val backgroundColor: Color,
     val contentColor: Color
@@ -89,6 +87,7 @@ data class NavButtonColors(
                 contentColor = colors.onPrimary
             )
         }
+
         @Composable
         fun unselected(): NavButtonColors {
             return NavButtonColors(

@@ -37,6 +37,7 @@ class MovieDetailsVm(
             }
         }
     }
+
     private fun observeFavouriteState() {
         isFavouriteUseCase(movieId).onEach { isFav ->
             updateState { copy(isFavourite = isFav) }
