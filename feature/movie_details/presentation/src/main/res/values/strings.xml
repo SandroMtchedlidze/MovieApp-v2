@@ -7,4 +7,5 @@
     <string name="unknownTitle">Unknown title</string>
     <string name="emptyText">-</string>
     <string name="overview">No overview for this film</string>
+    <string name="details">Details</string>
 </resources>
