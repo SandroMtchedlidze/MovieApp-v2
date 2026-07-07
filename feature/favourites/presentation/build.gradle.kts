@@ -13,4 +13,5 @@ dependencies {
     implementation(projects.core.presentation)
     implementation(libs.coil.compose)
     implementation(projects.core.domain)
+    implementation(projects.core.ui)
 }
