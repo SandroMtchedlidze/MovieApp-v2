@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -107,6 +108,7 @@ private fun MovieDetailsScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
+            .statusBarsPadding()
     ) {
         Row(
             modifier = Modifier
@@ -116,6 +118,7 @@ private fun MovieDetailsScreenContent(
         ) {
             IconButton(onClick = onBackClick) {
                 Icon(
+                    modifier = Modifier.padding(start = Sizing.size12, top = Sizing.size10),
                     painter = painterResource(R.drawable.back_arrow),
                     contentDescription = stringResource
                         (com.space.movie.details.presentation.R.string.back),
@@ -123,10 +126,12 @@ private fun MovieDetailsScreenContent(
                 )
             }
             Text(
-                text = "Details",
+                text = stringResource(com.space.movie.details.presentation.R.string.details),
                 style = typography.titleMedium,
                 color = colors.onBackground,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = Sizing.size10),
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.width(Sizing.size42))
