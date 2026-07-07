@@ -21,7 +21,7 @@ class MovieDetailsVm(
     private val uiMapper: MovieDetailsUiMapper,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val isFavouriteUseCase: IsFavouriteUseCase,
-    private val domainMapper: MovieDetailsToDomain
+    private val domainMapper: MovieDetailsToDomain,
 ) : BaseViewModel<MovieDetailsState, MovieDetailsEvent, MovieDetailsSideEffect>(
     MovieDetailsState()
 ) {
@@ -37,7 +37,6 @@ class MovieDetailsVm(
             }
         }
     }
-
     private fun observeFavouriteState() {
         isFavouriteUseCase(movieId).onEach { isFav ->
             updateState { copy(isFavourite = isFav) }

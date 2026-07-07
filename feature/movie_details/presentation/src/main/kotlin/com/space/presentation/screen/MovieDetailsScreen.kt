@@ -182,6 +182,7 @@ private fun MovieDetailsScreenContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(0.76f)
+                                .clip(Radius.radius16)
                         ) {
                             AsyncImage(
                                 model = posterUrl,
