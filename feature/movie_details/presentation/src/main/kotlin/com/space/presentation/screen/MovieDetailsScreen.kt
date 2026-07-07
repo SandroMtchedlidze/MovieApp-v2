@@ -45,6 +45,7 @@ import com.space.ui.theme.Sizing
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+//rame sxva vipovo
 @Composable
 fun MovieDetailsScreen(
     movieId: Int,

@@ -41,3 +41,5 @@ fun AppNavHost() {
         }
     )
 }
+
+//amasac gadavxedav

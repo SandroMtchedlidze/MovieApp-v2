@@ -24,3 +24,5 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
         }
     }
 }
+//arunda pluginad
+//ksp ristivssaa room rato iyenebs ??
