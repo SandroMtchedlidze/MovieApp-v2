@@ -1,5 +1,6 @@
 package com.space.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,11 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil.compose.SubcomposeAsyncImage
 import com.space.core.ui.R
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
@@ -60,20 +59,32 @@ fun MovieCard(
 ) {
     Column {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(2f / 3f)
                 .clip(Radius.radius16)
                 .clickable { onClick(movie.id) }
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(movie.posterUrl)
-                    .crossfade(true).build(),
-                contentDescription = movie.title,
+            SubcomposeAsyncImage(
+                model = movie.posterUrl,
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.placeholder),
-                error = painterResource(R.drawable.placeholder),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .shimmerEffect()
+                    )
+                },
+                error = {
+                    Image(
+                        painter = painterResource(R.drawable.placeholder),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             )
             if (movie.genre.isNotEmpty()) {
                 Text(

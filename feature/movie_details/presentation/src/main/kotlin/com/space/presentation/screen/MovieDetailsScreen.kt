@@ -195,7 +195,8 @@ private fun MovieDetailsScreenContent(
                                 Text(
                                     title,
                                     style = typography.titleLarge,
-                                    color = colors.onBackground
+                                    color = colors.onBackground,
+                                    modifier = Modifier.weight(1f)
                                 )
                                 IconButton(onClick = onFavoriteClick) {
                                     Icon(
