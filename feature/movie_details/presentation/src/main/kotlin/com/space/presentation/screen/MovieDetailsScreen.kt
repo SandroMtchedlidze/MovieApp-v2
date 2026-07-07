@@ -49,7 +49,7 @@ import org.koin.core.parameter.parametersOf
 fun MovieDetailsScreen(
     movieId: Int,
     onNavigateBack: () -> Unit,
-    viewModel: MovieDetailsVm = koinViewModel(key = "MovieDetailsVm-$movieId") {
+    viewModel: MovieDetailsVm = koinViewModel(key = "DetailsVm-$movieId") {
         parametersOf(
             movieId
         )

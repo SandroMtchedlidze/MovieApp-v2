@@ -13,20 +13,31 @@ import com.space.navigation.FavouritesRoute
 @Composable
 fun AppNavHost() {
     val backStack = rememberNavBackStack(MovieRoute)
+
+    val navigateToDetails: (Int) -> Unit = { id ->
+        backStack.add(MovieDetailsRoute(movieId = id))
+    }
+
+    val navigateToFavourites: () -> Unit = {
+        backStack.add(FavouritesRoute)
+    }
+
+    val navigateBack: () -> Unit = {
+        if (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        }
+    }
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = navigateBack,
         entryProvider = entryProvider {
-            movieEntries({ movieId ->
-                backStack.add(MovieDetailsRoute(movieId))
-            }, {
-                backStack.add(FavouritesRoute)
-            })
-            movieDetailsEntries {
-                if (backStack.size > 1) {
-                    backStack.removeLastOrNull()
-                }
-            }
+            movieEntries(
+                onNavigateToDetails = navigateToDetails,
+                onNavigateToFavourites = navigateToFavourites
+            )
+            movieDetailsEntries(
+                onNavigateBack = navigateBack
+            )
         }
     )
 }
