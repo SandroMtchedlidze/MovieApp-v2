@@ -10,7 +10,6 @@ data object MovieRoute : NavKey
 
 fun EntryProviderScope<NavKey>.movieEntries(
     onNavigateToDetails: (movieId: Int) -> Unit,
-    onNavigateToFavourites: () -> Unit
 ) {
     entry<MovieRoute> {
         MovieScreen(

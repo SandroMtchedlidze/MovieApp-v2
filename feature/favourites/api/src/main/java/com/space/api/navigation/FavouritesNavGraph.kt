@@ -10,11 +10,9 @@ data object FavouritesRoute : NavKey
 
 fun EntryProviderScope<NavKey>.favouritesEntry(
     onNavigateToDetails: (movieId: Int) -> Unit,
-    onBack: () -> Unit
 ) {
     entry<FavouritesRoute> {
         FavouritesScreen(
-            onBack = onBack,
             onNavigateToDetails = onNavigateToDetails
         )
     }

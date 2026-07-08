@@ -22,7 +22,11 @@ class FavouritesVm(
         when (event) {
             is FavouritesEvent.LoadFavourites -> observeFavourites()
             is FavouritesEvent.OnFavouriteToggle -> toggleFavourites(event.movie)
-            is FavouritesEvent.OnMovieClicked -> FavouritesEffect.NavigateToDetails(event.movieId)
+            is FavouritesEvent.OnMovieClicked -> emitSideEffect(
+                FavouritesEffect.NavigateToDetails(
+                    event.movieId
+                )
+            )
         }
     }
 

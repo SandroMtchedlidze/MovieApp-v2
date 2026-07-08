@@ -62,15 +62,13 @@ fun AppNavHost() {
             entryProvider = entryProvider {
                 movieEntries(
                     onNavigateToDetails = navigateToDetails,
-                    onNavigateToFavourites = navigateToFavourites
                 )
                 movieDetailsEntries(
                     onNavigateBack = navigateBack
                 )
-                favouritesEntry(onNavigateToDetails = navigateToDetails, onBack = navigateBack)
+                favouritesEntry(onNavigateToDetails = navigateToDetails)
             }
         )
     }
 }
-
 //amasac gadavxedav
