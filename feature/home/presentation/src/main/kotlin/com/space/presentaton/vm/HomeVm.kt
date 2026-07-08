@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.space.database.network_observer.ConnectivityObserver
 import com.space.domain.usecase.FilterUseCase
 import com.space.domain.usecase.GetAllFavouritesUseCase
 import com.space.domain.usecase.GetGenresUseCase
@@ -37,7 +38,8 @@ class HomeVm(
     private val filterUseCase: FilterUseCase,
     private val getAllFavouritesUseCase: GetAllFavouritesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
-    private val mapperToDomain: MovieUiModelToDomain
+    private val mapperToDomain: MovieUiModelToDomain,
+    private val connectivityObserver: ConnectivityObserver
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
@@ -119,6 +121,15 @@ class HomeVm(
 
     init {
         loadGenres()
+        observeConnectivity()
+    }
+
+    private fun observeConnectivity() {
+        viewModelScope.launch {
+            connectivityObserver.observe().collect { connected ->
+                updateState { copy(isConnected = connected) }
+            }
+        }
     }
 
     private fun loadGenres() {

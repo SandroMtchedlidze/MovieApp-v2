@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.space.data.remote.api.SearchApi
 import com.space.data.remote.mapper.MovieMapper
 import com.space.domain.model.MovieResponse
+import com.space.networking.network.PagingException
 import com.space.networking.network.PagingResult
 import com.space.networking.network.ResponseHandler
 
@@ -33,9 +34,7 @@ class SearchPagingSource(
                 nextKey = if (result.data.results.isEmpty()) null else page + 1
             )
 
-            is PagingResult.Error -> LoadResult.Error(
-                Exception(result.message ?: result.error.name)
-            )
+            is PagingResult.Error -> LoadResult.Error(PagingException(result.error, result.message))
         }
     }
 }

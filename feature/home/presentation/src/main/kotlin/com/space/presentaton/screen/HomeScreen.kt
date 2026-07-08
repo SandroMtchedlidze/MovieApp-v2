@@ -27,17 +27,25 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.space.home.presentaton.R
+import com.space.networking.network.NetworkError
+import com.space.networking.network.PagingException
+import com.space.presentation.base.getErrorStrings
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
+import com.space.ui.component.ErrorScreen
 import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
+import com.space.ui.component.MovieappLoader
+import com.space.ui.component.NetworkStatusBanner
 import com.space.ui.component.SearchField
 import com.space.ui.component.isScrollingUp
 import com.space.ui.theme.MovieAppTheme.colors
@@ -61,7 +69,17 @@ fun MovieScreen(
             }
         }
     }
-    MovieScreenContent(movies = merged, state = state, onEvent = viewModel::onEvent)
+    if (merged.loadState.refresh is LoadState.Error) {
+        val exception = (merged.loadState.refresh as LoadState.Error).error as? PagingException
+        val descriptionRes = getErrorStrings(exception?.errorType ?: NetworkError.UNKNOWN)
+        ErrorScreen(
+            title = stringResource(R.string.data_can_t_be_loaded),
+            description = stringResource(descriptionRes),
+            onRefreshClick = { merged.retry() }
+        )
+    } else {
+        MovieScreenContent(movies = merged, state = state, onEvent = viewModel::onEvent)
+    }
 }
 
 @Composable
@@ -73,6 +91,14 @@ private fun MovieScreenContent(
     val gridState = rememberLazyGridState()
     val isScrollingUp by gridState.isScrollingUp()
 
+    LaunchedEffect(state.isConnected) {
+        if (state.isConnected) {
+            val appendFailed = movies.loadState.append is LoadState.Error
+            if (appendFailed) {
+                movies.retry()
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -127,20 +153,15 @@ private fun MovieScreenContent(
         }
         when (movies.loadState.refresh) {
             is LoadState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = colors.primary
-                    )
-                }
-            }
-
-            is LoadState.Error -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text(
-                        text = "Something went wrong",
-                        color = colors.primary,
-                        modifier = Modifier.align(Alignment.Center)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    MovieappLoader(
+                        mainColor = colors.primary,
+                        backgroundColor = colors.background
                     )
                 }
             }
@@ -148,9 +169,12 @@ private fun MovieScreenContent(
             else -> {
                 MovieGrid(
                     movies = movies,
+                    isConnected = state.isConnected,
+                    state = state,
                     onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
                     onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) },
-                    gridState = gridState
+                    gridState = gridState,
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
@@ -161,6 +185,9 @@ private fun MovieScreenContent(
 private fun MovieGrid(
     movies: LazyPagingItems<MovieCardUiModel>,
     gridState: LazyGridState,
+    isConnected: Boolean,
+    state: HomeState,
+    modifier: Modifier = Modifier,
     onMovieClicked: (Int) -> Unit,
     onFavouriteClicked: (MovieCardUiModel) -> Unit
 ) {
@@ -184,7 +211,7 @@ private fun MovieGrid(
             }
         }
         if (movies.loadState.append is LoadState.Loading) {
-            item(span = { GridItemSpan(2) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -195,6 +222,11 @@ private fun MovieGrid(
                         color = colors.primary
                     )
                 }
+            }
+        }
+        if (!isConnected) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                NetworkStatusBanner(isConnected = state.isConnected)
             }
         }
     }

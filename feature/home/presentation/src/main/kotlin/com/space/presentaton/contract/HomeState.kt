@@ -7,5 +7,6 @@ data class HomeState(
     val genres: Map<Int, String> = emptyMap(),
     val isFilterVisible: Boolean = false,
     val selectedGenreId: Int? = null,
-    val isSearchFocused: Boolean = false
+    val isSearchFocused: Boolean = false,
+    val isConnected: Boolean = true
 )

@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -37,7 +35,10 @@ import coil.compose.AsyncImage
 import com.space.core.ui.R
 import com.space.presentation.contract.MovieDetailsEvent
 import com.space.presentation.contract.MovieDetailsSideEffect
+import com.space.presentation.contract.MovieDetailsState
 import com.space.presentation.vm.MovieDetailsVm
+import com.space.ui.component.ErrorScreen
+import com.space.ui.component.MovieappLoader
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Radius
@@ -45,7 +46,6 @@ import com.space.ui.theme.Sizing
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-//rame sxva vipovo
 @Composable
 fun MovieDetailsScreen(
     movieId: Int,
@@ -66,6 +66,7 @@ fun MovieDetailsScreen(
         }
     }
     MovieDetailsScreenContent(
+        state = state,
         posterUrl = state.movie?.posterUrl,
         title = state.movie?.title ?: stringResource
             (com.space.movie.details.presentation.R.string.unknownTitle),
@@ -80,7 +81,6 @@ fun MovieDetailsScreen(
         overviewText = state.movie?.overviewText ?: stringResource
             (com.space.movie.details.presentation.R.string.overview),
         isFavorite = state.isFavourite,
-        isLoading = state.isLoading,
         errorMessage = state.errorMessage,
         onBackClick = { viewModel.onEvent(MovieDetailsEvent.OnBackClicked) },
         onFavoriteClick = {
@@ -94,6 +94,7 @@ fun MovieDetailsScreen(
 
 @Composable
 private fun MovieDetailsScreenContent(
+    state: MovieDetailsState,
     posterUrl: String?,
     title: String,
     ratingText: String,
@@ -102,7 +103,6 @@ private fun MovieDetailsScreenContent(
     yearText: String,
     overviewText: String,
     isFavorite: Boolean,
-    isLoading: Boolean,
     errorMessage: String?,
     onBackClick: () -> Unit,
     onFavoriteClick: () -> Unit,
@@ -145,32 +145,29 @@ private fun MovieDetailsScreenContent(
                 .verticalScroll(rememberScrollState())
         ) {
             when {
-                isLoading -> {
+                state.isLoading -> {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(Sizing.size36),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(color = colors.primary)
+                        MovieappLoader(
+                            mainColor = colors.primary,
+                            backgroundColor = colors.background
+                        )
                     }
                 }
 
                 errorMessage != null -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(Sizing.size16),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            errorMessage,
-                            style = typography.bodyMedium,
-                            color = colors.onBackground
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        ErrorScreen(
+                            title = "Something went wrong",
+                            description = "Please try again",
+                            onRefreshClick = {
+                                onRetryClick()
+                            }
                         )
-                        Spacer(Modifier.height(Sizing.size8))
-                        Button(onClick = onRetryClick)
-                        { Text(text = stringResource(com.space.movie.details.presentation.R.string.retry)) }
                     }
                 }
 

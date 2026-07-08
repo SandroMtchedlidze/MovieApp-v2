@@ -15,9 +15,11 @@ import com.space.ui.theme.Color.Neutral03DarkGrey
 import com.space.ui.theme.Color.Neutral04Grey
 import com.space.ui.theme.Color.Neutral05LightGrey
 import com.space.ui.theme.Color.Neutral06LighterGrey
+import com.space.ui.theme.Color.Neutral07LightestGrey
 import com.space.ui.theme.Color.Neutral08Whisper
 import com.space.ui.theme.Color.PureWhite
 import com.space.ui.theme.Color.YellowPrimary
+
 @Immutable
 data class MovieAppColors(
     val primary: Color,
@@ -34,13 +36,16 @@ data class MovieAppColors(
     val pureWhite: Color,
     val transparent: Color
 )
+
 @Immutable
 data class MovieAppTypography(
     val titleSmall: TextStyle,
     val titleLarge: TextStyle,
     val titleMedium: TextStyle,
-    val bodyMedium: TextStyle
+    val bodyMedium: TextStyle,
+    val textMedium: TextStyle
 )
+
 val LocalMovieAppColors = staticCompositionLocalOf {
     MovieAppColors(
         Color.Unspecified,
@@ -63,13 +68,16 @@ val LocalMovieAppTypography = staticCompositionLocalOf {
         TextStyle.Default,
         TextStyle.Default,
         TextStyle.Default,
-        bodyMedium = TextStyle.Default
+        bodyMedium = TextStyle.Default,
+        textMedium = TextStyle.Default
     )
 }
+
 object MovieAppTheme {
     val colors: MovieAppColors @Composable get() = LocalMovieAppColors.current
     val typography: MovieAppTypography @Composable get() = LocalMovieAppTypography.current
 }
+
 @Composable
 fun MovieAppTheme(content: @Composable () -> Unit) {
     val customColors = MovieAppColors(
@@ -78,7 +86,7 @@ fun MovieAppTheme(content: @Composable () -> Unit) {
         surface = Neutral02DarkestGrey,
         onPrimary = Neutral01Black,
         onBackground = Neutral08Whisper,
-        onSurface = Neutral08Whisper,
+        onSurface = Neutral07LightestGrey,
         textSecondary = Neutral05LightGrey,
         textTertiary = Neutral06LighterGrey,
         textHint = Neutral04Grey,
@@ -115,6 +123,13 @@ fun MovieAppTheme(content: @Composable () -> Unit) {
             fontWeight = FontWeight.Bold,
             fontSize = TextSizing.size20,
             lineHeight = TextSizing.size26,
+            letterSpacing = TextSizing.size0
+        ),
+        textMedium = TextStyle(
+            fontFamily = MontserratFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = TextSizing.size18,
+            lineHeight = TextSizing.size18,
             letterSpacing = TextSizing.size0
         )
     )
