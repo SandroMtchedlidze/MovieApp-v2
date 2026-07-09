@@ -1,4 +1,4 @@
-package com.space.database
+package com.space.database.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

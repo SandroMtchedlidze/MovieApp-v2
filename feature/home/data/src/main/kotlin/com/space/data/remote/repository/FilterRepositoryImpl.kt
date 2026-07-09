@@ -2,7 +2,8 @@ package com.space.data.remote.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingData
-import com.space.data.remote.api.DiscoverApi
+import com.space.data.remote.cache.GenreCache
+import com.space.data.remote.datasource.contract.DiscoverRemoteDataSource
 import com.space.data.remote.mapper.MovieMapper
 import com.space.data.remote.paging.DiscoverPagingSource
 import com.space.domain.model.MovieResponse
@@ -11,9 +12,10 @@ import com.space.networking.network.ResponseHandler
 import kotlinx.coroutines.flow.Flow
 
 class FilterRepositoryImpl(
-    private val discoverApi: DiscoverApi,
+    private val discoverRemoteDataSource: DiscoverRemoteDataSource,
     private val movieMapper: MovieMapper,
     private val responseHandler: ResponseHandler,
+    private val genreCache: GenreCache
 ) : FilterRepository {
 
     override fun discoverMoviesByGenre(genreId: Int): Flow<PagingData<MovieResponse>> {
@@ -21,10 +23,10 @@ class FilterRepositoryImpl(
             defaultPagingConfig,
             pagingSourceFactory = {
                 DiscoverPagingSource(
-                    discoverApi,
+                    discoverRemoteDataSource,
                     movieMapper,
                     genreId,
-                    genreCache,
+                    genreCache.get(),
                     responseHandler
                 )
             }

@@ -1,5 +1,14 @@
 package com.space.data.remote.di
 
+import com.space.data.remote.cache.GenreCache
+import com.space.data.remote.datasource.contract.DiscoverRemoteDataSource
+import com.space.data.remote.datasource.contract.GenreRemoteDataSource
+import com.space.data.remote.datasource.contract.MovieRemoteDataSource
+import com.space.data.remote.datasource.contract.SearchRemoteDataSource
+import com.space.data.remote.datasource.implementation.DiscoverRemoteDataSourceImpl
+import com.space.data.remote.datasource.implementation.GenreRemoteDataSourceImpl
+import com.space.data.remote.datasource.implementation.MovieRemoteDataSourceImpl
+import com.space.data.remote.datasource.implementation.SearchRemoteDataSourceImpl
 import com.space.data.remote.mapper.MovieMapper
 import com.space.data.remote.repository.FilterRepositoryImpl
 import com.space.data.remote.repository.GenreRepositoryImpl
@@ -13,31 +22,55 @@ import org.koin.dsl.module
 
 val homeRepositoryModule = module {
     single { MovieMapper() }
-
+    single { GenreCache() }
+    single<MovieRemoteDataSource> {
+        MovieRemoteDataSourceImpl(
+            movieApi = get()
+        )
+    }
+    single<SearchRemoteDataSource> {
+        SearchRemoteDataSourceImpl(
+            searchApi = get()
+        )
+    }
+    single<DiscoverRemoteDataSource> {
+        DiscoverRemoteDataSourceImpl(
+            discoverApi = get()
+        )
+    }
+    single<GenreRemoteDataSource> {
+        GenreRemoteDataSourceImpl(
+            genreApi = get()
+        )
+    }
     single<MovieRepository> {
         MovieRepositoryImpl(
-            movieApi = get(),
+            remoteDataSource = get(),
             movieMapper = get(),
+            genreCache = get(),
             responseHandler = get()
         )
     }
     single<GenreRepository> {
         GenreRepositoryImpl(
-            genreApi = get(),
+            genreRemoteDataSource = get(),
+            genreCache = get(),
             responseHandler = get()
         )
     }
     single<SearchMoviesRepository> {
         SearchMoviesRepositoryImpl(
-            searchApi = get(),
+            searchRemoteDataSource = get(),
             movieMapper = get(),
+            genreCache = get(),
             responseHandler = get()
         )
     }
     single<FilterRepository> {
         FilterRepositoryImpl(
-            discoverApi = get(),
+            discoverRemoteDataSource = get(),
             movieMapper = get(),
+            genreCache = get(),
             responseHandler = get()
         )
     }
