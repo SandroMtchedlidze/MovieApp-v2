@@ -9,7 +9,6 @@ import java.io.IOException
 class ResponseHandlerImpl : ResponseHandler {
     override fun <T> apiCall(apiCall: suspend () -> Response<T>): Flow<ApiResult<T>> = flow {
         emit(ApiResult.Loading(isLoading = true))
-
         val result = runCatching { apiCall() }.fold(
             onSuccess = { response ->
                 if (response.isSuccessful) {
@@ -39,7 +38,6 @@ class ResponseHandlerImpl : ResponseHandler {
             }
         )
         emit(result)
-        emit(ApiResult.Loading(isLoading = false))
     }
 
     override suspend fun <T> pagingApiCall(apiCall: suspend () -> Response<T>): PagingResult<T> {

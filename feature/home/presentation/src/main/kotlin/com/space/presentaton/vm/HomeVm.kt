@@ -13,6 +13,7 @@ import com.space.domain.usecase.SearchMoviesUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
+import com.space.presentation.base.getErrorStrings
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
@@ -43,45 +45,6 @@ class HomeVm(
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val movies: Flow<PagingData<MovieCardUiModel>> = state
-        .distinctUntilChanged { old, new ->
-            old.searchQuery == new.searchQuery && old.selectedGenreId == new.selectedGenreId
-        }
-        .debounce(300.milliseconds).flatMapLatest { currentState ->
-            when {
-                currentState.searchQuery.isNotEmpty() -> {
-                    searchMoviesUseCase(currentState.searchQuery)
-                }
-
-                currentState.selectedGenreId != null -> {
-                    filterUseCase(currentState.selectedGenreId)
-                }
-
-                else -> {
-                    getMoviesUseCase()
-                }
-            }
-        }.map { pagingData ->
-            pagingData.map { movieResponse ->
-                movieUiMapper.mapToUiModel(movieResponse)
-            }
-        }.cachedIn(viewModelScope)
-
-    val merged: Flow<PagingData<MovieCardUiModel>> = movies.combine(
-        getAllFavouritesUseCase()
-    ) { pagingData, favouriteEntities ->
-        val favouriteIds = favouriteEntities.map { it.movieId }.toSet()
-
-        pagingData.map { movieCardUiModel ->
-            movieCardUiModel.copy(
-                isFavourite = favouriteIds.contains(
-                    movieCardUiModel.id
-                )
-            )
-        }
-    }.cachedIn(viewModelScope)
-
     override fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnMovieClicked -> emitSideEffect(
@@ -137,10 +100,66 @@ class HomeVm(
             getGenresUseCase().collect { result ->
                 if (result is ApiResult.Success) {
                     updateState {
-                        copy(genres = result.data)
+                        copy(genres = result.data, genresLoaded = true)
+                    }
+                }
+                if (result is ApiResult.Loading) {
+                    updateState { copy(isLoading = result.isLoading) }
+                }
+                if (result is ApiResult.Error) {
+                    updateState {
+                        copy(
+                            isLoading = false,
+                            errorMessage = getErrorStrings(result.networkError),
+                            genresLoaded = true
+                        )
                     }
                 }
             }
         }
     }
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val movies: Flow<PagingData<MovieCardUiModel>> = state
+        .distinctUntilChanged { old, new ->
+            old.searchQuery == new.searchQuery && old.selectedGenreId == new.selectedGenreId && old.genresLoaded ==
+                    new.genresLoaded
+        }
+        .debounce(300.milliseconds).flatMapLatest { currentState ->
+            if (!currentState.genresLoaded) {
+                flowOf(PagingData.empty())
+            } else {
+                when {
+                    currentState.searchQuery.isNotEmpty() -> {
+                        searchMoviesUseCase(currentState.searchQuery)
+                    }
+
+                    currentState.selectedGenreId != null -> {
+                        filterUseCase(currentState.selectedGenreId)
+                    }
+
+                    else -> {
+                        getMoviesUseCase()
+                    }
+                }
+            }
+        }.map { pagingData ->
+            pagingData.map { movieResponse ->
+                movieUiMapper.mapToUiModel(movieResponse)
+            }
+        }.cachedIn(viewModelScope)
+
+    val merged: Flow<PagingData<MovieCardUiModel>> = movies.combine(
+        getAllFavouritesUseCase()
+    ) { pagingData, favouriteEntities ->
+        val favouriteIds = favouriteEntities.map { it.movieId }.toSet()
+
+        pagingData.map { movieCardUiModel ->
+            movieCardUiModel.copy(
+                isFavourite = favouriteIds.contains(
+                    movieCardUiModel.id
+                )
+            )
+        }
+    }.cachedIn(viewModelScope)
 }

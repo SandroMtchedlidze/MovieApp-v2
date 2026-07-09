@@ -1,11 +1,13 @@
 package com.space.presentation.vm
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.space.domain.usecase.GetMovieDetailsUseCase
 import com.space.domain.usecase.IsFavouriteUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
+import com.space.presentation.base.getErrorStrings
 import com.space.presentation.contract.MovieDetailsEvent
 import com.space.presentation.contract.MovieDetailsSideEffect
 import com.space.presentation.contract.MovieDetailsState
@@ -50,6 +52,7 @@ class MovieDetailsVm(
     }
 
     private fun fetchMovieDetails() {
+        Log.d("DetailsVm", "fetchMovieDetails called for $movieId")
         getMovieDetailsUseCase(movieId).onEach { result ->
             when (result) {
                 is ApiResult.Loading -> updateState {
@@ -61,12 +64,14 @@ class MovieDetailsVm(
 
                 is ApiResult.Error -> updateState {
                     copy(
-                        errorMessage = result.message ?: "Something went wrong"
+                        isLoading = false,
+                        errorMessage = getErrorStrings(result.networkError)
                     )
                 }
 
                 is ApiResult.Success -> updateState {
                     copy(
+                        isLoading = false,
                         movie = uiMapper.mapToUi(result.data),
                         errorMessage = null
                     )

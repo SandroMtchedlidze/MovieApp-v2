@@ -81,7 +81,6 @@ fun MovieDetailsScreen(
         overviewText = state.movie?.overviewText ?: stringResource
             (com.space.movie.details.presentation.R.string.overview),
         isFavorite = state.isFavourite,
-        errorMessage = state.errorMessage,
         onBackClick = { viewModel.onEvent(MovieDetailsEvent.OnBackClicked) },
         onFavoriteClick = {
             state.movie?.let { currentMovie ->
@@ -103,7 +102,6 @@ private fun MovieDetailsScreenContent(
     yearText: String,
     overviewText: String,
     isFavorite: Boolean,
-    errorMessage: String?,
     onBackClick: () -> Unit,
     onFavoriteClick: () -> Unit,
     onRetryClick: () -> Unit,
@@ -159,11 +157,11 @@ private fun MovieDetailsScreenContent(
                     }
                 }
 
-                errorMessage != null -> {
+                state.errorMessage != null -> {
                     Box(modifier = Modifier.fillMaxSize()) {
                         ErrorScreen(
-                            title = "Something went wrong",
-                            description = "Please try again",
+                            title = stringResource(com.space.movie.details.presentation.R.string.something_went_wrong),
+                            description = stringResource(state.errorMessage),
                             onRefreshClick = {
                                 onRetryClick()
                             }

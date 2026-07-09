@@ -139,7 +139,7 @@ private fun MovieScreenContent(
                 }
                 Spacer(Modifier.height(Spacing.spacing16))
                 Text(
-                    text = "Movies",
+                    text = stringResource(R.string.movies),
                     style = typography.titleLarge.copy(
                         letterSpacing = TextSizing.size1,
                         fontSize = TextSizing.size18,
