@@ -50,11 +50,7 @@ import org.koin.core.parameter.parametersOf
 fun MovieDetailsScreen(
     movieId: Int,
     onNavigateBack: () -> Unit,
-    viewModel: MovieDetailsVm = koinViewModel(key = "DetailsVm-$movieId") {
-        parametersOf(
-            movieId
-        )
-    }
+    viewModel: MovieDetailsVm = koinViewModel { parametersOf(movieId) }
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
