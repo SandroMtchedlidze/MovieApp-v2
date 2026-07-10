@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.space.api.navigation.FavouritesRoute
-import com.space.api.navigation.MovieRoute
+import com.space.api.navigation.HomeRoute
 import com.space.core.ui.R
 import com.space.ui.component.NavButton
 import com.space.ui.theme.MovieAppTheme.colors
@@ -33,7 +33,7 @@ fun BottomBar(
             horizontalArrangement = Arrangement.spacedBy(Spacing.spacing12)
         ) {
             NavButton(
-                selected = currRoute == MovieRoute,
+                selected = currRoute == HomeRoute,
                 label = stringResource(com.space.movieapp.R.string.home),
                 iconResId = R.drawable.home,
                 modifier = Modifier.weight(1f),

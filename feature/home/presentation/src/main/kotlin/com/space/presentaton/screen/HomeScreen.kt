@@ -55,7 +55,7 @@ import com.space.ui.theme.TextSizing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MovieScreen(
+fun HomeScreen(
     viewModel: HomeVm = koinViewModel(),
     onMovieClicked: (Int) -> Unit,
 ) {
@@ -78,12 +78,12 @@ fun MovieScreen(
             onRefreshClick = { merged.retry() }
         )
     } else {
-        MovieScreenContent(movies = merged, state = state, onEvent = viewModel::onEvent)
+        HomeScreenContent(movies = merged, state = state, onEvent = viewModel::onEvent)
     }
 }
 
 @Composable
-private fun MovieScreenContent(
+private fun HomeScreenContent(
     movies: LazyPagingItems<MovieCardUiModel>,
     state: HomeState,
     onEvent: (HomeEvent) -> Unit

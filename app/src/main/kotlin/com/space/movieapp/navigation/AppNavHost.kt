@@ -9,8 +9,8 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.space.api.navigation.favouritesEntry
+import com.space.api.navigation.homeEntries
 import com.space.api.navigation.movieDetailsEntries
-import com.space.api.navigation.movieEntries
 import com.space.ui.theme.MovieAppTheme.colors
 
 @Composable
@@ -39,7 +39,7 @@ fun AppNavHost() {
                 rememberViewModelStoreNavEntryDecorator()
             ),
             entryProvider = entryProvider {
-                movieEntries(
+                homeEntries(
                     onNavigateToDetails = navController::navigateToDetails,
                 )
                 movieDetailsEntries(

@@ -6,8 +6,8 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import com.space.api.navigation.FavouritesRoute
+import com.space.api.navigation.HomeRoute
 import com.space.api.navigation.MovieDetailsRoute
-import com.space.api.navigation.MovieRoute
 
 class AppNavController(
     val backStack: NavBackStack<NavKey>,
@@ -28,9 +28,9 @@ class AppNavController(
     }
 
     fun navigateToHome() {
-        if (backStack.lastOrNull() != MovieRoute) {
+        if (backStack.lastOrNull() != HomeRoute) {
             backStack.clear()
-            backStack.add(MovieRoute)
+            backStack.add(HomeRoute)
         }
     }
 
@@ -51,5 +51,5 @@ class AppNavController(
 
 @Composable
 fun rememberAppNavController(
-    backStack: NavBackStack<NavKey> = rememberNavBackStack(MovieRoute)
+    backStack: NavBackStack<NavKey> = rememberNavBackStack(HomeRoute)
 ): AppNavController = remember(backStack) { AppNavController(backStack) }

@@ -2,17 +2,17 @@ package com.space.api.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.space.presentaton.screen.MovieScreen
+import com.space.presentaton.screen.HomeScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object MovieRoute : NavKey
+data object HomeRoute : NavKey
 
-fun EntryProviderScope<NavKey>.movieEntries(
+fun EntryProviderScope<NavKey>.homeEntries(
     onNavigateToDetails: (movieId: Int) -> Unit,
 ) {
-    entry<MovieRoute> {
-        MovieScreen(
+    entry<HomeRoute> {
+        HomeScreen(
             onMovieClicked = onNavigateToDetails,
         )
     }
