@@ -205,7 +205,7 @@ private fun MovieGrid(
             movies[index]?.let { movie ->
                 MovieCard(
                     movie = movie,
-                    onClick = onMovieClicked,
+                    onClick = { onMovieClicked(movie.id) },
                     onFavouriteClick = { onFavouriteClicked(movie) }
                 )
             }
