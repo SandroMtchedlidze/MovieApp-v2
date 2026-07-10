@@ -57,7 +57,7 @@ fun MovieCard(
     onClick: (Int) -> Unit,
     onFavouriteClick: () -> Unit
 ) {
-    Column {
+    Column(modifier = modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -95,7 +95,7 @@ fun MovieCard(
                         lineHeight = TextSizing.size14,
                         letterSpacing = TextSizing.size1
                     ),
-                    modifier = modifier
+                    modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = Spacing.spacing10, end = Spacing.spacing12)
                         .clip(Radius.radius22)
