@@ -8,4 +8,5 @@ android {
 
 dependencies {
     api(libs.bundles.coroutines)
+    implementation(libs.retrofit.core)
 }

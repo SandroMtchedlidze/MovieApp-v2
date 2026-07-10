@@ -1,7 +1,10 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.movie.android.application)
     alias(libs.plugins.movie.android.compose)
 }
+
 android {
     namespace = "com.space.movieapp"
 }
@@ -14,4 +17,6 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:details"))
     implementation(project(":feature:favourites"))
+    implementation(project(":di"))
+    implementation(project(":core:common"))
 }
