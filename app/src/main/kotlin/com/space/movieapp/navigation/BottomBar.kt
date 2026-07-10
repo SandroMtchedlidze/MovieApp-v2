@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.space.api.navigation.FavouritesRoute
@@ -33,14 +34,14 @@ fun BottomBar(
         ) {
             NavButton(
                 selected = currRoute == MovieRoute,
-                label = "Home",
+                label = stringResource(com.space.movieapp.R.string.home),
                 iconResId = R.drawable.home,
                 modifier = Modifier.weight(1f),
                 onClick = onHomeClick
             )
             NavButton(
                 selected = currRoute == FavouritesRoute,
-                label = "Favorites",
+                label = stringResource(com.space.movieapp.R.string.favorites),
                 iconResId = R.drawable.heart,
                 modifier = Modifier.weight(1f),
                 onClick = onFavouritesClick
