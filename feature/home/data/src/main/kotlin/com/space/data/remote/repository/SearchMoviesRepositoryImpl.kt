@@ -1,6 +1,7 @@
 package com.space.data.remote.repository
 
 import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.space.data.remote.cache.GenreCache
 import com.space.data.remote.datasource.contract.SearchRemoteDataSource
@@ -15,12 +16,13 @@ class SearchMoviesRepositoryImpl(
     private val searchRemoteDataSource: SearchRemoteDataSource,
     private val movieMapper: MovieMapper,
     private val responseHandler: ResponseHandler,
-    private val genreCache: GenreCache
+    private val genreCache: GenreCache,
+    private val pagingConfig: PagingConfig
 ) : SearchMoviesRepository {
 
     override fun searchMovies(query: String): Flow<PagingData<MovieResponse>> {
         return Pager(
-            defaultPagingConfig,
+            pagingConfig,
             pagingSourceFactory = {
                 SearchPagingSource(
                     searchRemoteDataSource,

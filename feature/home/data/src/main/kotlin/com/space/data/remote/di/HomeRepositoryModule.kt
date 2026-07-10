@@ -1,5 +1,6 @@
 package com.space.data.remote.di
 
+import androidx.paging.PagingConfig
 import com.space.data.remote.cache.GenreCache
 import com.space.data.remote.datasource.contract.DiscoverRemoteDataSource
 import com.space.data.remote.datasource.contract.GenreRemoteDataSource
@@ -48,7 +49,8 @@ val homeRepositoryModule = module {
             remoteDataSource = get(),
             movieMapper = get(),
             genreCache = get(),
-            responseHandler = get()
+            responseHandler = get(),
+            pagingConfig = get()
         )
     }
     single<GenreRepository> {
@@ -63,7 +65,8 @@ val homeRepositoryModule = module {
             searchRemoteDataSource = get(),
             movieMapper = get(),
             genreCache = get(),
-            responseHandler = get()
+            responseHandler = get(),
+            pagingConfig = get()
         )
     }
     single<FilterRepository> {
@@ -71,7 +74,15 @@ val homeRepositoryModule = module {
             discoverRemoteDataSource = get(),
             movieMapper = get(),
             genreCache = get(),
-            responseHandler = get()
+            responseHandler = get(),
+            pagingConfig = get()
+        )
+    }
+    single {
+        PagingConfig(
+            pageSize = 20,
+            prefetchDistance = 5,
+            enablePlaceholders = false
         )
     }
 }
