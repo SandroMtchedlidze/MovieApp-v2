@@ -97,7 +97,7 @@ fun SearchField(
                             modifier = Modifier.size(Sizing.size14),
                         )
                         Spacer(Modifier.width(Spacing.spacing8))
-                        Box {
+                        Box(modifier = Modifier.weight(1f)) {
                             if (query.isEmpty()) {
                                 Text(
                                     text = stringResource(R.string.search),
@@ -106,6 +106,16 @@ fun SearchField(
                                 )
                             }
                             innerTextField()
+                        }
+                        if (query.isNotEmpty()) {
+                            Icon(
+                                painter = painterResource(R.drawable.delete),
+                                contentDescription = null,
+                                tint = colors.primary,
+                                modifier = Modifier
+                                    .size(Sizing.size14)
+                                    .clickable { onQueryChanged(query.dropLast(1)) }
+                            )
                         }
                     }
                 },

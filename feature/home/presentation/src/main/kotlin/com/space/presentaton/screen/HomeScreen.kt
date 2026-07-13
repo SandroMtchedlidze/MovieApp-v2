@@ -40,6 +40,7 @@ import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
+import com.space.ui.component.EmptyResultView
 import com.space.ui.component.ErrorScreen
 import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
@@ -149,6 +150,9 @@ private fun HomeScreenContent(
                     modifier = Modifier
                         .padding(horizontal = Spacing.spacing16)
                 )
+                if (movies.itemCount == 0 && movies.loadState.refresh != LoadState.Loading) {
+                    EmptyResultView()
+                }
             }
         }
         when (movies.loadState.refresh) {
