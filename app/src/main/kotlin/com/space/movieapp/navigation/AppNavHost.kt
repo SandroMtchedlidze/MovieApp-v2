@@ -80,7 +80,7 @@ private fun TabWrapper(
                 if (visible) Modifier
                 else Modifier
                     .layout { measurable, constraints ->
-                        val placeable = measurable.measure(constraints)
+                        measurable.measure(constraints)
                         layout(0, 0) {}
                     }
                     .pointerInput(Unit) {}
