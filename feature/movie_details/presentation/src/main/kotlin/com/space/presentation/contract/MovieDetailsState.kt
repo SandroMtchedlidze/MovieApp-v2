@@ -5,7 +5,7 @@ import com.space.presentation.model.MovieDetailsUiModel
 
 data class MovieDetailsState(
     val isLoading: Boolean = false,
-    @StringRes
+    @param:StringRes
     val errorMessage: Int? = null,
     val movie: MovieDetailsUiModel? = null,
     val isFavourite: Boolean = false

@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 
 data class HomeState(
     val isLoading: Boolean = false,
-    @StringRes
+    @param:StringRes
     val errorMessage: Int? = null,
     val searchQuery: String = "",
     val genres: Map<Int, String> = emptyMap(),
