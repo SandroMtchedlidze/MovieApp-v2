@@ -104,7 +104,7 @@ movie-android-compose = { id = "movieapp.android.compose" }
 movie-android-feature = { id = "movieapp.android.feature" }
 movie-android-application = { id = "movieapp.android.application" }
 movie-kotlin = { id = "movieapp.kotlin.library" }
-movie-android-room = { id = "movieapp.android.room" }
+
 [bundles]
 compose = ["androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-material3", "androidx-compose-runtime", "androidx-compose-foundation"]
 coroutines = ["kotlinx-coroutines-android", "kotlinx-coroutines-core"]
