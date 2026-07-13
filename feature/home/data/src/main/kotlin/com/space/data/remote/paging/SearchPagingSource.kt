@@ -32,7 +32,7 @@ class SearchPagingSource(
                 data = result.data.results.map { dto ->
                     movieMapper.mapToDomain(dto, genreCache)
                 },
-                prevKey = if (page == 0) null else page - 1,
+                prevKey = if (page == 1) null else page - 1,
                 nextKey = if (result.data.results.isEmpty()) null else page + 1
             )
 
