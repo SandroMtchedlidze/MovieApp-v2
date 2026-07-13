@@ -8,10 +8,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavKey
-import com.space.api.navigation.FavouritesRoute
-import com.space.api.navigation.HomeRoute
 import com.space.core.ui.R
 import com.space.ui.component.NavButton
 import com.space.ui.theme.MovieAppTheme.colors
@@ -19,12 +15,11 @@ import com.space.ui.theme.Spacing
 
 @Composable
 fun BottomBar(
-    backStack: NavBackStack<NavKey>,
+    currentTab: AppTab,
     modifier: Modifier = Modifier,
     onHomeClick: () -> Unit,
     onFavouritesClick: () -> Unit
 ) {
-    val currRoute = backStack.lastOrNull()
     Surface(color = colors.background, modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -33,14 +28,14 @@ fun BottomBar(
             horizontalArrangement = Arrangement.spacedBy(Spacing.spacing12)
         ) {
             NavButton(
-                selected = currRoute == HomeRoute,
+                selected = currentTab == AppTab.HOME,
                 label = stringResource(com.space.movieapp.R.string.home),
                 iconResId = R.drawable.home,
                 modifier = Modifier.weight(1f),
                 onClick = onHomeClick
             )
             NavButton(
-                selected = currRoute == FavouritesRoute,
+                selected = currentTab == AppTab.FAVOURITES,
                 label = stringResource(com.space.movieapp.R.string.favorites),
                 iconResId = R.drawable.heart,
                 modifier = Modifier.weight(1f),

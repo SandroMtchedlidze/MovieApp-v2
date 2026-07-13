@@ -1,7 +1,10 @@
 package com.space.movieapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -9,11 +12,18 @@ import com.space.api.navigation.FavouritesRoute
 import com.space.api.navigation.HomeRoute
 import com.space.api.navigation.MovieDetailsRoute
 
+enum class AppTab { HOME, FAVOURITES }
+
 class AppNavController(
-    val backStack: NavBackStack<NavKey>,
+    val homeBackStack: NavBackStack<NavKey>,
+    val favouritesBackStack: NavBackStack<NavKey>,
     private val timeProvider: () -> Long = System::currentTimeMillis
 ) {
     private var lastNavigationTime = 0L
+    var currentTab by mutableStateOf(AppTab.HOME)
+
+    val backStack: NavBackStack<NavKey>
+        get() = if (currentTab == AppTab.HOME) homeBackStack else favouritesBackStack
 
     fun navigateToDetails(movieId: Int) {
         val now = timeProvider()
@@ -28,17 +38,11 @@ class AppNavController(
     }
 
     fun navigateToHome() {
-        if (backStack.lastOrNull() != HomeRoute) {
-            backStack.clear()
-            backStack.add(HomeRoute)
-        }
+        currentTab = AppTab.HOME
     }
 
     fun navigateToFavourites() {
-        if (backStack.lastOrNull() != FavouritesRoute) {
-            backStack.clear()
-            backStack.add(FavouritesRoute)
-        }
+        currentTab = AppTab.FAVOURITES
     }
 
     val showBottomBar: Boolean
@@ -51,5 +55,11 @@ class AppNavController(
 
 @Composable
 fun rememberAppNavController(
-    backStack: NavBackStack<NavKey> = rememberNavBackStack(HomeRoute)
-): AppNavController = remember(backStack) { AppNavController(backStack) }
+    homeBackStack: NavBackStack<NavKey> = rememberNavBackStack(HomeRoute),
+    favouritesBackStack: NavBackStack<NavKey> = rememberNavBackStack(FavouritesRoute)
+): AppNavController = remember(homeBackStack, favouritesBackStack) {
+    AppNavController(
+        homeBackStack,
+        favouritesBackStack
+    )
+}
