@@ -95,6 +95,9 @@ class HomeVm(
         }
     }
 
+    //observeri shesacvlelia aq
+//when gamoviyene if magivrad
+    //collect latest
     private fun loadGenres() {
         viewModelScope.launch {
             getGenresUseCase().collect { result ->
@@ -149,6 +152,8 @@ class HomeVm(
             }
         }.cachedIn(viewModelScope)
 
+    //shevcvalo erti state.
+    //agwera gavuketo zogadad yvelafers.
     val merged: Flow<PagingData<MovieCardUiModel>> = movies.combine(
         getAllFavouritesUseCase()
     ) { pagingData, favouriteEntities ->

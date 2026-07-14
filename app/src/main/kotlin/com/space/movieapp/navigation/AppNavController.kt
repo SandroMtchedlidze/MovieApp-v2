@@ -14,6 +14,7 @@ import com.space.api.navigation.MovieDetailsRoute
 
 enum class AppTab { HOME, FAVOURITES }
 
+//ori backstack
 class AppNavController(
     val homeBackStack: NavBackStack<NavKey>,
     val favouritesBackStack: NavBackStack<NavKey>,
@@ -32,6 +33,7 @@ class AppNavController(
             backStack.add(MovieDetailsRoute(movieId = movieId))
         }
     }
+    //yvela clicks qondes delay.
 
     fun navigateBack() {
         if (backStack.size > 1) backStack.removeLastOrNull()

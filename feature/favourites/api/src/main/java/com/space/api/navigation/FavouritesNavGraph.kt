@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object FavouritesRoute : NavKey
 
+//entry presentation modulshi , composition provider.
 fun EntryProviderScope<NavKey>.favouritesEntry(
     onNavigateToDetails: (movieId: Int) -> Unit,
 ) {

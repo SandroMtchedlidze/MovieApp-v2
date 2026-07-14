@@ -36,7 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun FavouritesScreen(
     onNavigateToDetails: (movieId: Int) -> Unit,
-    viewmodel: FavouritesVm = koinViewModel()
+    viewmodel: FavouritesVm = koinViewModel()   //wavshalo tu ar vcvli arsad cvladad mqondes.
 ) {
     val state by viewmodel.state.collectAsStateWithLifecycle()
 
