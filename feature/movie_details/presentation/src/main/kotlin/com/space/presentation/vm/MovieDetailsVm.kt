@@ -1,6 +1,5 @@
 package com.space.presentation.vm
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.space.domain.usecase.GetMovieDetailsUseCase
 import com.space.domain.usecase.IsFavouriteUseCase
@@ -52,7 +51,6 @@ class MovieDetailsVm(
     }
 
     private fun fetchMovieDetails() {
-        Log.d("DetailsVm", "fetchMovieDetails called for $movieId")
         getMovieDetailsUseCase(movieId).onEach { result ->
             when (result) {
                 is ApiResult.Loading -> updateState {
