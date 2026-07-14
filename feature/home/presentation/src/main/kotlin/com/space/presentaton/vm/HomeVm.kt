@@ -85,6 +85,7 @@ class HomeVm(
     init {
         loadGenres()
         observeConnectivity()
+        updateState { copy(movies = buildMoviesFlow()) }
     }
 
     private fun observeConnectivity() {
@@ -98,21 +99,26 @@ class HomeVm(
     private fun loadGenres() {
         viewModelScope.launch {
             getGenresUseCase().collect { result ->
-                if (result is ApiResult.Success) {
-                    updateState {
-                        copy(genres = result.data, genresLoaded = true)
-                    }
-                }
-                if (result is ApiResult.Loading) {
-                    updateState { copy(isLoading = result.isLoading) }
-                }
-                if (result is ApiResult.Error) {
-                    updateState {
+                when (result) {
+                    is ApiResult.Success -> updateState {
                         copy(
-                            isLoading = false,
-                            errorMessage = getErrorStrings(result.networkError),
+                            genres = result.data,
                             genresLoaded = true
                         )
+                    }
+
+                    is ApiResult.Loading -> {
+                        updateState { copy(isLoading = result.isLoading) }
+                    }
+
+                    is ApiResult.Error -> {
+                        updateState {
+                            copy(
+                                isLoading = false,
+                                errorMessage = getErrorStrings(result.networkError),
+                                genresLoaded = true
+                            )
+                        }
                     }
                 }
             }
@@ -120,12 +126,11 @@ class HomeVm(
     }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val movies: Flow<PagingData<MovieCardUiModel>> = state
-        .distinctUntilChanged { old, new ->
-            old.searchQuery == new.searchQuery && old.selectedGenreId == new.selectedGenreId && old.genresLoaded ==
-                    new.genresLoaded
-        }
-        .debounce(300.milliseconds).flatMapLatest { currentState ->
+    private fun buildMoviesFlow(): Flow<PagingData<MovieCardUiModel>> =
+        state.distinctUntilChanged { old, new ->
+            old.searchQuery == new.searchQuery && old.selectedGenreId == new.selectedGenreId
+                    && old.genresLoaded == new.genresLoaded
+        }.debounce(300.milliseconds).flatMapLatest { currentState ->
             if (!currentState.genresLoaded) {
                 flowOf(PagingData.empty())
             } else {
@@ -147,19 +152,10 @@ class HomeVm(
             pagingData.map { movieResponse ->
                 movieUiMapper.mapToUiModel(movieResponse)
             }
+        }.combine(getAllFavouritesUseCase()) { pagingData, favouritesEntity ->
+            val favouriteIds = favouritesEntity.map { it.movieId }.toSet()
+            pagingData.map { movieCardUiModel ->
+                movieCardUiModel.copy(isFavourite = favouriteIds.contains(movieCardUiModel.id))
+            }
         }.cachedIn(viewModelScope)
-
-    val merged: Flow<PagingData<MovieCardUiModel>> = movies.combine(
-        getAllFavouritesUseCase()
-    ) { pagingData, favouriteEntities ->
-        val favouriteIds = favouriteEntities.map { it.movieId }.toSet()
-
-        pagingData.map { movieCardUiModel ->
-            movieCardUiModel.copy(
-                isFavourite = favouriteIds.contains(
-                    movieCardUiModel.id
-                )
-            )
-        }
-    }.cachedIn(viewModelScope)
 }
