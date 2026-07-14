@@ -1,10 +1,7 @@
 package com.space.movieapp.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -14,17 +11,17 @@ import com.space.api.navigation.MovieDetailsRoute
 
 enum class AppTab { HOME, FAVOURITES }
 
-//ori backstack
 class AppNavController(
-    val homeBackStack: NavBackStack<NavKey>,
-    val favouritesBackStack: NavBackStack<NavKey>,
+    val backStack: NavBackStack<NavKey>,
     private val timeProvider: () -> Long = System::currentTimeMillis
 ) {
     private var lastNavigationTime = 0L
-    var currentTab by mutableStateOf(AppTab.HOME)
 
-    val backStack: NavBackStack<NavKey>
-        get() = if (currentTab == AppTab.HOME) homeBackStack else favouritesBackStack
+    val currentTab: AppTab
+        get() = when (backStack.firstOrNull()) {
+            is FavouritesRoute -> AppTab.FAVOURITES
+            else -> AppTab.HOME
+        }
 
     fun navigateToDetails(movieId: Int) {
         val now = timeProvider()
@@ -33,19 +30,20 @@ class AppNavController(
             backStack.add(MovieDetailsRoute(movieId = movieId))
         }
     }
-    //yvela clicks qondes delay.
+
+    private fun switchTab(route: NavKey) {
+        if (backStack.size == 1 && backStack.first() == route) return
+        backStack.clear()
+        backStack.add(route)
+    }
 
     fun navigateBack() {
         if (backStack.size > 1) backStack.removeLastOrNull()
     }
 
-    fun navigateToHome() {
-        currentTab = AppTab.HOME
-    }
+    fun navigateToHome() = switchTab(HomeRoute)
 
-    fun navigateToFavourites() {
-        currentTab = AppTab.FAVOURITES
-    }
+    fun navigateToFavourites() = switchTab(FavouritesRoute)
 
     val showBottomBar: Boolean
         get() = backStack.lastOrNull() !is MovieDetailsRoute
@@ -57,11 +55,9 @@ class AppNavController(
 
 @Composable
 fun rememberAppNavController(
-    homeBackStack: NavBackStack<NavKey> = rememberNavBackStack(HomeRoute),
-    favouritesBackStack: NavBackStack<NavKey> = rememberNavBackStack(FavouritesRoute)
-): AppNavController = remember(homeBackStack, favouritesBackStack) {
+    backStack: NavBackStack<NavKey> = rememberNavBackStack(HomeRoute),
+): AppNavController = remember(backStack) {
     AppNavController(
-        homeBackStack,
-        favouritesBackStack
+        backStack
     )
 }
