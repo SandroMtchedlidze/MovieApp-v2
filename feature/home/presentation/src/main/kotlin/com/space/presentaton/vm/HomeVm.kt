@@ -146,7 +146,7 @@ class HomeVm(
                     else -> {
                         getMoviesUseCase()
                     }
-                }
+                }.cachedIn(viewModelScope)
             }
         }.map { pagingData ->
             pagingData.map { movieResponse ->
@@ -157,5 +157,5 @@ class HomeVm(
             pagingData.map { movieCardUiModel ->
                 movieCardUiModel.copy(isFavourite = favouriteIds.contains(movieCardUiModel.id))
             }
-        }.cachedIn(viewModelScope)
+        }
 }
