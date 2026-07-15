@@ -11,4 +11,7 @@ dependencies {
     implementation(projects.core.presentation)
     implementation(projects.core.domain)
     implementation(projects.core.data)
+    implementation(projects.feature.home.api)
+    implementation(projects.core.navigation)
+    implementation(projects.feature.movieDetails.api)
 }

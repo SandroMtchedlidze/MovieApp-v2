@@ -1,5 +1,7 @@
 package com.space.presentation.contract
 
+import com.space.navigation.NavigationCommand
+
 sealed interface FavouritesEffect {
-    data class NavigateToDetails(val movieId: Int) : FavouritesEffect
+    data class Navigate(val command: NavigationCommand) : FavouritesEffect
 }

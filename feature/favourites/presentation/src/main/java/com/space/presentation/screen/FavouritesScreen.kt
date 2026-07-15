@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.space.navigation.requireGlobalNavigator
 import com.space.presentation.contract.FavouritesEffect
 import com.space.presentation.contract.FavouritesEvent
 import com.space.presentation.vm.FavouritesVm
@@ -35,15 +36,14 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun FavouritesScreen(
-    onNavigateToDetails: (movieId: Int) -> Unit,
-    viewmodel: FavouritesVm = koinViewModel()   //wavshalo tu ar vcvli arsad cvladad mqondes.
+    viewmodel: FavouritesVm = koinViewModel()
 ) {
     val state by viewmodel.state.collectAsStateWithLifecycle()
-
+    val navigator = requireGlobalNavigator()
     LaunchedEffect(Unit) {
         viewmodel.sideEffect.collect { effect ->
             when (effect) {
-                is FavouritesEffect.NavigateToDetails -> onNavigateToDetails(effect.movieId)
+                is FavouritesEffect.Navigate -> effect.command.execute(navigator)
             }
         }
     }

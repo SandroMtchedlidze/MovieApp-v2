@@ -18,7 +18,7 @@ ksp = "2.2.10-2.0.2"
 
 coil = "2.6.0"
 core-splashscreen = "1.0.1"
-navigation3 = "1.1.2"
+navigation3 = "1.1.4"
 retrofit-kotlinx-serialization = "1.0.0"
 paging = "3.3.6"
 

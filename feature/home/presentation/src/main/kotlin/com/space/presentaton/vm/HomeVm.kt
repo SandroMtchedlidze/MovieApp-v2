@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.space.api.navigation.MovieDetailsRoute
 import com.space.database.network_observer.ConnectivityObserver
 import com.space.domain.usecase.FilterUseCase
 import com.space.domain.usecase.GetAllFavouritesUseCase
@@ -11,6 +12,7 @@ import com.space.domain.usecase.GetGenresUseCase
 import com.space.domain.usecase.GetMoviesUseCase
 import com.space.domain.usecase.SearchMoviesUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
+import com.space.navigation.NavigationCommand
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
 import com.space.presentation.base.getErrorStrings
@@ -47,9 +49,8 @@ class HomeVm(
 ) {
     override fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.OnMovieClicked -> emitSideEffect(
-                HomeSideEffect.NavigateToDetails(event.movieId)
-            )
+            is HomeEvent.OnMovieClicked -> onMovieClicked(event.movieId)
+
 
             is HomeEvent.OnSearchCleared -> {
                 updateState { copy(searchQuery = "") }
@@ -158,4 +159,12 @@ class HomeVm(
                 movieCardUiModel.copy(isFavourite = favouriteIds.contains(movieCardUiModel.id))
             }
         }
+
+    private fun onMovieClicked(movieId: Int) {
+        emitSideEffect(
+            HomeSideEffect.Navigate(
+                NavigationCommand.Push(MovieDetailsRoute(movieId))
+            )
+        )
+    }
 }

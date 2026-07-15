@@ -1,8 +1,10 @@
 package com.space.presentation.vm
 
 import androidx.lifecycle.viewModelScope
+import com.space.api.navigation.MovieDetailsRoute
 import com.space.domain.usecase.GetAllFavouritesUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
+import com.space.navigation.NavigationCommand
 import com.space.presentation.base.BaseViewModel
 import com.space.presentation.contract.FavouritesEffect
 import com.space.presentation.contract.FavouritesEvent
@@ -22,11 +24,7 @@ class FavouritesVm(
         when (event) {
             is FavouritesEvent.LoadFavourites -> observeFavourites()
             is FavouritesEvent.OnFavouriteToggle -> toggleFavourites(event.movie)
-            is FavouritesEvent.OnMovieClicked -> emitSideEffect(
-                FavouritesEffect.NavigateToDetails(
-                    event.movieId
-                )
-            )
+            is FavouritesEvent.OnMovieClicked -> onMovieClicked(event.movieId)
         }
     }
 
@@ -51,5 +49,9 @@ class FavouritesVm(
         viewModelScope.launch {
             toggleFavouriteUseCase(mapper.toDomain(movie))
         }
+    }
+
+    private fun onMovieClicked(movieId: Int) {
+        emitSideEffect(FavouritesEffect.Navigate(NavigationCommand.Push(MovieDetailsRoute(movieId))))
     }
 }

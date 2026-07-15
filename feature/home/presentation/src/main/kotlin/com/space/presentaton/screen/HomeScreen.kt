@@ -33,6 +33,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.space.home.presentaton.R
+import com.space.navigation.requireGlobalNavigator
 import com.space.networking.network.NetworkError
 import com.space.networking.network.PagingException
 import com.space.presentation.base.getErrorStrings
@@ -58,15 +59,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeVm = koinViewModel(),
-    onMovieClicked: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val merged = state.movies.collectAsLazyPagingItems()
+    val navigator = requireGlobalNavigator()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
             when (sideEffect) {
-                is HomeSideEffect.NavigateToDetails -> onMovieClicked(sideEffect.movieId)
+                is HomeSideEffect.Navigate -> sideEffect.command.execute(navigator)
             }
         }
     }

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.space.domain.usecase.GetMovieDetailsUseCase
 import com.space.domain.usecase.IsFavouriteUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
+import com.space.navigation.NavigationCommand
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
 import com.space.presentation.base.getErrorStrings
@@ -29,7 +30,7 @@ class MovieDetailsVm(
     override fun onEvent(event: MovieDetailsEvent) {
         when (event) {
             is MovieDetailsEvent.OnRetryClicked -> fetchMovieDetails()
-            is MovieDetailsEvent.OnBackClicked -> emitSideEffect(MovieDetailsSideEffect.NavigateToBack)
+            is MovieDetailsEvent.OnBackClicked -> onBackClicked()
             is MovieDetailsEvent.OnFavouriteClicked -> {
                 viewModelScope.launch {
                     val domainMovie = domainMapper.uiModelToDomain(event.movieDetailsUiModel)
@@ -76,5 +77,9 @@ class MovieDetailsVm(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun onBackClicked() {
+        emitSideEffect(MovieDetailsSideEffect.Navigate(NavigationCommand.Pop()))
     }
 }

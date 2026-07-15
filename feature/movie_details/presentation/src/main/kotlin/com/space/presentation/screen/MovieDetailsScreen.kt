@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.space.core.ui.R
+import com.space.navigation.requireGlobalNavigator
 import com.space.presentation.contract.MovieDetailsEvent
 import com.space.presentation.contract.MovieDetailsSideEffect
 import com.space.presentation.contract.MovieDetailsState
@@ -49,15 +50,15 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun MovieDetailsScreen(
     movieId: Int,
-    onNavigateBack: () -> Unit,
     viewModel: MovieDetailsVm = koinViewModel { parametersOf(movieId) }
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val navigator = requireGlobalNavigator()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { effect ->
             when (effect) {
-                is MovieDetailsSideEffect.NavigateToBack -> onNavigateBack()
+                is MovieDetailsSideEffect.Navigate -> effect.command.execute(navigator)
             }
         }
     }

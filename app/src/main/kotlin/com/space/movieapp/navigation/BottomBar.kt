@@ -9,17 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.space.core.ui.R
+import com.space.navigation.requireGlobalNavigator
 import com.space.ui.component.NavButton
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.Spacing
 
 @Composable
 fun BottomBar(
-    currentTab: AppTab,
     modifier: Modifier = Modifier,
-    onHomeClick: () -> Unit,
-    onFavouritesClick: () -> Unit
 ) {
+    val navigator = requireGlobalNavigator()
+    if (!navigator.showBottomBar) return
     Surface(color = colors.background, modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -28,18 +28,18 @@ fun BottomBar(
             horizontalArrangement = Arrangement.spacedBy(Spacing.spacing12)
         ) {
             NavButton(
-                selected = currentTab == AppTab.HOME,
+                selected = navigator.currentTab == AppTab.HOME,
                 label = stringResource(com.space.movieapp.R.string.home),
                 iconResId = R.drawable.home,
                 modifier = Modifier.weight(1f),
-                onClick = onHomeClick
+                onClick = { navigator.navigateToHome() }
             )
             NavButton(
-                selected = currentTab == AppTab.FAVOURITES,
+                selected = navigator.currentTab == AppTab.FAVOURITES,
                 label = stringResource(com.space.movieapp.R.string.favorites),
                 iconResId = R.drawable.heart,
                 modifier = Modifier.weight(1f),
-                onClick = onFavouritesClick
+                onClick = { navigator.navigateToFavourites() }
             )
         }
     }
