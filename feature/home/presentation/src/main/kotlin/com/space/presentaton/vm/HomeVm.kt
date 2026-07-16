@@ -158,7 +158,7 @@ class HomeVm(
             pagingData.map { movieCardUiModel ->
                 movieCardUiModel.copy(isFavourite = favouriteIds.contains(movieCardUiModel.id))
             }
-        }
+        }.cachedIn(viewModelScope)
 
     private fun onMovieClicked(movieId: Int) {
         emitSideEffect(

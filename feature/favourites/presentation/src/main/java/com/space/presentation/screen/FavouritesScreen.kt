@@ -1,5 +1,6 @@
 package com.space.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -47,7 +48,11 @@ fun FavouritesScreen(
             }
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.background)
+    ) {
         Text(
             stringResource(com.space.favourites.presentation.R.string.favorite_movies),
             style = typography.titleMedium,

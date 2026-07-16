@@ -15,16 +15,17 @@ import com.space.navigation.rememberNavigator
 import com.space.presentation.navigation.favouritesEntry
 import com.space.presentation.navigation.movieDetailsEntry
 import com.space.presentaton.navigation.homeEntry
+import com.space.ui.theme.MovieAppTheme.colors
 
 @Composable
 fun AppNavHost() {
     val navigator = rememberNavigator(HomeRoute)
-
+    val backStack = navigator.backStack
     CompositionLocalProvider(LocalGlobalNavigator provides navigator) {
-        Scaffold(bottomBar = { BottomBar() }) { padding ->
+        Scaffold(containerColor = colors.background, bottomBar = { BottomBar() }) { padding ->
             NavDisplay(
+                backStack = backStack,
                 modifier = Modifier.padding(padding),
-                backStack = navigator.backStack,
                 entryDecorators = listOf(
                     rememberSaveableStateHolderNavEntryDecorator(),
                     rememberViewModelStoreNavEntryDecorator()

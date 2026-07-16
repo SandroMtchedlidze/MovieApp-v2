@@ -57,9 +57,9 @@ import com.space.ui.theme.TextSizing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeVm = koinViewModel(),
-) {
+fun HomeScreen() {
+
+    val viewModel: HomeVm = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val merged = state.movies.collectAsLazyPagingItems()
     val navigator = requireGlobalNavigator()

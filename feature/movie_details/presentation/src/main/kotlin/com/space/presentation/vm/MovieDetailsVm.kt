@@ -80,6 +80,6 @@ class MovieDetailsVm(
     }
 
     private fun onBackClicked() {
-        emitSideEffect(MovieDetailsSideEffect.Navigate(NavigationCommand.Pop()))
+        emitSideEffect(MovieDetailsSideEffect.Navigate(NavigationCommand.Pop))
     }
 }

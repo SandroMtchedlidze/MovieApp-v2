@@ -8,7 +8,7 @@ import com.space.navigation.Navigator
 enum class AppTab { HOME, FAVOURITES }
 
 val Navigator.currentTab: AppTab
-    get() = when (backStack.firstOrNull()) {
+    get() = when (backStack.lastOrNull()) {
         is FavouritesRoute -> AppTab.FAVOURITES
         else -> AppTab.HOME
     }
@@ -16,6 +16,6 @@ val Navigator.currentTab: AppTab
 val Navigator.showBottomBar: Boolean
     get() = backStack.lastOrNull() !is MovieDetailsRoute
 
-fun Navigator.navigateToHome() = resetTo(HomeRoute)
+fun Navigator.navigateToHome() = push(HomeRoute)
 
-fun Navigator.navigateToFavourites() = resetTo(FavouritesRoute)
+fun Navigator.navigateToFavourites() = push(FavouritesRoute)

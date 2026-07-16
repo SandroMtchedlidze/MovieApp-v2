@@ -9,15 +9,9 @@ interface NavigationCommand {
         }
     }
 
-    data class Pop(val result: PopResult? = null) : NavigationCommand {
+    data object Pop : NavigationCommand {
         override fun execute(navigator: Navigator) {
             navigator.pop()
-        }
-    }
-
-    data class Replace(val key: FeatureNavigationKey) : NavigationCommand {
-        override fun execute(navigator: Navigator) {
-            navigator.replaceLast(key)
         }
     }
 }
