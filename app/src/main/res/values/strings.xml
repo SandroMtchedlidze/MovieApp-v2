@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MovieApp</string>
+    <string name="commit_test">Commit test</string>
+    <string name="commit_test_sec">Commit test Sec</string>
 </resources>
