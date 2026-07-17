@@ -24,8 +24,8 @@ import com.space.ui.theme.TextSizing
 fun GenreChip(
     genre: String,
     isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Text(
         text = genre,
