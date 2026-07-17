@@ -53,7 +53,7 @@ fun MovieScreen(
     onMovieClicked: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val merged = viewModel.merged.collectAsLazyPagingItems()
+    val merged = state.movies.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
