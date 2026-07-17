@@ -1,6 +1,5 @@
 package com.space.ui.theme
 
-import androidx.compose.ui.unit.dp
 object Spacing {
     val spacing2 = Dimensions.dimension02
     val spacing4 = Dimensions.dimension04
@@ -10,6 +9,7 @@ object Spacing {
     val spacing12 = Dimensions.dimension12
     val spacing14 = Dimensions.dimension14
     val spacing16 = Dimensions.dimension16
+    val spacing18 = Dimensions.dimension18
     val spacing20 = Dimensions.dimension20
     val spacing22 = Dimensions.dimension22
     val spacing36 = Dimensions.dimension36

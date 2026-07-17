@@ -41,4 +41,31 @@ class ResponseHandlerImpl : ResponseHandler {
         emit(result)
         emit(ApiResult.Loading(isLoading = false))
     }
+
+    override suspend fun <T> pagingApiCall(apiCall: suspend () -> Response<T>): PagingResult<T> {
+        return runCatching { apiCall() }.fold(
+            onSuccess = { response ->
+                if (response.isSuccessful) {
+                    response.body()?.let { PagingResult.Success(it) } ?: PagingResult.Error(
+                        NetworkError.EMPTY_RESPONSE
+                    )
+                } else {
+                    val errorType = when (response.code()) {
+                        401 -> NetworkError.UNAUTHORIZED
+                        404 -> NetworkError.NOT_FOUND
+                        else -> NetworkError.UNKNOWN
+                    }
+                    PagingResult.Error(errorType, message = response.errorBody()?.toString())
+                }
+            },
+            onFailure = { e ->
+                val errorType = when (e) {
+                    is IOException -> NetworkError.NO_INTERNET
+                    is HttpException -> NetworkError.SERVER_UNREACHABLE
+                    else -> NetworkError.UNKNOWN
+                }
+                PagingResult.Error(errorType, message = e.localizedMessage)
+            }
+        )
+    }
 }

@@ -1,5 +1,10 @@
 package com.space.presentaton.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,12 +38,13 @@ import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
+import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
 import com.space.ui.component.SearchField
+import com.space.ui.component.isScrollingUp
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
-import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
 import com.space.ui.theme.TextSizing
 import org.koin.androidx.compose.koinViewModel
@@ -65,34 +73,61 @@ private fun MovieScreenContent(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit
 ) {
+    val gridState = rememberLazyGridState()
+    val isScrollingUp by gridState.isScrollingUp()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
             .statusBarsPadding()
-            .padding(top = Sizing.size22)
     ) {
-        SearchField(
-            query = state.searchQuery,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Spacing.spacing16),
-            onQueryChanged = { onEvent(HomeEvent.OnSearchQueryChanged(it)) },
-            onCancelClicked = {
-                onEvent(HomeEvent.OnSearchCleared)
-            },
-            onFilterClicked = { }
-        )
-        Spacer(Modifier.height(Spacing.spacing16))
-        Text(
-            text = stringResource(R.string.movies),
-            style = typography.titleLarge.copy(
-                letterSpacing = TextSizing.size1,
-                fontSize = TextSizing.size18, lineHeight = TextSizing.size18
-            ),
-            color = colors.primary,
-            modifier = Modifier.padding(horizontal = Spacing.spacing16)
-        )
+        AnimatedVisibility(
+            visible = isScrollingUp,
+            ) {
+            Column {
+                SearchField(
+                    query = state.searchQuery,
+                    isFilterActive = state.isFilterVisible,
+                    isFocused = state.isSearchFocused,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Spacing.spacing16)
+                        .padding(top = Spacing.spacing16),
+                    onQueryChanged = { onEvent(HomeEvent.OnSearchQueryChanged(it)) },
+                    onCancelClicked = { onEvent(HomeEvent.OnSearchCleared) },
+                    onFilterClicked = { onEvent(HomeEvent.OnFilterClicked) },
+                    onFocusChanged = { onEvent(HomeEvent.OnSearchFocusedChanged(it)) }
+                )
+                AnimatedVisibility(
+                    visible = state.isFilterVisible,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    Column {
+                        Spacer(Modifier.height(Spacing.spacing12))
+                        GenreRow(
+                            genres = state.genres,
+                            selectedGenreId = state.selectedGenreId,
+                            onGenreSelected = { onEvent(HomeEvent.OnGenreSelected(it)) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+                Spacer(Modifier.height(Spacing.spacing16))
+                Text(
+                    text = stringResource(R.string.movies),
+                    style = typography.titleLarge.copy(
+                        letterSpacing = TextSizing.size1,
+                        fontSize = TextSizing.size18,
+                        lineHeight = TextSizing.size18
+                    ),
+                    color = colors.primary,
+                    modifier = Modifier
+                        .padding(horizontal = Spacing.spacing16)
+                )
+            }
+        }
         when (movies.loadState.refresh) {
             is LoadState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -117,7 +152,8 @@ private fun MovieScreenContent(
                 MovieGrid(
                     movies = movies,
                     onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
-                    onFavouriteClicked = { }
+                    onFavouriteClicked = { },
+                    gridState = gridState
                 )
             }
         }
@@ -127,10 +163,12 @@ private fun MovieScreenContent(
 @Composable
 private fun MovieGrid(
     movies: LazyPagingItems<MovieCardUiModel>,
+    gridState: LazyGridState,
     onMovieClicked: (Int) -> Unit,
     onFavouriteClicked: (Int) -> Unit
 ) {
     LazyVerticalGrid(
+        state = gridState,
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(Spacing.spacing16),
         verticalArrangement = Arrangement.spacedBy(Spacing.spacing22),

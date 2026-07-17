@@ -5,4 +5,5 @@ import retrofit2.Response
 
 interface ResponseHandler {
     fun <T> apiCall(apiCall: suspend () -> Response<T>): Flow<ApiResult<T>>
+    suspend fun <T> pagingApiCall(apiCall: suspend () -> Response<T>): PagingResult<T>
 }

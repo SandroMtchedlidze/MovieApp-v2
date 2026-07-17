@@ -2,17 +2,17 @@ package com.space.data.remote.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.space.data.remote.api.SearchApi
+import com.space.data.remote.api.DiscoverApi
 import com.space.data.remote.mapper.MovieMapper
 import com.space.domain.model.MovieResponse
 import com.space.networking.network.PagingResult
 import com.space.networking.network.ResponseHandler
 
-class SearchPagingSource(
-    private val searchApi: SearchApi,
-    private val query: String,
-    private val genreCache: Map<Int, String>,
+class DiscoverPagingSource(
+    private val discoverApi: DiscoverApi,
     private val movieMapper: MovieMapper,
+    private val genreId: Int,
+    private val genreCache: Map<Int, String>,
     private val responseHandler: ResponseHandler
 ) : PagingSource<Int, MovieResponse>() {
 
@@ -26,10 +26,12 @@ class SearchPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResponse> {
         val page = params.key ?: 1
         return when (val result =
-            responseHandler.pagingApiCall { searchApi.searchMovies(query, page) }) {
+            responseHandler.pagingApiCall { discoverApi.discoverMovies(genreId, page) }) {
             is PagingResult.Success -> LoadResult.Page(
-                data = result.data.results.map { dto -> movieMapper.mapToDomain(dto, genreCache) },
-                prevKey = if (page == 0) null else page - 1,
+                data = result.data.results.map { dto ->
+                    movieMapper.mapToDomain(dto, genreCache)
+                },
+                prevKey = if (page == 1) null else page - 1,
                 nextKey = if (result.data.results.isEmpty()) null else page + 1
             )
 

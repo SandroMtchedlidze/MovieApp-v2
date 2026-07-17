@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -19,12 +18,12 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -53,8 +52,11 @@ import com.space.ui.theme.Spacing
 @Composable
 fun SearchField(
     query: String,
+    isFocused: Boolean,
     modifier: Modifier = Modifier,
+    isFilterActive: Boolean = false,
     onQueryChanged: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
     onCancelClicked: () -> Unit,
     onFilterClicked: () -> Unit,
 ) {
@@ -79,7 +81,8 @@ fun SearchField(
             BasicTextField(
                 modifier = Modifier
                     .focusRequester(focusRequester)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .onFocusChanged { onFocusChanged(it.isFocused) },
                 value = query,
                 onValueChange = onQueryChanged,
                 singleLine = true,
@@ -109,7 +112,7 @@ fun SearchField(
             )
         }
 
-        if (query.isNotEmpty()) {
+        if (query.isNotEmpty() || isFocused) {
             Text(
                 text = stringResource(R.string.cancel),
                 style = typography.bodyMedium,
@@ -122,15 +125,14 @@ fun SearchField(
             )
         } else {
             val interactionSource = remember { MutableInteractionSource() }
-            val isPressed by interactionSource.collectIsPressedAsState()
             Icon(
                 painter = painterResource(R.drawable.fillter),
                 contentDescription = stringResource(R.string.filter_option),
-                tint = if (isPressed) colors.pureBlack else colors.primary,
+                tint = if (isFilterActive) colors.pureBlack else colors.primary,
                 modifier = Modifier
                     .size(Sizing.size36)
                     .background(
-                        color = if (isPressed) colors.primary else colors.pureBlack,
+                        color = if (isFilterActive) colors.primary else colors.pureBlack,
                         shape = CircleShape
                     )
                     .clickable(

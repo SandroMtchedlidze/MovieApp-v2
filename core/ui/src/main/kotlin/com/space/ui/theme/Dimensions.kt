@@ -11,6 +11,7 @@ object Dimensions {
     val dimension12 = 12.dp
     val dimension14 = 14.dp
     val dimension16 = 16.dp
+    val dimension18 = 18.dp
     val dimension20 = 20.dp
     val dimension22 = 22.dp
     val dimension26 = 26.dp

@@ -4,6 +4,6 @@ import androidx.paging.PagingData
 import com.space.domain.model.MovieResponse
 import kotlinx.coroutines.flow.Flow
 
-interface MovieRepository {
-    fun getMovies(): Flow<PagingData<MovieResponse>>
+interface SearchMoviesRepository {
+    fun searchMovies(query: String): Flow<PagingData<MovieResponse>>
 }
