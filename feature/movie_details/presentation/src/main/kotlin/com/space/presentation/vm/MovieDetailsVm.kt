@@ -1,8 +1,8 @@
 package com.space.presentation.vm
 
 import androidx.lifecycle.viewModelScope
+import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetMovieDetailsUseCase
-import com.space.domain.usecase.IsFavouriteUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
@@ -20,7 +20,7 @@ class MovieDetailsVm(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val uiMapper: MovieDetailsUiMapper,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
-    private val isFavouriteUseCase: IsFavouriteUseCase,
+    private val getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
     private val domainMapper: MovieDetailsToDomain,
 ) : BaseViewModel<MovieDetailsState, MovieDetailsEvent, MovieDetailsSideEffect>(
     MovieDetailsState()
@@ -39,9 +39,11 @@ class MovieDetailsVm(
     }
 
     private fun observeFavouriteState() {
-        isFavouriteUseCase(movieId).onEach { isFav ->
-            updateState { copy(isFavourite = isFav) }
-        }.launchIn(viewModelScope)
+        viewModelScope.launch {
+            getAllFavouritesIdsUseCase().collect {
+                updateState { copy(isFavourite = it.contains(movieId)) }
+            }
+        }
     }
 
     init {
