@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.SubcomposeAsyncImage
 import com.space.core.ui.R
@@ -138,8 +139,11 @@ fun MovieCard(
                     painter = if (movie.isFavourite) painterResource(R.drawable.homechecked) else painterResource(
                         R.drawable.homeunchecked
                     ),
-                    contentDescription = if (movie.isFavourite) "Remove from favourites" else "Add to favourites",
-                    tint = if (movie.isFavourite) colors.primary else Color.Unspecified
+                    contentDescription = if (movie.isFavourite)
+                        stringResource(R.string.remove_from_favourites) else stringResource(
+                        R.string.add_to_favourites
+                    ),
+                    tint = Color.Unspecified
                 )
             }
         }
@@ -159,7 +163,9 @@ data class MovieCardUiModel(
 @Composable
 fun LazyGridState.isScrollingUp(): State<Boolean> {
     var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
+    var previousScrollOffset by remember(this) {
+        mutableIntStateOf(firstVisibleItemScrollOffset)
+    }
     return remember(this) {
         derivedStateOf {
             if (previousIndex != firstVisibleItemIndex) {
