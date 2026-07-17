@@ -1,4 +1,5 @@
 package com.space.ui.theme
+
 object Sizing {
     val size1 = Dimensions.dimension01
     val size2 = Dimensions.dimension02
@@ -10,6 +11,7 @@ object Sizing {
     val size14 = Dimensions.dimension14
     val size16 = Dimensions.dimension16
     val size20 = Dimensions.dimension20
+    val size22 = Dimensions.dimension22
     val size36 = Dimensions.dimension36
     val size42 = Dimensions.dimension42
     val size164 = Dimensions.dimension164

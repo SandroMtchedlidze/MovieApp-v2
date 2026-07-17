@@ -9,7 +9,7 @@ class MovieMapper {
             id = dto.id,
             title = dto.title,
             posterPath = dto.posterPath ?: "",
-            releaseDate = dto.releaseDate.substring(0, 4),
+            releaseDate = dto.releaseDate?.take(4),
             genre = dto.genreIds.mapNotNull { genreMap[it] }
         )
     }

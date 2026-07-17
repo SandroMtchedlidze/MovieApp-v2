@@ -6,7 +6,6 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.space.api.navigation.MovieRoute
 import com.space.api.navigation.movieEntries
-import com.space.favourites.navigation.favouritesEntry
 import com.space.navigation.FavouritesRoute
 
 @Composable

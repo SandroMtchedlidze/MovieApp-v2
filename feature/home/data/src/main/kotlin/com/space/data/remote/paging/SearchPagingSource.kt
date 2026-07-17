@@ -6,8 +6,9 @@ import com.space.data.remote.api.MovieApi
 import com.space.data.remote.mapper.MovieMapper
 import com.space.domain.model.MovieResponse
 
-class MoviePagingSource(
+class SearchPagingSource(
     private val movieApi: MovieApi,
+    private val query: String,
     private val genreCache: Map<Int, String>,
     private val movieMapper: MovieMapper
 ) : PagingSource<Int, MovieResponse>() {
@@ -22,15 +23,18 @@ class MoviePagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResponse> {
         val page = params.key ?: 1
         return try {
-            val response = movieApi.getMovies(page)
-            val movies = response.body()?.results?.map {
-                movieMapper.mapToDomain(it, genreCache)
-            } ?: emptyList()
+            val response = movieApi.searchMovies(
+                query = query,
+                page = page
+            )
 
+            val movies = response.body()?.results
+                ?.map { movieMapper.mapToDomain(it, genreCache) } ?: emptyList()
             LoadResult.Page(
                 data = movies,
                 prevKey = if (page == 1) null else page - 1,
                 nextKey = if (movies.isEmpty()) null else page + 1
+
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

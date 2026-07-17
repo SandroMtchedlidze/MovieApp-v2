@@ -5,7 +5,6 @@ import retrofit2.Response
 import retrofit2.http.GET
 
 interface GenreApi {
-
     @GET("genre/movie/list")
     suspend fun getGenres(): Response<GenreResponseDto>
 }

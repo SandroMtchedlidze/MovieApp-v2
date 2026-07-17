@@ -18,4 +18,5 @@ dependencies {
     implementation(projects.feature.home.data)
     implementation(projects.feature.home.presentation)
     implementation(projects.feature.home.api)
+    implementation(projects.core.networking)
 }

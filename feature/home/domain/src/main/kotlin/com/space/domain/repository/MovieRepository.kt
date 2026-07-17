@@ -8,4 +8,5 @@ import kotlinx.coroutines.flow.Flow
 interface MovieRepository {
     fun getMovies(): Flow<PagingData<MovieResponse>>
     fun getGenres(): Flow<ApiResult<Map<Int, String>>>
+    fun searchMovies(query: String): Flow<PagingData<MovieResponse>>
 }
