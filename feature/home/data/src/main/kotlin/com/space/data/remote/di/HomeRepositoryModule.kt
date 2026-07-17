@@ -11,7 +11,7 @@ import com.space.domain.repository.MovieRepository
 import com.space.domain.repository.SearchMoviesRepository
 import org.koin.dsl.module
 
-val repositoryModule = module {
+val homeRepositoryModule = module {
     single { MovieMapper() }
 
     single<MovieRepository> {

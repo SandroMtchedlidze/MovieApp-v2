@@ -43,3 +43,5 @@ fun includeAllModules(vararg groupDirs: String) {
     }
 }
 include(":feature:home:api")
+include(":feature:movie_details:data")
+include(":feature:movie_details:domain")
