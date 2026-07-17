@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 android {
-    namespace = "com.space.data"
+    namespace = "com.space.home.data"
 }
 
 dependencies {

@@ -28,12 +28,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.space.presentaton.R
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
@@ -116,7 +114,7 @@ private fun MovieScreenContent(
                 }
                 Spacer(Modifier.height(Spacing.spacing16))
                 Text(
-                    text = stringResource(R.string.movies),
+                    text = "Movies",
                     style = typography.titleLarge.copy(
                         letterSpacing = TextSizing.size1,
                         fontSize = TextSizing.size18,
@@ -141,7 +139,7 @@ private fun MovieScreenContent(
             is LoadState.Error -> {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Text(
-                        text = stringResource(R.string.something_went_wrong),
+                        text = "Something went wrong",
                         color = colors.primary,
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -181,7 +179,7 @@ private fun MovieGrid(
             movies[index]?.let { movie ->
                 MovieCard(
                     movie = movie,
-                    onClick = onMovieClicked,
+                    onClick = { onMovieClicked(movie.id) },
                     onFavouriteClick = onFavouriteClicked
                 )
             }

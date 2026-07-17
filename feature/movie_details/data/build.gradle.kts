@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.space.data"
+    namespace = "com.space.movie.details.data"
 }
 
 dependencies {

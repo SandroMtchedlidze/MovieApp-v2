@@ -5,7 +5,7 @@ import com.space.presentaton.vm.HomeVm
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
-val presentationModule = module {
+val homeVmModule = module {
     single { MovieResponseToUiModel() }
     viewModel<HomeVm> {
         HomeVm(

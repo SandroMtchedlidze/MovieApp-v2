@@ -18,7 +18,6 @@ import com.space.ui.component.MovieCardUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -36,31 +35,29 @@ class HomeVm(
     initialState = HomeState()
 ) {
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val movies: Flow<PagingData<MovieCardUiModel>> = combine(
-        state.distinctUntilChanged { old, new ->
+    val movies: Flow<PagingData<MovieCardUiModel>> = state
+        .distinctUntilChanged { old, new ->
             old.searchQuery == new.searchQuery && old.selectedGenreId == new.selectedGenreId
         }
-            .debounce(300.milliseconds).flatMapLatest { currentState ->
-                when {
-                    currentState.searchQuery.isNotEmpty() -> {
-                        searchMoviesUseCase(currentState.searchQuery)
-                    }
-
-                    currentState.selectedGenreId != null -> {
-                        filterUseCase(currentState.selectedGenreId)
-                    }
-
-                    else -> {
-                        getMoviesUseCase()
-                    }
+        .debounce(300.milliseconds).flatMapLatest { currentState ->
+            when {
+                currentState.searchQuery.isNotEmpty() -> {
+                    searchMoviesUseCase(currentState.searchQuery)
                 }
-            },
-        state.map { it.genres }.distinctUntilChanged()
-    ) { pagingData, _ ->
-        pagingData.map { movieResponse ->
-            movieUiMapper.mapToUiModel(movieResponse)
-        }
-    }.cachedIn(viewModelScope)
+
+                currentState.selectedGenreId != null -> {
+                    filterUseCase(currentState.selectedGenreId)
+                }
+
+                else -> {
+                    getMoviesUseCase()
+                }
+            }
+        }.map { pagingData ->
+            pagingData.map { movieResponse ->
+                movieUiMapper.mapToUiModel(movieResponse)
+            }
+        }.cachedIn(viewModelScope)
 
     override fun onEvent(event: HomeEvent) {
         when (event) {

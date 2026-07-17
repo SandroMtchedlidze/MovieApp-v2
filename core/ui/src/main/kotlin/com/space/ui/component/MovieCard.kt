@@ -1,5 +1,6 @@
 package com.space.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,11 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil.compose.SubcomposeAsyncImage
 import com.space.core.ui.R
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
@@ -58,22 +58,34 @@ fun MovieCard(
     onClick: (Int) -> Unit,
     onFavouriteClick: (Int) -> Unit
 ) {
-    Column {
+    Column(modifier = modifier) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(2f / 3f)
                 .clip(Radius.radius16)
                 .clickable { onClick(movie.id) }
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(movie.posterUrl)
-                    .crossfade(true).build(),
-                contentDescription = movie.title,
+            SubcomposeAsyncImage(
+                model = movie.posterUrl,
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.placeholder),
-                error = painterResource(R.drawable.placeholder),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .shimmerEffect()
+                    )
+                },
+                error = {
+                    Image(
+                        painter = painterResource(R.drawable.placeholder),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             )
             if (movie.genre.isNotEmpty()) {
                 Text(
@@ -84,7 +96,7 @@ fun MovieCard(
                         lineHeight = TextSizing.size14,
                         letterSpacing = TextSizing.size1
                     ),
-                    modifier = modifier
+                    modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = Spacing.spacing10, end = Spacing.spacing12)
                         .clip(Radius.radius22)
@@ -124,10 +136,14 @@ fun MovieCard(
                 modifier = Modifier.size(Sizing.size20)
             ) {
                 Icon(
-                    painter = if (movie.isFavourite) painterResource(R.drawable.favourite_checked) else painterResource(
+                    painter = if (movie.isFavourite)
+                        painterResource(R.drawable.favourite_checked) else painterResource(
                         R.drawable.favourite_unchecked
                     ),
-                    contentDescription = if (movie.isFavourite) "Remove from favourites" else "Add to favourites",
+                    contentDescription = if (movie.isFavourite)
+                        stringResource(R.string.remove_from_favourites) else stringResource(
+                        R.string.add_to_favourites
+                    ),
                     tint = Color.Unspecified
                 )
             }
@@ -148,7 +164,9 @@ data class MovieCardUiModel(
 @Composable
 fun LazyGridState.isScrollingUp(): State<Boolean> {
     var previousIndex by remember(this) { mutableIntStateOf(firstVisibleItemIndex) }
-    var previousScrollOffset by remember(this) { mutableIntStateOf(firstVisibleItemScrollOffset) }
+    var previousScrollOffset by remember(this) {
+        mutableIntStateOf(firstVisibleItemScrollOffset)
+    }
     return remember(this) {
         derivedStateOf {
             if (previousIndex != firstVisibleItemIndex) {

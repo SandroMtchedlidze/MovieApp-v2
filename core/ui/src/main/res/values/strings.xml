@@ -5,4 +5,9 @@
     <string name="filter_option">filter option</string>
     <string name="remove_from_favourites">Remove from favourites</string>
     <string name="add_to_favourites">Add to favourites</string>
+    <string name="Details">Details</string>
+    <string name="favourite">favourite</string>
+    <string name="about_movie">About movie</string>
+    <string name="shimmer_translate">shimmer_translate</string>
+    <string name="shimmer">shimmer</string>
 </resources>
