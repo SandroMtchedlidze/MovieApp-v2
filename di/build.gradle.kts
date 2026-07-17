@@ -28,6 +28,8 @@ android {
     }
 }
 dependencies {
-    implementation(project(":feature:movie"))
+    implementation(project(":feature:movie:data"))
+    implementation(project(":feature:movie:domain"))
+    implementation(project(":feature:movie:presentation"))
     implementation(libs.retrofit.kotlinx.serialization)
 }

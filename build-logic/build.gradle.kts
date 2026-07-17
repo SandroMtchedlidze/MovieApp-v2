@@ -36,7 +36,9 @@ gradlePlugin {
             id = "movieapp.android.feature"
             implementationClass = "com.space.build_logic.AndroidFeatureConventionPlugin"
         }
-
+        register("kotlinLibrary") {
+            id= "movieapp.kotlin.library"
+            implementationClass = "com.space.build_logic.KotlinLibraryConventionPlugin"
+        }
     }
-
 }

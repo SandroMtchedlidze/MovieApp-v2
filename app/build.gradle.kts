@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.movie.android.application)
     alias(libs.plugins.movie.android.compose)
@@ -13,10 +11,11 @@ dependencies {
     implementation(libs.core.splashscreen)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
-    implementation(project(":core:ui"))
-    implementation(project(":feature:home"))
-    implementation(project(":feature:details"))
-    implementation(project(":feature:favourites"))
-    implementation(project(":di"))
-    implementation(project(":core:common"))
+    implementation(projects.core.ui)
+    implementation(projects.feature.home)
+    implementation(projects.feature.details)
+    implementation(projects.feature.favourites)
+    implementation(projects.feature.home.data)
+    implementation(projects.feature.home.presentation)
+    implementation(projects.feature.home.api)
 }

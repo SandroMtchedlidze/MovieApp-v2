@@ -26,7 +26,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                     targetSdk = 24
                     versionCode = 1
                     versionName = "1.0"
-                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 }
                 buildTypes {
                     release {
