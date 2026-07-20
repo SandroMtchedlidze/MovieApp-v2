@@ -14,7 +14,7 @@ val movieDetailsVmModule = module {
             movieId = params.get(),
             getMovieDetailsUseCase = get(),
             toggleFavouriteUseCase = get(),
-            isFavouriteUseCase = get(),
+            getAllFavouritesIdsUseCase = get(),
             uiMapper = get(),
             domainMapper = get()
         )

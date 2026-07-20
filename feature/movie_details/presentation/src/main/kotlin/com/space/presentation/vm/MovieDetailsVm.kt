@@ -1,8 +1,8 @@
 package com.space.presentation.vm
 
 import androidx.lifecycle.viewModelScope
+import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetMovieDetailsUseCase
-import com.space.domain.usecase.IsFavouriteUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
@@ -20,7 +20,7 @@ class MovieDetailsVm(
     private val getMovieDetailsUseCase: GetMovieDetailsUseCase,
     private val uiMapper: MovieDetailsUiMapper,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
-    private val isFavouriteUseCase: IsFavouriteUseCase,
+    private val getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
     private val domainMapper: MovieDetailsToDomain,
 ) : BaseViewModel<MovieDetailsState, MovieDetailsEvent, MovieDetailsSideEffect>(
     MovieDetailsState()
@@ -28,25 +28,31 @@ class MovieDetailsVm(
     override fun onEvent(event: MovieDetailsEvent) {
         when (event) {
             is MovieDetailsEvent.OnRetryClicked -> fetchMovieDetails()
-            is MovieDetailsEvent.OnBackClicked -> emitSideEffect(MovieDetailsSideEffect.NavigateToBack)
+            is MovieDetailsEvent.OnBackClicked ->
+                emitSideEffect(MovieDetailsSideEffect.NavigateToBack)
+
             is MovieDetailsEvent.OnFavouriteClicked -> {
-                viewModelScope.launch {
-                    val domainMovie = domainMapper.uiModelToDomain(event.movieDetailsUiModel)
-                    toggleFavouriteUseCase(domainMovie)
-                }
+                handleFavouriteClicked(event)
             }
         }
-    }
-
-    private fun observeFavouriteState() {
-        isFavouriteUseCase(movieId).onEach { isFav ->
-            updateState { copy(isFavourite = isFav) }
-        }.launchIn(viewModelScope)
     }
 
     init {
         fetchMovieDetails()
         observeFavouriteState()
+    }
+
+    private fun observeFavouriteState() {
+        getAllFavouritesIdsUseCase().onEach { favouriteIds ->
+            updateState { copy(isFavourite = favouriteIds.contains(movieId)) }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun handleFavouriteClicked(event: MovieDetailsEvent.OnFavouriteClicked) {
+        viewModelScope.launch {
+            val domainMovie = domainMapper.uiModelToDomain(event.movieDetailsUiModel)
+            toggleFavouriteUseCase(domainMovie)
+        }
     }
 
     private fun fetchMovieDetails() {

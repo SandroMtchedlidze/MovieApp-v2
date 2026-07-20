@@ -9,4 +9,5 @@
     <string name="favourite">favourite</string>
     <string name="about_movie">About movie</string>
     <string name="shimmer_translate">shimmer_translate</string>
+    <string name="shimmer">shimmer</string>
 </resources>
