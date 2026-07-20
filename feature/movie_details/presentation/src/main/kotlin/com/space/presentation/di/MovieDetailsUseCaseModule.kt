@@ -4,5 +4,5 @@ import com.space.domain.usecase.GetMovieDetailsUseCase
 import org.koin.dsl.module
 
 val movieDetailsUseCaseModule = module {
-    single { GetMovieDetailsUseCase(repository = get()) }
+    factory { GetMovieDetailsUseCase(repository = get()) }
 }
