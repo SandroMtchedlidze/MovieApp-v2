@@ -39,7 +39,6 @@ class HomeVm(
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
-
     init {
         loadGenres()
         updateState { copy(movies = buildMoviesFlow()) }
@@ -102,7 +101,6 @@ class HomeVm(
             .map { mapToUiModels(it) }
             .combineWithFavouriteStatus()
             .cachedIn(viewModelScope)
-
 
     /**
      * Emits new state when search query changes or

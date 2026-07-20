@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.core.splashscreen)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(projects.core.ui)
     implementation(projects.feature.home)
     implementation(projects.feature.favourites)

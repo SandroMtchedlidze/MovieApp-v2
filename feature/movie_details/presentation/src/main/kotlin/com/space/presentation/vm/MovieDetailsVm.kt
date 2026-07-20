@@ -28,20 +28,11 @@ class MovieDetailsVm(
     override fun onEvent(event: MovieDetailsEvent) {
         when (event) {
             is MovieDetailsEvent.OnRetryClicked -> fetchMovieDetails()
-            is MovieDetailsEvent.OnBackClicked -> emitSideEffect(MovieDetailsSideEffect.NavigateToBack)
-            is MovieDetailsEvent.OnFavouriteClicked -> {
-                viewModelScope.launch {
-                    val domainMovie = domainMapper.uiModelToDomain(event.movieDetailsUiModel)
-                    toggleFavouriteUseCase(domainMovie)
-                }
-            }
-        }
-    }
+            is MovieDetailsEvent.OnBackClicked ->
+                emitSideEffect(MovieDetailsSideEffect.NavigateToBack)
 
-    private fun observeFavouriteState() {
-        viewModelScope.launch {
-            getAllFavouritesIdsUseCase().collect {
-                updateState { copy(isFavourite = it.contains(movieId)) }
+            is MovieDetailsEvent.OnFavouriteClicked -> {
+                handleFavouriteClicked(event)
             }
         }
     }
@@ -49,6 +40,19 @@ class MovieDetailsVm(
     init {
         fetchMovieDetails()
         observeFavouriteState()
+    }
+
+    private fun observeFavouriteState() {
+        getAllFavouritesIdsUseCase().onEach { favouriteIds ->
+            updateState { copy(isFavourite = favouriteIds.contains(movieId)) }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun handleFavouriteClicked(event: MovieDetailsEvent.OnFavouriteClicked) {
+        viewModelScope.launch {
+            val domainMovie = domainMapper.uiModelToDomain(event.movieDetailsUiModel)
+            toggleFavouriteUseCase(domainMovie)
+        }
     }
 
     private fun fetchMovieDetails() {

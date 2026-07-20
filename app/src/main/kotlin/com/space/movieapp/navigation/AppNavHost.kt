@@ -1,8 +1,10 @@
 package com.space.movieapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.space.api.navigation.MovieDetailsRoute
 import com.space.api.navigation.MovieRoute
@@ -30,6 +32,10 @@ fun AppNavHost() {
     NavDisplay(
         backStack = backStack,
         onBack = navigateBack,
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         entryProvider = entryProvider {
             movieEntries(
                 onNavigateToDetails = navigateToDetails,
@@ -41,5 +47,3 @@ fun AppNavHost() {
         }
     )
 }
-
-//amasac gadavxedav
