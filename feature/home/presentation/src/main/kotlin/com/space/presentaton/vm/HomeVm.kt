@@ -96,7 +96,7 @@ class HomeVm(
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun buildMoviesFlow(): Flow<PagingData<MovieCardUiModel>> =
         observeRelevantState()
-            .debounce(300.milliseconds)
+            .debounce(SEARCH_DEBOUNCE.milliseconds)
             .flatMapLatest { resolveMovieSource(it) }
             .map { mapToUiModels(it) }
             .combineWithFavouriteStatus()
@@ -140,4 +140,8 @@ class HomeVm(
         combine(getAllFavouritesIdsUseCase()) { pagingData, favouriteIds ->
             pagingData.map { it.copy(isFavourite = favouriteIds.contains(it.id)) }
         }
+
+    companion object {
+        private const val SEARCH_DEBOUNCE = 300L
+    }
 }
