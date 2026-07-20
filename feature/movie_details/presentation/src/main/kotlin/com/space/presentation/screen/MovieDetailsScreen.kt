@@ -85,20 +85,6 @@ fun MovieDetailsScreen(
 }
 
 @Composable
-private fun InfoChip(content: @Composable () -> Unit) {
-    Row(
-        modifier = Modifier
-            .clip(Radius.radius16)
-            .background(colors.surface)
-            .padding(horizontal = Sizing.size12, vertical = Sizing.size6),
-        verticalAlignment = Alignment.CenterVertically,
-
-        ) {
-        content()
-    }
-}
-
-@Composable
 private fun MovieDetailsScreenContent(
     state: MovieDetailsState,
     onBackClick: () -> Unit,
@@ -314,5 +300,19 @@ private fun MovieTitleRow(
                 tint = Color.Unspecified
             )
         }
+    }
+}
+
+@Composable
+private fun InfoChip(content: @Composable () -> Unit) {
+    Row(
+        modifier = Modifier
+            .clip(Radius.radius16)
+            .background(colors.surface)
+            .padding(horizontal = Sizing.size12, vertical = Sizing.size6),
+        verticalAlignment = Alignment.CenterVertically,
+
+        ) {
+        content()
     }
 }
