@@ -7,7 +7,7 @@ import androidx.paging.map
 import com.space.domain.model.MovieResponse
 import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetGenresUseCase
-import com.space.domain.usecase.HomeMoviesUseCase
+import com.space.domain.usecase.GetMoviesUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 class HomeVm(
-    private val homeMoviesUseCase: HomeMoviesUseCase,
+    private val getMoviesUseCase: GetMoviesUseCase,
     private val getGenresUseCase: GetGenresUseCase,
     private val getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
@@ -122,7 +122,7 @@ class HomeVm(
     private fun resolveMovieSource(currentState: HomeState): Flow<PagingData<MovieResponse>> {
         if (!currentState.genresLoaded) return flowOf(PagingData.empty())
 
-        return homeMoviesUseCase(currentState.searchQuery, currentState.selectedGenreId)
+        return getMoviesUseCase(currentState.searchQuery, currentState.selectedGenreId)
             .cachedIn(viewModelScope)
     }
 

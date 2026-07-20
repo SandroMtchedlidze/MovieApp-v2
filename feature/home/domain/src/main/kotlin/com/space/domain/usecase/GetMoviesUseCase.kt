@@ -2,14 +2,18 @@ package com.space.domain.usecase
 
 import androidx.paging.PagingData
 import com.space.domain.model.MovieResponse
-import com.space.domain.repository.MovieRepository
-import com.space.networking.network.ApiResult
 import kotlinx.coroutines.flow.Flow
 
+
 class GetMoviesUseCase(
-    private val repository: MovieRepository
+    private val searchMoviesUseCase: SearchMoviesUseCase,
+    private val filterUseCase: FilterUseCase,
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase
 ) {
-    operator fun invoke(): Flow<PagingData<MovieResponse>> {
-        return repository.getMovies()
-    }
+    operator fun invoke(searchQuery: String, genreId: Int?): Flow<PagingData<MovieResponse>> =
+        when {
+            searchQuery.isNotEmpty() -> searchMoviesUseCase(searchQuery)
+            genreId != null -> filterUseCase(genreId)
+            else -> getPopularMoviesUseCase()
+        }
 }

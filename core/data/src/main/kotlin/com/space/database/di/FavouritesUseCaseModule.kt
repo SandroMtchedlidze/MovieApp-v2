@@ -7,8 +7,8 @@ import com.space.domain.usecase.ToggleFavouriteUseCase
 import org.koin.dsl.module
 
 val favouritesUseCaseModule = module {
-    factory { ToggleFavouriteUseCase(repository = get()) }
-    factory { GetAllFavouritesUseCase(repository = get()) }
-    factory { IsFavouriteUseCase(repository = get()) }
-    factory { GetAllFavouritesIdsUseCase(repository = get()) }
+    single { ToggleFavouriteUseCase(repository = get()) }
+    single { GetAllFavouritesUseCase(repository = get()) }
+    single { IsFavouriteUseCase(repository = get()) }
+    single { GetAllFavouritesIdsUseCase(repository = get()) }
 }

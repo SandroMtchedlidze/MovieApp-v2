@@ -1,7 +1,7 @@
 package com.space.database.repository
 
 import com.space.database.dao.FavouriteMovieDao
-import com.space.database.mapper.MovieMapper
+import com.space.database.mapper.MovieEntityMapper
 import com.space.domain.model.FavouriteMovieResponse
 import com.space.domain.repository.FavouriteRepository
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 
 class FavouriteRepositoryImpl(
     private val dao: FavouriteMovieDao,
-    private val mapper: MovieMapper
+    private val mapper: MovieEntityMapper
 ) : FavouriteRepository {
 
     override suspend fun addFavourite(movie: FavouriteMovieResponse) {
