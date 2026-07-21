@@ -10,9 +10,12 @@ data class HomeState(
     val errorMessage: String? = null,
     val searchQuery: String = "",
     val genres: Map<Int, String> = emptyMap(),
-    val genresLoaded: Boolean = false,
     val isFilterVisible: Boolean = false,
     val selectedGenreId: Int? = null,
     val isSearchFocused: Boolean = false,
     val movies: Flow<PagingData<MovieCardUiModel>> = emptyFlow()
 )
+// didia state shevamciro.
+// calke arari sachiro
+// stateshi flow ?
+//flow movashoro

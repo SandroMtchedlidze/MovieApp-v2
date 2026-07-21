@@ -12,8 +12,11 @@ class GetMoviesUseCase(
 ) {
     operator fun invoke(searchQuery: String, genreId: Int?): Flow<PagingData<MovieResponse>> =
         when {
-            searchQuery.isNotEmpty() -> searchMoviesUseCase(searchQuery)
+            searchQuery.isNotEmpty() -> searchMoviesUseCase(searchQuery) // damatebiti checkebi
             genreId != null -> filterUseCase(genreId)
             else -> getPopularMoviesUseCase()
         }
 }
+// wavigo presentation layershi
+// presentation use case
+//provider , formatter , mapper , manager

@@ -40,7 +40,6 @@ import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
 import com.space.ui.component.SearchField
-import com.space.ui.component.isScrollingUp
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Spacing
@@ -72,7 +71,6 @@ private fun MovieScreenContent(
     onEvent: (HomeEvent) -> Unit
 ) {
     val gridState = rememberLazyGridState()
-    val isScrollingUp by gridState.isScrollingUp()
 
     Column(
         modifier = Modifier
@@ -80,9 +78,7 @@ private fun MovieScreenContent(
             .background(colors.background)
             .statusBarsPadding()
     ) {
-        AnimatedVisibility(visible = isScrollingUp) {
-            SearchAndFilterHeader(state = state, onEvent = onEvent)
-        }
+        SearchAndFilterHeader(state = state, onEvent = onEvent)
         MoviesResultSection(movies = movies, gridState = gridState, onEvent = onEvent)
     }
 }
