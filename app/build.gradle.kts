@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.core.splashscreen)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(projects.core.ui)
     implementation(projects.feature.home)
     implementation(projects.feature.favourites)
@@ -45,4 +46,5 @@ dependencies {
     implementation(projects.feature.movieDetails.data)
     implementation(projects.feature.movieDetails.presentation)
     implementation(projects.feature.movieDetails.api)
+    implementation(projects.core.data)
 }

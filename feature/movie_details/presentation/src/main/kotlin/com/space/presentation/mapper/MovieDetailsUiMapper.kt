@@ -8,6 +8,7 @@ private const val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
 class MovieDetailsUiMapper {
     fun mapToUi(domain: MovieDetailsResponse): MovieDetailsUiModel {
         return MovieDetailsUiModel(
+            movieId = domain.id,
             posterUrl = domain.posterPath?.let { "$POSTER_BASE_URL$it" },
             title = domain.title ?: "Unknown title",
             ratingText = domain.rating?.let { "%.1f".format(it) } ?: "-",

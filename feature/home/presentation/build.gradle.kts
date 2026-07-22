@@ -9,4 +9,5 @@ dependencies {
     implementation(projects.feature.home.domain)
     implementation(projects.core.networking)
     implementation(projects.core.presentation)
+    implementation(projects.core.domain)
 }

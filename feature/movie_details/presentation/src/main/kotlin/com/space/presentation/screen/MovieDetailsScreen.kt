@@ -38,6 +38,8 @@ import coil.compose.AsyncImage
 import com.space.core.ui.R
 import com.space.presentation.contract.MovieDetailsEvent
 import com.space.presentation.contract.MovieDetailsSideEffect
+import com.space.presentation.contract.MovieDetailsState
+import com.space.presentation.model.MovieDetailsUiModel
 import com.space.presentation.vm.MovieDetailsVm
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
@@ -45,12 +47,13 @@ import com.space.ui.theme.Radius
 import com.space.ui.theme.Sizing
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import com.space.movie.details.presentation.R as DetailsR
 
 @Composable
 fun MovieDetailsScreen(
     movieId: Int,
     onNavigateBack: () -> Unit,
-    viewModel: MovieDetailsVm = koinViewModel(key = "MovieDetailsVm-$movieId") {
+    viewModel: MovieDetailsVm = koinViewModel {
         parametersOf(
             movieId
         )
@@ -66,214 +69,236 @@ fun MovieDetailsScreen(
         }
     }
     MovieDetailsScreenContent(
-        posterUrl = state.movie?.posterUrl,
-        title = state.movie?.title ?: stringResource
-            (com.space.movie.details.presentation.R.string.unknownTitle),
-        ratingText = state.movie?.ratingText ?: stringResource
-            (com.space.movie.details.presentation.R.string.emptyText),
-        genreText = state.movie?.genreText ?: stringResource
-            (com.space.movie.details.presentation.R.string.emptyText),
-        runtimeText = state.movie?.runtimeText ?: stringResource
-            (com.space.movie.details.presentation.R.string.emptyText),
-        yearText = state.movie?.yearText ?: stringResource
-            (com.space.movie.details.presentation.R.string.emptyText),
-        overviewText = state.movie?.overviewText ?: stringResource
-            (com.space.movie.details.presentation.R.string.overview),
-        isFavorite = state.isFavourite,
-        isLoading = state.isLoading,
-        errorMessage = state.errorMessage,
+        state = state,
         onBackClick = { viewModel.onEvent(MovieDetailsEvent.OnBackClicked) },
-        onFavoriteClick = { viewModel.onEvent(MovieDetailsEvent.OnFavouriteClicked) },
+        onFavouriteClick = {
+            state.movie?.let {
+                viewModel.onEvent(
+                    MovieDetailsEvent.OnFavouriteClicked(
+                        it
+                    )
+                )
+            }
+        },
         onRetryClick = { viewModel.onEvent(MovieDetailsEvent.OnRetryClicked) }
     )
 }
 
 @Composable
 private fun MovieDetailsScreenContent(
-    posterUrl: String?,
-    title: String,
-    ratingText: String,
-    genreText: String,
-    runtimeText: String,
-    yearText: String,
-    overviewText: String,
-    isFavorite: Boolean,
-    isLoading: Boolean,
-    errorMessage: String?,
+    state: MovieDetailsState,
     onBackClick: () -> Unit,
-    onFavoriteClick: () -> Unit,
-    onRetryClick: () -> Unit,
+    onFavouriteClick: () -> Unit,
+    onRetryClick: () -> Unit
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
             .statusBarsPadding()
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Sizing.size4, vertical = Sizing.size8),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    modifier = Modifier.padding(start = Sizing.size12, top = Sizing.size10),
-                    painter = painterResource(R.drawable.back_arrow),
-                    contentDescription = stringResource
-                        (com.space.movie.details.presentation.R.string.back),
-                    tint = colors.onBackground
-                )
-            }
-            Text(
-                text = stringResource(com.space.movie.details.presentation.R.string.details),
-                style = typography.titleMedium,
-                color = colors.onBackground,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = Sizing.size10),
-                textAlign = TextAlign.Center
-            )
-            Spacer(Modifier.width(Sizing.size42))
-        }
+        DetailsTopBar(onBackClick = onBackClick)
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             when {
-                isLoading -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(Sizing.size36),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = colors.primary)
-                    }
-                }
+                state.isLoading -> LoadingState()
+                state.errorMessage != null -> ErrorState(
+                    message = state.errorMessage,
+                    onRetryClick = onRetryClick
+                )
 
-                errorMessage != null -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(Sizing.size16),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            errorMessage,
-                            style = typography.bodyMedium,
-                            color = colors.onBackground
-                        )
-                        Spacer(Modifier.height(Sizing.size8))
-                        Button(onClick = onRetryClick)
-                        { Text(text = stringResource(com.space.movie.details.presentation.R.string.retry)) }
-                    }
-                }
-
-                else -> {
-                    Column {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(0.76f)
-                        ) {
-                            AsyncImage(
-                                model = posterUrl,
-                                contentDescription = title,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                        Column(modifier = Modifier.padding(horizontal = Sizing.size16)) {
-                            Spacer(Modifier.height(Sizing.size16))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    title,
-                                    style = typography.titleLarge,
-                                    color = colors.onBackground,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                IconButton(onClick = onFavoriteClick) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.favourite),
-                                        contentDescription = stringResource
-                                            (com.space.movie.details.presentation.R.string.favourites),
-                                        tint = if (isFavorite) colors.primary else Color.Unspecified
-                                    )
-                                }
-                            }
-                            Spacer(Modifier.height(Sizing.size16))
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(Sizing.size8),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .horizontalScroll(rememberScrollState())
-                            ) {
-                                InfoChip {
-                                    Icon(
-                                        painter = painterResource(R.drawable.star),
-                                        contentDescription = null,
-                                        tint = colors.primary,
-                                        modifier = Modifier.size(Sizing.size16)
-                                    )
-                                    Spacer(Modifier.width(Sizing.size4))
-                                    Text(
-                                        ratingText,
-                                        style = typography.bodyMedium,
-                                        color = colors.textTertiary
-                                    )
-                                }
-                                InfoChip {
-                                    Text(
-                                        genreText,
-                                        style = typography.bodyMedium,
-                                        color = colors.textTertiary
-                                    )
-                                }
-                                InfoChip {
-                                    Icon(
-                                        painter = painterResource(R.drawable.clock),
-                                        contentDescription = null,
-                                        tint = colors.primary,
-                                        modifier = Modifier.size(Sizing.size16)
-                                    )
-                                    Spacer(Modifier.width(Sizing.size4))
-                                    Text(
-                                        runtimeText,
-                                        style = typography.bodyMedium,
-                                        color = colors.textTertiary
-                                    )
-                                }
-                                InfoChip {
-                                    Text(
-                                        yearText,
-                                        style = typography.bodyMedium,
-                                        color = colors.textTertiary
-                                    )
-                                }
-                            }
-                            Spacer(Modifier.height(Sizing.size26))
-                            Text(
-                                stringResource(com.space.movie.details.presentation.R.string.about_movie),
-                                style = typography.titleMedium,
-                                color = colors.onBackground
-                            )
-                            Spacer(Modifier.height(Sizing.size8))
-                            Text(
-                                overviewText,
-                                style = typography.bodyMedium,
-                                color = colors.onBackground
-                            )
-                            Spacer(Modifier.height(Sizing.size36))
-                        }
-                    }
-                }
+                else -> MovieDetailsBody(
+                    movie = state.movie,
+                    isFavourite = state.isFavourite,
+                    onFavouriteClick = onFavouriteClick
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun DetailsTopBar(onBackClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Sizing.size4, vertical = Sizing.size8),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onBackClick) {
+            Icon(
+                modifier = Modifier.padding(start = Sizing.size12, top = Sizing.size10),
+                painter = painterResource(R.drawable.back_arrow),
+                contentDescription = stringResource(DetailsR.string.back),
+                tint = colors.onBackground
+            )
+        }
+        Text(
+            text = stringResource(DetailsR.string.details),
+            style = typography.titleMedium,
+            color = colors.onBackground,
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = Sizing.size10),
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.width(Sizing.size42))
+    }
+}
+
+@Composable
+private fun LoadingState() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Sizing.size36),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = colors.primary)
+    }
+}
+
+@Composable
+private fun ErrorState(message: String, onRetryClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Sizing.size16),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(message, style = typography.bodyMedium, color = colors.onBackground)
+        Spacer(Modifier.height(Sizing.size8))
+        Button(onClick = onRetryClick) {
+            Text(text = stringResource(DetailsR.string.retry))
+        }
+    }
+}
+
+@Composable
+private fun MovieDetailsBody(
+    movie: MovieDetailsUiModel?,
+    isFavourite: Boolean,
+    onFavouriteClick: () -> Unit
+) {
+    val emptyText = stringResource(DetailsR.string.emptyText)
+
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(0.76f)
+                .clip(Radius.radius16)
+        ) {
+            AsyncImage(
+                model = movie?.posterUrl,
+                contentDescription = movie?.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        Column(modifier = Modifier.padding(horizontal = Sizing.size16)) {
+            Spacer(Modifier.height(Sizing.size16))
+            MovieTitleRow(
+                title = movie?.title ?: stringResource(DetailsR.string.unknownTitle),
+                isFavourite = isFavourite,
+                onFavouriteClick = onFavouriteClick
+            )
+            Spacer(Modifier.height(Sizing.size16))
+            MovieInfoChips(
+                ratingText = movie?.ratingText ?: emptyText,
+                genreText = movie?.genreText ?: emptyText,
+                runtimeText = movie?.runtimeText ?: emptyText,
+                yearText = movie?.yearText ?: emptyText
+            )
+            Spacer(Modifier.height(Sizing.size26))
+            Text(
+                stringResource(DetailsR.string.about_movie),
+                style = typography.titleMedium,
+                color = colors.onBackground
+            )
+            Spacer(Modifier.height(Sizing.size8))
+            Text(
+                movie?.overviewText ?: emptyText,
+                style = typography.bodyMedium,
+                color = colors.onBackground
+            )
+            Spacer(Modifier.height(Sizing.size36))
+        }
+    }
+}
+
+@Composable
+private fun MovieInfoChips(
+    ratingText: String,
+    genreText: String,
+    runtimeText: String,
+    yearText: String
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(Sizing.size8),
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+    ) {
+        InfoChip {
+            Icon(
+                painter = painterResource(R.drawable.star),
+                contentDescription = null,
+                tint = colors.primary,
+                modifier = Modifier.size(Sizing.size16)
+            )
+            Spacer(Modifier.width(Sizing.size4))
+            Text(ratingText, style = typography.bodyMedium, color = colors.textTertiary)
+        }
+        InfoChip {
+            Text(genreText, style = typography.bodyMedium, color = colors.textTertiary)
+        }
+        InfoChip {
+            Icon(
+                painter = painterResource(R.drawable.clock),
+                contentDescription = null,
+                tint = colors.primary,
+                modifier = Modifier.size(Sizing.size16)
+            )
+            Spacer(Modifier.width(Sizing.size4))
+            Text(runtimeText, style = typography.bodyMedium, color = colors.textTertiary)
+        }
+        InfoChip {
+            Text(yearText, style = typography.bodyMedium, color = colors.textTertiary)
+        }
+    }
+}
+
+@Composable
+private fun MovieTitleRow(
+    title: String,
+    isFavourite: Boolean,
+    onFavouriteClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            title,
+            style = typography.titleLarge,
+            color = colors.onBackground,
+            modifier = Modifier.weight(1f)
+        )
+        IconButton(onClick = onFavouriteClick) {
+            Icon(
+                painter = painterResource(
+                    if (isFavourite) R.drawable.detailschecked else R.drawable.detailsunchecked
+                ),
+                contentDescription = stringResource(DetailsR.string.favourites),
+                tint = Color.Unspecified
+            )
         }
     }
 }
