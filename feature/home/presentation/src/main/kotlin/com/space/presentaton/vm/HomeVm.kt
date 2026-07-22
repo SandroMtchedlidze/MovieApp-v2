@@ -114,7 +114,7 @@ class HomeVm(
         .flatMapLatest { (searchQuery, genreId) -> provideHomeUseCase(searchQuery, genreId) }
         .cachedIn(viewModelScope)
 
-    private val moviesPagingFlow: Flow<PagingData<MovieCardUiModel>> = combine(
+    val moviesPagingFlow: Flow<PagingData<MovieCardUiModel>> = combine(
         combinePagingFlow, favouriteIdsFlow
     ) { pagingData, favouriteId ->
         pagingData.map { movie ->
@@ -124,7 +124,6 @@ class HomeVm(
 
     init {
         loadGenres()
-        updateState { copy(movies = moviesPagingFlow) }
     }
 
     companion object {
