@@ -8,6 +8,7 @@ import com.space.data.remote.di.movieFeatureApiModule
 import com.space.database.di.databaseModule
 import com.space.database.di.favouritesUseCaseModule
 import com.space.networking.di.networkModule
+import com.space.presentation.di.favouritesVmModule
 import com.space.presentation.di.movieDetailsUseCaseModule
 import com.space.presentation.di.movieDetailsVmModule
 import com.space.presentaton.di.homeUseCaseModule
@@ -31,7 +32,8 @@ class MovieApplication : Application() {
                 movieDetailsVmModule,
                 movieDetailsUseCaseModule,
                 databaseModule,
-                favouritesUseCaseModule
+                favouritesUseCaseModule,
+                favouritesVmModule
             )
         }
     }

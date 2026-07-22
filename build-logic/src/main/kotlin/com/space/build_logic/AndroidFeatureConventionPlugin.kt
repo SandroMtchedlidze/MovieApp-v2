@@ -16,7 +16,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>()
                 .named("libs")
             dependencies {
-                add("implementation", project(":core:navigation"))
                 add("implementation", libs.findBundle("coroutines").get())
                 add("implementation", project(":core:ui"))
                 add("implementation", libs.findBundle("koin").get())
