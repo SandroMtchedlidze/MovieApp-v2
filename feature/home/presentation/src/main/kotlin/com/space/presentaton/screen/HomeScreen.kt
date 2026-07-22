@@ -39,7 +39,6 @@ import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
 import com.space.ui.component.SearchField
-import com.space.ui.component.isScrollingUp
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Spacing
@@ -52,7 +51,7 @@ fun MovieScreen(
     onMovieClicked: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val merged = state.movies.collectAsLazyPagingItems()
+    val movies = viewModel.moviesPagingFlow.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
@@ -61,7 +60,7 @@ fun MovieScreen(
             }
         }
     }
-    MovieScreenContent(movies = merged, state = state, onEvent = viewModel::onEvent)
+    MovieScreenContent(movies = movies, state = state, onEvent = viewModel::onEvent)
 }
 
 @Composable
@@ -71,7 +70,6 @@ private fun MovieScreenContent(
     onEvent: (HomeEvent) -> Unit
 ) {
     val gridState = rememberLazyGridState()
-    val isScrollingUp by gridState.isScrollingUp()
 
     Column(
         modifier = Modifier
@@ -79,9 +77,7 @@ private fun MovieScreenContent(
             .background(colors.background)
 
     ) {
-        AnimatedVisibility(visible = isScrollingUp) {
-            SearchAndFilterHeader(state = state, onEvent = onEvent)
-        }
+        SearchAndFilterHeader(state = state, onEvent = onEvent)
         MoviesResultSection(movies = movies, gridState = gridState, onEvent = onEvent)
     }
 }

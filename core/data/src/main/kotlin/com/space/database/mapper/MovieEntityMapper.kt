@@ -3,7 +3,7 @@ package com.space.database.mapper
 import com.space.database.entity.FavouriteMovieEntity
 import com.space.domain.model.FavouriteMovieResponse
 
-class MovieMapper {
+class MovieEntityMapper {
     fun mapToDomain(favouriteMovieEntity: FavouriteMovieEntity): FavouriteMovieResponse {
         return FavouriteMovieResponse(
             movieId = favouriteMovieEntity.id,

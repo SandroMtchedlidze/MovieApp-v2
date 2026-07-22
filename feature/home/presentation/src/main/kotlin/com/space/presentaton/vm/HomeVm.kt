@@ -7,7 +7,6 @@ import androidx.paging.map
 import com.space.domain.model.MovieResponse
 import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetGenresUseCase
-import com.space.domain.usecase.HomeMoviesUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
@@ -16,6 +15,7 @@ import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.mapper.MovieResponseToUiModel
 import com.space.presentaton.mapper.MovieUiModelToDomain
+import com.space.presentaton.provider.ProvideHomeUseCase
 import com.space.ui.component.MovieCardUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -23,14 +23,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 class HomeVm(
-    private val homeMoviesUseCase: HomeMoviesUseCase,
+    private val provideHomeUseCase: ProvideHomeUseCase,
     private val getGenresUseCase: GetGenresUseCase,
     private val getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
@@ -39,11 +39,6 @@ class HomeVm(
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
-    init {
-        loadGenres()
-        updateState { copy(movies = buildMoviesFlow()) }
-    }
-
     override fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnMovieClicked -> emitSideEffect(
@@ -86,60 +81,50 @@ class HomeVm(
             getGenresUseCase().collect { result ->
                 if (result is ApiResult.Success) {
                     updateState {
-                        copy(genres = result.data, genresLoaded = true)
+                        copy(genres = result.data, isLoading = false)
                     }
                 }
             }
         }
     }
 
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    private fun buildMoviesFlow(): Flow<PagingData<MovieCardUiModel>> =
-        observeRelevantState()
-            .debounce(SEARCH_DEBOUNCE.milliseconds)
-            .flatMapLatest { resolveMovieSource(it) }
-            .map { mapToUiModels(it) }
-            .combineWithFavouriteStatus()
-            .cachedIn(viewModelScope)
+    @OptIn(FlowPreview::class)
+    private val searchQueryFlow = state
+        .map { it.searchQuery }
+        .debounce(SEARCH_DEBOUNCE.milliseconds)
+        .distinctUntilChanged()
 
-    /**
-     * Emits new state when search query changes or
-     * selected genre id changes or genres are loaded
-     */
-    private fun observeRelevantState(): Flow<HomeState> =
-        state.distinctUntilChanged { old, new ->
-            old.searchQuery == new.searchQuery &&
-                    old.selectedGenreId == new.selectedGenreId &&
-                    old.genresLoaded == new.genresLoaded
+    private val genreIdFlow = state
+        .map { it.selectedGenreId }
+        .distinctUntilChanged()
+
+    private val genresLoadedFlow = state
+        .map { !it.isLoading }
+        .distinctUntilChanged()
+
+    private val favouriteIdsFlow = getAllFavouritesIdsUseCase()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val combinePagingFlow: Flow<PagingData<MovieResponse>> = combine(
+        genresLoadedFlow, searchQueryFlow, genreIdFlow,
+    ) { genresLoaded, searchQuery, genreId ->
+        if (genresLoaded) searchQuery to genreId else null
+    }.filterNotNull()
+        .distinctUntilChanged()
+        .flatMapLatest { (searchQuery, genreId) -> provideHomeUseCase(searchQuery, genreId) }
+        .cachedIn(viewModelScope)
+
+    val moviesPagingFlow: Flow<PagingData<MovieCardUiModel>> = combine(
+        combinePagingFlow, favouriteIdsFlow
+    ) { pagingData, favouriteId ->
+        pagingData.map { movie ->
+            movieUiMapper.mapToUiModel(movie).copy(isFavourite = favouriteId.contains(movie.id))
         }
-
-    /**
-     * decides what to display
-     * if search query is not empty it fetches from searchApi,
-     * if genre is selected it filters
-     * if nothing is selected or searched it fetches movies
-     */
-    private fun resolveMovieSource(currentState: HomeState): Flow<PagingData<MovieResponse>> {
-        if (!currentState.genresLoaded) return flowOf(PagingData.empty())
-
-        return homeMoviesUseCase(currentState.searchQuery, currentState.selectedGenreId)
-            .cachedIn(viewModelScope)
     }
 
-    /**
-     * Maps Domain model into Ui model
-     */
-    private fun mapToUiModels(pagingData: PagingData<MovieResponse>): PagingData<MovieCardUiModel> =
-        pagingData.map { movieUiMapper.mapToUiModel(it) }
-
-
-    /**
-     * Checks each movie if it is in database when displaying heart icon is checked
-     */
-    private fun Flow<PagingData<MovieCardUiModel>>.combineWithFavouriteStatus() =
-        combine(getAllFavouritesIdsUseCase()) { pagingData, favouriteIds ->
-            pagingData.map { it.copy(isFavourite = favouriteIds.contains(it.id)) }
-        }
+    init {
+        loadGenres()
+    }
 
     companion object {
         private const val SEARCH_DEBOUNCE = 300L
