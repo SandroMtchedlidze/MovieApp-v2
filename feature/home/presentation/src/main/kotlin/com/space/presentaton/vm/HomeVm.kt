@@ -7,7 +7,6 @@ import androidx.paging.map
 import com.space.domain.model.MovieResponse
 import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetGenresUseCase
-import com.space.domain.usecase.GetMoviesUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
@@ -16,6 +15,7 @@ import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.mapper.MovieResponseToUiModel
 import com.space.presentaton.mapper.MovieUiModelToDomain
+import com.space.presentaton.provider.ProvideHomeUseCase
 import com.space.ui.component.MovieCardUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
 class HomeVm(
-    private val getMoviesUseCase: GetMoviesUseCase,
+    private val provideHomeUseCase: ProvideHomeUseCase,
     private val getGenresUseCase: GetGenresUseCase,
     private val getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
@@ -111,7 +111,7 @@ class HomeVm(
         if (genresLoaded) searchQuery to genreId else null
     }.filterNotNull()
         .distinctUntilChanged()
-        .flatMapLatest { (searchQuery, genreId) -> getMoviesUseCase(searchQuery, genreId) }
+        .flatMapLatest { (searchQuery, genreId) -> provideHomeUseCase(searchQuery, genreId) }
         .cachedIn(viewModelScope)
 
     private val moviesPagingFlow: Flow<PagingData<MovieCardUiModel>> = combine(

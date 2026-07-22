@@ -15,7 +15,3 @@ data class HomeState(
     val isSearchFocused: Boolean = false,
     val movies: Flow<PagingData<MovieCardUiModel>> = emptyFlow()
 )
-// didia state shevamciro.
-// calke arari sachiro
-// stateshi flow ?
-//flow movashoro

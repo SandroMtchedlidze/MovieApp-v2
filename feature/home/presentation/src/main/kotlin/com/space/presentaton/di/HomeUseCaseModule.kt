@@ -2,9 +2,9 @@ package com.space.presentaton.di
 
 import com.space.domain.usecase.FilterUseCase
 import com.space.domain.usecase.GetGenresUseCase
-import com.space.domain.usecase.GetMoviesUseCase
 import com.space.domain.usecase.GetPopularMoviesUseCase
 import com.space.domain.usecase.SearchMoviesUseCase
+import com.space.presentaton.provider.ProvideHomeUseCase
 import org.koin.dsl.module
 
 val homeUseCaseModule = module {
@@ -17,7 +17,7 @@ val homeUseCaseModule = module {
     single { SearchMoviesUseCase(repository = get()) }
     single { FilterUseCase(repository = get()) }
     single {
-        GetMoviesUseCase(
+        ProvideHomeUseCase(
             get(),
             get(),
             get()
