@@ -26,7 +26,6 @@ class FavouritesVm(
 ) {
     override fun onEvent(event: FavouritesEvent) {
         when (event) {
-            is FavouritesEvent.LoadFavourites -> observeFavourites()
             is FavouritesEvent.OnFavouriteToggle -> toggleFavourites(event.movie)
             is FavouritesEvent.OnMovieClicked -> emitSideEffect(
                 FavouritesEffect.NavigateToDetails(
@@ -37,10 +36,10 @@ class FavouritesVm(
     }
 
     init {
-        onEvent(FavouritesEvent.LoadFavourites)
+        loadFavourites()
     }
 
-    private fun observeFavourites() {
+    private fun loadFavourites() {
         getAllFavouritesUseCase()
             .onStart { updateState { copy(isLoading = true) } }
             .map { responses -> responses.map { mapper.toUiModel(it) } }
