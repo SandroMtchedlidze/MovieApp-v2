@@ -33,6 +33,7 @@ import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
+import com.space.ui.theme.TextSizing
 import org.koin.androidx.compose.koinViewModel
 import com.space.favourites.presentation.R as FavouritesR
 
@@ -76,6 +77,7 @@ private fun FavouriteScreenContent(
         when {
             state.isLoading -> LoadingState()
             state.favourites.isEmpty() -> EmptyFavouritesState()
+            state.error != null -> ErrorState(message = state.error)
             else -> FavouritesGrid(
                 movies = state.favourites,
                 onMovieClicked = onMovieClicked,
@@ -93,6 +95,24 @@ private fun LoadingState() {
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun ErrorState(message: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(Sizing.size16),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            message,
+            style = typography.bodyMedium.copy(fontSize = TextSizing.size26),
+            color = colors.primary
+        )
+        Spacer(Modifier.height(Sizing.size8))
     }
 }
 
