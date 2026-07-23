@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -40,6 +38,8 @@ import com.space.presentation.contract.MovieDetailsSideEffect
 import com.space.presentation.contract.MovieDetailsState
 import com.space.presentation.model.MovieDetailsUiModel
 import com.space.presentation.vm.MovieDetailsVm
+import com.space.ui.component.ErrorScreen
+import com.space.ui.component.MovieappLoader
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Radius
@@ -90,7 +90,6 @@ private fun MovieDetailsScreenContent(
     onFavouriteClick: () -> Unit,
     onRetryClick: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,13 +100,15 @@ private fun MovieDetailsScreenContent(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            contentAlignment = Alignment.Center
         ) {
             when {
                 state.isLoading -> LoadingState()
-                state.errorMessage != null -> ErrorState(
-                    message = state.errorMessage,
-                    onRetryClick = onRetryClick
+                state.errorMessage != null -> ErrorScreen(
+                    title = stringResource(DetailsR.string.something_went_wrong),
+                    description = stringResource(state.errorMessage),
+                    onRefreshClick = onRetryClick
                 )
 
                 else -> MovieDetailsBody(
@@ -151,29 +152,12 @@ private fun DetailsTopBar(onBackClick: () -> Unit) {
 
 @Composable
 private fun LoadingState() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Sizing.size36),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(color = colors.primary)
-    }
-}
-
-@Composable
-private fun ErrorState(message: String, onRetryClick: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Sizing.size16),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(message, style = typography.bodyMedium, color = colors.onBackground)
-        Spacer(Modifier.height(Sizing.size8))
-        Button(onClick = onRetryClick) {
-            Text(text = stringResource(DetailsR.string.retry))
-        }
+    Box(modifier = Modifier.fillMaxSize()) {
+        MovieappLoader(
+            modifier = Modifier.align(Alignment.Center),
+            mainColor = colors.primary,
+            backgroundColor = colors.background
+        )
     }
 }
 

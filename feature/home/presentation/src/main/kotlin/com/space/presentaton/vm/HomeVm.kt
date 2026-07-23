@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.space.database.network_observer.ConnectivityObserver
 import com.space.domain.model.MovieResponse
 import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetGenresUseCase
@@ -20,6 +21,7 @@ import com.space.ui.component.MovieCardUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -35,6 +37,7 @@ class HomeVm(
     private val getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val movieUiMapper: MovieResponseToUiModel,
+    private val networkObserver: ConnectivityObserver,
     private val mapperToDomain: MovieUiModelToDomain
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
@@ -122,8 +125,17 @@ class HomeVm(
         }
     }
 
+    private fun observeNetwork() {
+        viewModelScope.launch {
+            networkObserver.observe().collectLatest { connected ->
+                updateState { copy(isConnected = connected) }
+            }
+        }
+    }
+
     init {
         loadGenres()
+        observeNetwork()
     }
 
     companion object {

@@ -27,13 +27,13 @@ import com.space.presentation.contract.FavouritesEffect
 import com.space.presentation.contract.FavouritesEvent
 import com.space.presentation.contract.FavouritesState
 import com.space.presentation.vm.FavouritesVm
+import com.space.ui.component.ErrorScreen
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
-import com.space.ui.theme.TextSizing
 import org.koin.androidx.compose.koinViewModel
 import com.space.favourites.presentation.R as FavouritesR
 
@@ -53,8 +53,13 @@ fun FavouritesScreen(
     }
     FavouriteScreenContent(
         state = state,
-        onMovieClicked = { movieId -> viewmodel.onEvent(FavouritesEvent.OnMovieClicked(movieId)) },
-        onFavouriteClicked = { movie -> viewmodel.onEvent(FavouritesEvent.OnFavouriteToggle(movie)) }
+        onMovieClicked = { movieId ->
+            viewmodel.onEvent(FavouritesEvent.OnMovieClicked(movieId))
+        },
+        onFavouriteClicked = { movie ->
+            viewmodel.onEvent(FavouritesEvent.OnFavouriteToggle(movie))
+        },
+        onRetry = { viewmodel.onEvent(FavouritesEvent.OnRetryClicked) }
     )
 }
 
@@ -62,6 +67,7 @@ fun FavouritesScreen(
 private fun FavouriteScreenContent(
     state: FavouritesState,
     onMovieClicked: (Int) -> Unit,
+    onRetry: () -> Unit,
     onFavouriteClicked: (MovieCardUiModel) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -77,7 +83,12 @@ private fun FavouriteScreenContent(
         when {
             state.isLoading -> LoadingState()
             state.favourites.isEmpty() -> EmptyFavouritesState()
-            state.error != null -> ErrorState(message = state.error)
+            state.error != null -> ErrorScreen(
+                title = stringResource(FavouritesR.string.something_went_wrong),
+                description = state.error,
+                onRefreshClick = onRetry
+            )
+
             else -> FavouritesGrid(
                 movies = state.favourites,
                 onMovieClicked = onMovieClicked,
@@ -95,24 +106,6 @@ private fun LoadingState() {
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun ErrorState(message: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(Sizing.size16),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            message,
-            style = typography.bodyMedium.copy(fontSize = TextSizing.size26),
-            color = colors.primary
-        )
-        Spacer(Modifier.height(Sizing.size8))
     }
 }
 

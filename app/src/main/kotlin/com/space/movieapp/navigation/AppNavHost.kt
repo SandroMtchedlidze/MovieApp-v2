@@ -18,7 +18,9 @@ import com.space.api.navigation.movieEntries
 import com.space.ui.theme.MovieAppTheme.colors
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(
+    isOnline: Boolean
+) {
     val backStack = rememberNavBackStack(MovieRoute)
 
     val navigateToDetails: (Int) -> Unit = { id ->
@@ -48,7 +50,7 @@ fun AppNavHost() {
     Scaffold(
         containerColor = colors.background,
         bottomBar = {
-            if (showBottomBar) {
+            if (showBottomBar && isOnline) {
                 BottomBar(
                     backStack = backStack,
                     onHomeClick = navigateHome,

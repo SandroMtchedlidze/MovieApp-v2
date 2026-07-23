@@ -32,6 +32,8 @@ class FavouritesVm(
                     event.movieId
                 )
             )
+
+            is FavouritesEvent.OnRetryClicked -> loadFavourites()
         }
     }
 

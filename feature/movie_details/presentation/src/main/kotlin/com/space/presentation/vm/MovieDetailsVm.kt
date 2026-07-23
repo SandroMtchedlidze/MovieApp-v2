@@ -6,6 +6,7 @@ import com.space.domain.usecase.IsFavouriteUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
+import com.space.presentation.base.getErrorStrings
 import com.space.presentation.contract.MovieDetailsEvent
 import com.space.presentation.contract.MovieDetailsSideEffect
 import com.space.presentation.contract.MovieDetailsState
@@ -68,12 +69,13 @@ class MovieDetailsVm(
                 is ApiResult.Error -> updateState {
                     copy(
                         isLoading = false,
-                        errorMessage = result.message ?: "Something went wrong"
+                        errorMessage = getErrorStrings(result.networkError)
                     )
                 }
 
                 is ApiResult.Success -> updateState {
                     copy(
+                        isLoading = false,
                         movie = uiMapper.mapToUi(result.data),
                         errorMessage = null
                     )
