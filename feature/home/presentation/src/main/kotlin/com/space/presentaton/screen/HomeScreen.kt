@@ -27,27 +27,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.space.home.presentaton.R
-import com.space.networking.network.NetworkError
-import com.space.networking.network.PagingException
-import com.space.presentation.base.getErrorStrings
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
-import com.space.ui.component.ErrorScreen
 import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
-import com.space.ui.component.MovieappLoader
-import com.space.ui.component.NetworkStatusBanner
 import com.space.ui.component.SearchField
-import com.space.ui.component.isScrollingUp
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Spacing
@@ -60,7 +51,7 @@ fun MovieScreen(
     onMovieClicked: (Int) -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val merged = state.movies.collectAsLazyPagingItems()
+    val movies = viewModel.moviesPagingFlow.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.sideEffect.collect { sideEffect ->
@@ -69,17 +60,7 @@ fun MovieScreen(
             }
         }
     }
-    if (merged.loadState.refresh is LoadState.Error) {
-        val exception = (merged.loadState.refresh as LoadState.Error).error as? PagingException
-        val descriptionRes = getErrorStrings(exception?.errorType ?: NetworkError.UNKNOWN)
-        ErrorScreen(
-            title = stringResource(R.string.data_can_t_be_loaded),
-            description = stringResource(descriptionRes),
-            onRefreshClick = { merged.retry() }
-        )
-    } else {
-        MovieScreenContent(movies = merged, state = state, onEvent = viewModel::onEvent)
-    }
+    MovieScreenContent(movies = movies, state = state, onEvent = viewModel::onEvent)
 }
 
 @Composable
@@ -89,105 +70,27 @@ private fun MovieScreenContent(
     onEvent: (HomeEvent) -> Unit
 ) {
     val gridState = rememberLazyGridState()
-    val isScrollingUp by gridState.isScrollingUp()
 
-    LaunchedEffect(state.isConnected) {
-        if (state.isConnected) {
-            val appendFailed = movies.loadState.append is LoadState.Error
-            if (appendFailed) {
-                movies.retry()
-            }
-        }
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(colors.background)
 
     ) {
-        AnimatedVisibility(
-            visible = isScrollingUp,
-        ) {
-            Column {
-                SearchField(
-                    query = state.searchQuery,
-                    isFilterActive = state.isFilterVisible,
-                    isFocused = state.isSearchFocused,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Spacing.spacing16)
-                        .padding(top = Spacing.spacing16),
-                    onQueryChanged = { onEvent(HomeEvent.OnSearchQueryChanged(it)) },
-                    onCancelClicked = { onEvent(HomeEvent.OnSearchCleared) },
-                    onFilterClicked = { onEvent(HomeEvent.OnFilterClicked) },
-                    onFocusChanged = { onEvent(HomeEvent.OnSearchFocusedChanged(it)) }
-                )
-                AnimatedVisibility(
-                    visible = state.isFilterVisible,
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
-                ) {
-                    Column {
-                        Spacer(Modifier.height(Spacing.spacing12))
-                        GenreRow(
-                            genres = state.genres,
-                            selectedGenreId = state.selectedGenreId,
-                            onGenreSelected = { onEvent(HomeEvent.OnGenreSelected(it)) },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                }
-                Spacer(Modifier.height(Spacing.spacing16))
-                Text(
-                    text = stringResource(R.string.movies),
-                    style = typography.titleLarge.copy(
-                        letterSpacing = TextSizing.size1,
-                        fontSize = TextSizing.size18,
-                        lineHeight = TextSizing.size18
-                    ),
-                    color = colors.primary,
-                    modifier = Modifier
-                        .padding(horizontal = Spacing.spacing16)
-                )
-            }
-        }
-        when (movies.loadState.refresh) {
-            is LoadState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    MovieappLoader(
-                        mainColor = colors.primary,
-                        backgroundColor = colors.background
-                    )
-                }
-            }
-
-            else -> {
-                MovieGrid(
-                    movies = movies,
-                    isConnected = state.isConnected,
-                    state = state,
-                    onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
-                    onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) },
-                    gridState = gridState,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-        }
+        SearchAndFilterHeader(state = state, onEvent = onEvent)
+        MoviesResultSection(movies = movies, gridState = gridState, onEvent = onEvent)
     }
 }
 
+/**
+ * Displays grid , takes paging items as argument grid state to observe scrolling.
+ * @param onMovieClicked to navigate to details screen.
+ * @param onFavouriteClicked to mark movie as favourite.
+ */
 @Composable
 private fun MovieGrid(
     movies: LazyPagingItems<MovieCardUiModel>,
     gridState: LazyGridState,
-    isConnected: Boolean,
-    state: HomeState,
-    modifier: Modifier = Modifier,
     onMovieClicked: (Int) -> Unit,
     onFavouriteClicked: (MovieCardUiModel) -> Unit
 ) {
@@ -211,23 +114,116 @@ private fun MovieGrid(
             }
         }
         if (movies.loadState.append is LoadState.Loading) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(Spacing.spacing16)
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = colors.primary
-                    )
-                }
+            item(span = { GridItemSpan(2) }) {
+                AppendLoadingIndicator()
             }
         }
-        if (!isConnected) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                NetworkStatusBanner(isConnected = state.isConnected)
+    }
+}
+
+/**
+ * Displays search field and filter.
+ */
+@Composable
+private fun SearchAndFilterHeader(
+    state: HomeState,
+    onEvent: (HomeEvent) -> Unit
+) {
+    Column {
+        SearchField(
+            query = state.searchQuery,
+            isFilterActive = state.isFilterVisible,
+            isFocused = state.isSearchFocused,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Spacing.spacing16)
+                .padding(top = Spacing.spacing16),
+            onQueryChanged = { onEvent(HomeEvent.OnSearchQueryChanged(it)) },
+            onCancelClicked = { onEvent(HomeEvent.OnSearchCleared) },
+            onFilterClicked = { onEvent(HomeEvent.OnFilterClicked) },
+            onFocusChanged = { onEvent(HomeEvent.OnSearchFocusedChanged(it)) }
+        )
+        AnimatedVisibility(
+            visible = state.isFilterVisible,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            Column {
+                Spacer(Modifier.height(Spacing.spacing12))
+                GenreRow(
+                    genres = state.genres,
+                    selectedGenreId = state.selectedGenreId,
+                    onGenreSelected = { onEvent(HomeEvent.OnGenreSelected(it)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
+        Spacer(Modifier.height(Spacing.spacing16))
+        Text(
+            text = "Movies",
+            style = typography.titleLarge.copy(
+                letterSpacing = TextSizing.size1,
+                fontSize = TextSizing.size18,
+                lineHeight = TextSizing.size18
+            ),
+            color = colors.primary,
+            modifier = Modifier.padding(horizontal = Spacing.spacing16)
+        )
+    }
+}
+
+/**
+ * Displays movies or shows loading indicator or error if movies failed.
+ */
+@Composable
+private fun MoviesResultSection(
+    movies: LazyPagingItems<MovieCardUiModel>,
+    gridState: LazyGridState,
+    onEvent: (HomeEvent) -> Unit,
+) {
+    when (movies.loadState.refresh) {
+        is LoadState.Loading -> FullScreenLoading()
+        is LoadState.Error -> FullScreenError(message = "Something went wrong")
+        else -> MovieGrid(
+            movies = movies,
+            gridState = gridState,
+            onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
+            onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) }
+        )
+    }
+}
+
+@Composable
+private fun FullScreenLoading() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center),
+            color = colors.primary
+        )
+    }
+}
+
+@Composable
+private fun FullScreenError(message: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = message,
+            color = colors.primary,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
+@Composable
+private fun AppendLoadingIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Spacing.spacing16)
+    ) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center),
+            color = colors.primary
+        )
     }
 }

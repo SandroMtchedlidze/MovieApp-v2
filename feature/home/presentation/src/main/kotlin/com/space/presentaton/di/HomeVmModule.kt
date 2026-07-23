@@ -12,11 +12,9 @@ val homeVmModule = module {
     viewModel<HomeVm> {
         HomeVm(
             getGenresUseCase = get(),
-            getMoviesUseCase = get(),
-            searchMoviesUseCase = get(),
-            getAllFavouritesUseCase = get(),
+            provideHomeUseCase = get(),
+            getAllFavouritesIdsUseCase = get(),
             toggleFavouriteUseCase = get(),
-            filterUseCase = get(),
             movieUiMapper = get(),
             mapperToDomain = get(),
             connectivityObserver = get()

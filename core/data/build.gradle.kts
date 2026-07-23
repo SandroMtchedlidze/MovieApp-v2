@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.space.database"
+    namespace = "com.space.data"
 }
 
 dependencies {

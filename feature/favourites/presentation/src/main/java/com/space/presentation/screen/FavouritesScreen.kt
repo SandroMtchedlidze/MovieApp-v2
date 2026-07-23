@@ -1,6 +1,7 @@
 package com.space.presentation.screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.space.presentation.contract.FavouritesEffect
 import com.space.presentation.contract.FavouritesEvent
+import com.space.presentation.contract.FavouritesState
 import com.space.presentation.vm.FavouritesVm
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
@@ -31,7 +33,9 @@ import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Sizing
 import com.space.ui.theme.Spacing
+import com.space.ui.theme.TextSizing
 import org.koin.androidx.compose.koinViewModel
+import com.space.favourites.presentation.R as FavouritesR
 
 @Composable
 fun FavouritesScreen(
@@ -47,9 +51,22 @@ fun FavouritesScreen(
             }
         }
     }
+    FavouriteScreenContent(
+        state = state,
+        onMovieClicked = { movieId -> viewmodel.onEvent(FavouritesEvent.OnMovieClicked(movieId)) },
+        onFavouriteClicked = { movie -> viewmodel.onEvent(FavouritesEvent.OnFavouriteToggle(movie)) }
+    )
+}
+
+@Composable
+private fun FavouriteScreenContent(
+    state: FavouritesState,
+    onMovieClicked: (Int) -> Unit,
+    onFavouriteClicked: (MovieCardUiModel) -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
-            stringResource(com.space.favourites.presentation.R.string.favorite_movies),
+            stringResource(FavouritesR.string.favorite_movies),
             style = typography.titleMedium,
             color = colors.onBackground,
             textAlign = TextAlign.Center,
@@ -58,56 +75,70 @@ fun FavouritesScreen(
                 .align(Alignment.CenterHorizontally)
         )
         when {
-            state.isLoading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
-
-            state.favourites.isEmpty() -> {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        painter = painterResource(com.space.favourites.presentation.R.drawable.empty),
-                        tint = colors.border,
-                        contentDescription = null
-                    )
-                    Spacer(Modifier.height(Sizing.size26))
-                    Text(
-                        stringResource(com.space.favourites.presentation.R.string.no_movies_added_yet),
-                        style = typography.titleMedium,
-                        color = colors.border
-                    )
-                }
-            }
-
-            else -> {
-                FavouritesGrid(
-                    movies = state.favourites,
-                    onMovieClicked = { movieId ->
-                        viewmodel.onEvent(
-                            FavouritesEvent.OnMovieClicked(
-                                movieId
-                            )
-                        )
-                    },
-                    onFavouriteClicked = { movie ->
-                        viewmodel.onEvent(
-                            FavouritesEvent.OnFavouriteToggle(
-                                movie
-                            )
-                        )
-                    },
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+            state.isLoading -> LoadingState()
+            state.favourites.isEmpty() -> EmptyFavouritesState()
+            state.error != null -> ErrorState(message = state.error)
+            else -> FavouritesGrid(
+                movies = state.favourites,
+                onMovieClicked = onMovieClicked,
+                onFavouriteClicked = onFavouriteClicked,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
 
 @Composable
-fun FavouritesGrid(
+private fun LoadingState() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun ErrorState(message: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(Sizing.size16),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            message,
+            style = typography.bodyMedium.copy(fontSize = TextSizing.size26),
+            color = colors.primary
+        )
+        Spacer(Modifier.height(Sizing.size8))
+    }
+}
+
+@Composable
+private fun EmptyFavouritesState() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            painter = painterResource(FavouritesR.drawable.empty),
+            tint = colors.border,
+            contentDescription = null
+        )
+        Spacer(Modifier.height(Sizing.size26))
+        Text(
+            stringResource(FavouritesR.string.no_movies_added_yet),
+            style = typography.titleMedium,
+            color = colors.border
+        )
+    }
+}
+
+@Composable
+private fun FavouritesGrid(
     movies: List<MovieCardUiModel>,
     onMovieClicked: (Int) -> Unit,
     onFavouriteClicked: (MovieCardUiModel) -> Unit,
@@ -126,7 +157,7 @@ fun FavouritesGrid(
         ) { movie ->
             MovieCard(
                 movie = movie,
-                onClick = onMovieClicked,
+                onClick = { onMovieClicked(movie.id) },
                 onFavouriteClick = { onFavouriteClicked(movie) }
             )
         }
