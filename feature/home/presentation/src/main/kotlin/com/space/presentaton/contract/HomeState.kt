@@ -9,7 +9,6 @@ data class HomeState(
     val searchQuery: String = "",
     val genres: Map<Int, String> = emptyMap(),
     val isFilterVisible: Boolean = false,
-    val genresLoaded: Boolean = false,
     val selectedGenreId: Int? = null,
     val isSearchFocused: Boolean = false,
     val isConnected: Boolean = true,

@@ -34,11 +34,11 @@ import kotlin.time.Duration.Companion.milliseconds
 class HomeVm(
     private val provideHomeUseCase: ProvideHomeUseCase,
     private val getGenresUseCase: GetGenresUseCase,
-    private val getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val movieUiMapper: MovieResponseToUiModel,
     private val networkObserver: ConnectivityObserver,
-    private val mapperToDomain: MovieUiModelToDomain
+    private val mapperToDomain: MovieUiModelToDomain,
+    getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
