@@ -94,6 +94,7 @@ private fun MovieScreenContent(
             .background(colors.background)
 
     ) {
+        SearchAndFilterHeader(state = state, onEvent = onEvent)
         when (movies.loadState.refresh) {
             is LoadState.Loading -> FullScreenLoading()
             is LoadState.Error -> {
@@ -109,7 +110,6 @@ private fun MovieScreenContent(
             }
 
             else -> {
-                SearchAndFilterHeader(state = state, onEvent = onEvent)
                 MovieGrid(
                     movies = movies,
                     gridState = gridState,
