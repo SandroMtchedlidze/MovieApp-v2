@@ -11,6 +11,7 @@ import com.space.domain.usecase.GetGenresUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
+import com.space.presentation.base.getErrorStrings
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
@@ -21,7 +22,6 @@ import com.space.ui.component.MovieCardUiModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -82,9 +82,25 @@ class HomeVm(
     private fun loadGenres() {
         viewModelScope.launch {
             getGenresUseCase().collect { result ->
-                if (result is ApiResult.Success) {
-                    updateState {
-                        copy(genres = result.data, isLoading = false)
+                when (result) {
+                    is ApiResult.Success -> updateState {
+                        copy(
+                            genres = result.data,
+                            isLoading = false
+                        )
+                    }
+
+                    is ApiResult.Loading -> {
+                        updateState { copy(isLoading = result.isLoading) }
+                    }
+
+                    is ApiResult.Error -> {
+                        updateState {
+                            copy(
+                                isLoading = false,
+                                errorMessage = getErrorStrings(result.networkError),
+                            )
+                        }
                     }
                 }
             }
@@ -127,7 +143,7 @@ class HomeVm(
 
     private fun observeNetwork() {
         viewModelScope.launch {
-            networkObserver.observe().collectLatest { connected ->
+            networkObserver.observe().collect { connected ->
                 updateState { copy(isConnected = connected) }
             }
         }
