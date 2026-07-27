@@ -1,4 +1,4 @@
-package com.space.database.network_observer
+package com.space.presentation.network_observer
 
 import android.content.Context
 import android.net.ConnectivityManager

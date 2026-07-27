@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.space.database.network_observer.ConnectivityObserver
 import com.space.domain.model.MovieResponse
 import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetGenresUseCase
@@ -12,6 +11,7 @@ import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
 import com.space.presentation.base.getErrorStrings
+import com.space.presentation.network_observer.ConnectivityObserver
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState

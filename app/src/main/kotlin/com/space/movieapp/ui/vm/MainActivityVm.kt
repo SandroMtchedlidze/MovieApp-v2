@@ -2,8 +2,8 @@ package com.space.movieapp.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.space.database.network_observer.ConnectivityObserver
 import com.space.movieapp.ui.contract.MainActivityState
+import com.space.presentation.network_observer.ConnectivityObserver
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +18,11 @@ class MainActivityVm(
     private val _state: MutableStateFlow<MainActivityState> = MutableStateFlow(MainActivityState())
     val state = _state.asStateFlow()
 
+    init {
+        loadSplashScreen()
+        observeNetwork()
+    }
+
     private fun loadSplashScreen() {
         viewModelScope.launch {
             delay(SPLASH_SCREEN_DELAY.milliseconds)
@@ -31,11 +36,6 @@ class MainActivityVm(
                 _state.update { it.copy(isOnline = connected) }
             }
         }
-    }
-
-    init {
-        loadSplashScreen()
-        observeNetwork()
     }
 
     companion object {

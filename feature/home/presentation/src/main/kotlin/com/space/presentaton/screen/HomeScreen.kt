@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -83,16 +84,14 @@ private fun MovieScreenContent(
     val gridState = rememberLazyGridState()
 
     val focusManager = LocalFocusManager.current
-
-    LaunchedEffect(state.isConnected) {
-        if (state.isConnected) {
-            val appendFailed = movies.loadState.append is LoadState.Error
-            if (appendFailed) {
-                movies.retry()
+    LaunchedEffect(Unit) {
+        snapshotFlow { state.isConnected to movies.loadState.append }
+            .collect { (isConnected, appendState) ->
+                if (isConnected && appendState is LoadState.Error) {
+                    movies.retry()
+                }
             }
-        }
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -102,7 +101,6 @@ private fun MovieScreenContent(
                 })
             }
             .background(colors.background)
-
     ) {
         SearchAndFilterHeader(state = state, onEvent = onEvent)
         when (movies.loadState.refresh) {
@@ -166,7 +164,7 @@ private fun MovieGrid(
         }
         if (movies.loadState.append is LoadState.Loading) {
             item(span = { GridItemSpan(2) }) {
-                AppendLoadingIndicator()
+                if (isConnected) AppendLoadingIndicator()
             }
         }
         if (!isConnected) {
