@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.space.movieapp.navigation.AppNavHost
+import com.space.movieapp.navigation.MainScreen
 import com.space.movieapp.ui.vm.MainActivityVm
 import com.space.ui.theme.MovieAppTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     color = MovieAppTheme.colors.background
                 ) {
                     if (!state.isLoading) {
-                        AppNavHost(isOnline = state.isOnline)
+                        MainScreen(isOnline = state.isOnline)
                     }
                 }
             }
