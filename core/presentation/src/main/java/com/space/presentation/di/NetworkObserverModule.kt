@@ -1,7 +1,8 @@
-package com.space.database.di
+package com.space.presentation.di
 
-import com.space.database.network_observer.ConnectivityObserver
-import com.space.database.network_observer.ConnectivityObserverImpl
+
+import com.space.presentation.network_observer.ConnectivityObserver
+import com.space.presentation.network_observer.ConnectivityObserverImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 

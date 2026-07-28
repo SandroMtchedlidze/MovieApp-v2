@@ -45,9 +45,10 @@ dependencies {
     implementation(projects.feature.movieDetails.data)
     implementation(projects.feature.movieDetails.presentation)
     implementation(projects.core.data)
+    implementation(projects.core.presentation)
+    implementation(projects.feature.favourites.api)
     implementation(projects.feature.favourites.presentation)
     implementation(projects.core.navigation)
     implementation(projects.feature.home.api)
-    implementation(projects.feature.favourites.api)
     implementation(projects.feature.movieDetails.api)
 }

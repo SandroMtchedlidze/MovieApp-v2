@@ -9,7 +9,10 @@ import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
-private val json = Json { ignoreUnknownKeys = true }
+private val json = Json {
+    ignoreUnknownKeys = true
+    explicitNulls = false
+}
 
 fun networkModule(tmdbToken: String) = module {
     single {

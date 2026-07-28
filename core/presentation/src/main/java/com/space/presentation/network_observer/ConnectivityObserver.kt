@@ -1,4 +1,4 @@
-package com.space.database.network_observer
+package com.space.presentation.network_observer
 
 import kotlinx.coroutines.flow.Flow
 

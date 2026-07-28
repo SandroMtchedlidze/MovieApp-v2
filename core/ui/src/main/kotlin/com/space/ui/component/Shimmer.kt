@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import com.space.core.ui.R
 
 fun Modifier.shimmerEffect(): Modifier = composed {
-    val transition = rememberInfiniteTransition(label = "shimmer")
+    val transition = rememberInfiniteTransition(label = stringResource(R.string.shimmer_translate))
     val translateAnim = transition.animateFloat(
         initialValue = 0f,
         targetValue = 1000f,
