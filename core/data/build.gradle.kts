@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.movie.android.library)
-    alias(libs.plugins.movie.android.feature)
     alias(libs.plugins.ksp)
 }
 
@@ -15,5 +14,6 @@ dependencies {
     implementation(projects.core.domain)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.bundles.koin)
     ksp(libs.room.compiler)
 }
