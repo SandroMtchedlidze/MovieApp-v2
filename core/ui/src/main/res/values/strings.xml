@@ -9,5 +9,8 @@
     <string name="favourite">favourite</string>
     <string name="about_movie">About movie</string>
     <string name="shimmer_translate">shimmer_translate</string>
-    <string name="shimmer">shimmer</string>
+    <string name="refresh">Refresh</string>
+    <string name="rotationtransition">RotationTransition</string>
+    <string name="rotationangle">RotationAngle</string>
+    <string name="no_internet">No internet</string>
 </resources>

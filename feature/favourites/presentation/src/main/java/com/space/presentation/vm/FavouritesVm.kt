@@ -24,6 +24,10 @@ class FavouritesVm(
 ) : BaseViewModel<FavouritesState, FavouritesEvent, FavouritesEffect>(
     FavouritesState()
 ) {
+    init {
+        loadFavourites()
+    }
+
     override fun onEvent(event: FavouritesEvent) {
         when (event) {
             is FavouritesEvent.OnFavouriteToggle -> toggleFavourites(event.movie)
@@ -32,11 +36,9 @@ class FavouritesVm(
                     event.movieId
                 )
             )
-        }
-    }
 
-    init {
-        loadFavourites()
+            is FavouritesEvent.OnRetryClicked -> loadFavourites()
+        }
     }
 
     private fun loadFavourites() {

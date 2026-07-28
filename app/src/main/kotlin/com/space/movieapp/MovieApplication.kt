@@ -7,10 +7,12 @@ import com.space.data.remote.di.movieDetailsRepositoryModule
 import com.space.data.remote.di.movieFeatureApiModule
 import com.space.database.di.databaseModule
 import com.space.database.di.favouritesUseCaseModule
+import com.space.movieapp.di.mainActivityVmModule
 import com.space.networking.di.networkModule
 import com.space.presentation.di.favouritesVmModule
 import com.space.presentation.di.movieDetailsUseCaseModule
 import com.space.presentation.di.movieDetailsVmModule
+import com.space.presentation.di.networkObserverModule
 import com.space.presentaton.di.homeUseCaseModule
 import com.space.presentaton.di.homeVmModule
 import org.koin.android.ext.koin.androidContext
@@ -33,7 +35,9 @@ class MovieApplication : Application() {
                 movieDetailsUseCaseModule,
                 databaseModule,
                 favouritesUseCaseModule,
-                favouritesVmModule
+                favouritesVmModule,
+                networkObserverModule,
+                mainActivityVmModule
             )
         }
     }

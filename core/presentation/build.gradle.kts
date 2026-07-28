@@ -9,4 +9,6 @@ android {
 dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(projects.core.networking)
+    implementation(libs.bundles.koin)
 }

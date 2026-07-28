@@ -16,7 +16,8 @@ val homeVmModule = module {
             getAllFavouritesIdsUseCase = get(),
             toggleFavouriteUseCase = get(),
             movieUiMapper = get(),
-            mapperToDomain = get()
+            mapperToDomain = get(),
+            networkObserver = get()
         )
     }
 }

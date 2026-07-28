@@ -13,8 +13,15 @@ object Sizing {
     val size20 = Dimensions.dimension20
     val size22 = Dimensions.dimension22
     val size26 = Dimensions.dimension26
+    val size28 = Dimensions.dimension28
     val size36 = Dimensions.dimension36
+    val size38 = Dimensions.dimension38
+    val size44 = Dimensions.dimension44
+    val size64 = Dimensions.dimension64
     val size42 = Dimensions.dimension42
+    val size96 = Dimensions.dimension96
+    val size110 = Dimensions.dimension110
+    val size134 = Dimensions.dimension134
     val size164 = Dimensions.dimension164
     val size226 = Dimensions.dimension226
     val size270 = Dimensions.dimension270

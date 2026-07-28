@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,25 +26,36 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.space.networking.network.NetworkError
+import com.space.networking.network.PagingException
+import com.space.presentation.base.getErrorStrings
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
+import com.space.ui.component.ErrorScreen
 import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
 import com.space.ui.component.MovieCardUiModel
+import com.space.ui.component.MovieappLoader
+import com.space.ui.component.NetworkStatusBanner
 import com.space.ui.component.SearchField
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Spacing
 import com.space.ui.theme.TextSizing
 import org.koin.androidx.compose.koinViewModel
+import com.space.home.presentaton.R as HomeR
 
 @Composable
 fun MovieScreen(
@@ -71,14 +83,50 @@ private fun MovieScreenContent(
 ) {
     val gridState = rememberLazyGridState()
 
+    val focusManager = LocalFocusManager.current
+    LaunchedEffect(Unit) {
+        snapshotFlow { state.isConnected to movies.loadState.append }
+            .collect { (isConnected, appendState) ->
+                if (isConnected && appendState is LoadState.Error) {
+                    movies.retry()
+                }
+            }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
             .background(colors.background)
-
     ) {
         SearchAndFilterHeader(state = state, onEvent = onEvent)
-        MoviesResultSection(movies = movies, gridState = gridState, onEvent = onEvent)
+        when (movies.loadState.refresh) {
+            is LoadState.Loading -> FullScreenLoading()
+            is LoadState.Error -> {
+                val exception =
+                    (movies.loadState.refresh as LoadState.Error).error as? PagingException
+                val descriptionRes =
+                    getErrorStrings(exception?.errorType ?: NetworkError.UNKNOWN)
+                ErrorScreen(
+                    title = stringResource(HomeR.string.data_can_t_be_loaded),
+                    description = stringResource(descriptionRes),
+                    onRefreshClick = { movies.retry() }
+                )
+            }
+
+            else -> {
+                MovieGrid(
+                    movies = movies,
+                    gridState = gridState,
+                    isConnected = state.isConnected,
+                    onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
+                    onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) }
+                )
+            }
+        }
     }
 }
 
@@ -91,6 +139,7 @@ private fun MovieScreenContent(
 private fun MovieGrid(
     movies: LazyPagingItems<MovieCardUiModel>,
     gridState: LazyGridState,
+    isConnected: Boolean,
     onMovieClicked: (Int) -> Unit,
     onFavouriteClicked: (MovieCardUiModel) -> Unit
 ) {
@@ -115,7 +164,12 @@ private fun MovieGrid(
         }
         if (movies.loadState.append is LoadState.Loading) {
             item(span = { GridItemSpan(2) }) {
-                AppendLoadingIndicator()
+                if (isConnected) AppendLoadingIndicator()
+            }
+        }
+        if (!isConnected) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                NetworkStatusBanner(isConnected = isConnected)
             }
         }
     }
@@ -160,7 +214,7 @@ private fun SearchAndFilterHeader(
         }
         Spacer(Modifier.height(Spacing.spacing16))
         Text(
-            text = "Movies",
+            text = stringResource(HomeR.string.movies),
             style = typography.titleLarge.copy(
                 letterSpacing = TextSizing.size1,
                 fontSize = TextSizing.size18,
@@ -172,44 +226,13 @@ private fun SearchAndFilterHeader(
     }
 }
 
-/**
- * Displays movies or shows loading indicator or error if movies failed.
- */
-@Composable
-private fun MoviesResultSection(
-    movies: LazyPagingItems<MovieCardUiModel>,
-    gridState: LazyGridState,
-    onEvent: (HomeEvent) -> Unit,
-) {
-    when (movies.loadState.refresh) {
-        is LoadState.Loading -> FullScreenLoading()
-        is LoadState.Error -> FullScreenError(message = "Something went wrong")
-        else -> MovieGrid(
-            movies = movies,
-            gridState = gridState,
-            onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
-            onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) }
-        )
-    }
-}
-
 @Composable
 private fun FullScreenLoading() {
     Box(modifier = Modifier.fillMaxSize()) {
-        CircularProgressIndicator(
+        MovieappLoader(
             modifier = Modifier.align(Alignment.Center),
-            color = colors.primary
-        )
-    }
-}
-
-@Composable
-private fun FullScreenError(message: String) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = message,
-            color = colors.primary,
-            modifier = Modifier.align(Alignment.Center)
+            mainColor = colors.primary,
+            backgroundColor = colors.background
         )
     }
 }
