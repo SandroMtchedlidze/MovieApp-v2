@@ -26,6 +26,10 @@ class MovieDetailsVm(
 ) : BaseViewModel<MovieDetailsState, MovieDetailsEvent, MovieDetailsSideEffect>(
     MovieDetailsState()
 ) {
+    init {
+        fetchMovieDetails()
+        observeFavouriteState()
+    }
     override fun onEvent(event: MovieDetailsEvent) {
         when (event) {
             is MovieDetailsEvent.OnRetryClicked -> fetchMovieDetails()
@@ -36,11 +40,6 @@ class MovieDetailsVm(
                 handleFavouriteClicked(event)
             }
         }
-    }
-
-    init {
-        fetchMovieDetails()
-        observeFavouriteState()
     }
 
     private fun observeFavouriteState() {

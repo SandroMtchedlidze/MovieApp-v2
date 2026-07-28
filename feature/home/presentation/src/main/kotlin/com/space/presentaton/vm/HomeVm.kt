@@ -42,6 +42,11 @@ class HomeVm(
 ) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
     initialState = HomeState()
 ) {
+    init {
+        loadGenres()
+        observeNetwork()
+    }
+
     override fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.OnMovieClicked -> emitSideEffect(
@@ -147,11 +152,6 @@ class HomeVm(
                 updateState { copy(isConnected = connected) }
             }
         }
-    }
-
-    init {
-        loadGenres()
-        observeNetwork()
     }
 
     companion object {
