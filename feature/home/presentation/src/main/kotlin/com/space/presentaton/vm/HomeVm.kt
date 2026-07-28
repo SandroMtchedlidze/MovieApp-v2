@@ -4,12 +4,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.space.api.navigation.MovieDetailsRoute
 import com.space.domain.model.MovieResponse
 import com.space.domain.usecase.GetAllFavouritesIdsUseCase
-import com.space.api.navigation.MovieDetailsRoute
-import com.space.database.network_observer.ConnectivityObserver
-import com.space.domain.usecase.FilterUseCase
-import com.space.domain.usecase.GetAllFavouritesUseCase
 import com.space.domain.usecase.GetGenresUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.navigation.NavigationCommand
@@ -156,6 +153,14 @@ class HomeVm(
                 updateState { copy(isConnected = connected) }
             }
         }
+    }
+
+    private fun onMovieClicked(movieId: Int) {
+        emitSideEffect(
+            HomeSideEffect.Navigate(
+                NavigationCommand.Push(MovieDetailsRoute(movieId))
+            )
+        )
     }
 
     companion object {

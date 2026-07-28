@@ -57,16 +57,17 @@ fun FavouritesScreen(
             .fillMaxSize()
             .background(colors.background)
     ) {
-    FavouriteScreenContent(
-        state = state,
-        onMovieClicked = { movieId ->
-            viewmodel.onEvent(FavouritesEvent.OnMovieClicked(movieId))
-        },
-        onFavouriteClicked = { movie ->
-            viewmodel.onEvent(FavouritesEvent.OnFavouriteToggle(movie))
-        },
-        onRetry = { viewmodel.onEvent(FavouritesEvent.OnRetryClicked) }
-    )
+        FavouriteScreenContent(
+            state = state,
+            onMovieClicked = { movieId ->
+                viewmodel.onEvent(FavouritesEvent.OnMovieClicked(movieId))
+            },
+            onFavouriteClicked = { movie ->
+                viewmodel.onEvent(FavouritesEvent.OnFavouriteToggle(movie))
+            },
+            onRetry = { viewmodel.onEvent(FavouritesEvent.OnRetryClicked) }
+        )
+    }
 }
 
 @Composable

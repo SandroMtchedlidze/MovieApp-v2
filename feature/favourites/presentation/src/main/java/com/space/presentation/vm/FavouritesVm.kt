@@ -28,15 +28,17 @@ class FavouritesVm(
 ) {
     override fun onEvent(event: FavouritesEvent) {
         when (event) {
-            is FavouritesEvent.LoadFavourites -> observeFavourites()
+            is FavouritesEvent.LoadFavourites -> loadFavourites()
             is FavouritesEvent.OnFavouriteToggle -> toggleFavourites(event.movie)
             is FavouritesEvent.OnMovieClicked -> onMovieClicked(event.movieId)
+            is FavouritesEvent.OnRetryClicked -> loadFavourites()
         }
     }
 
     init {
         onEvent(FavouritesEvent.LoadFavourites)
     }
+
     private fun loadFavourites() {
         getAllFavouritesUseCase()
             .onStart { updateState { copy(isLoading = true) } }

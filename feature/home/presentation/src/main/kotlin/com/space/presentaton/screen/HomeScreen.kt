@@ -44,7 +44,6 @@ import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
-import com.space.ui.component.EmptyResultView
 import com.space.ui.component.ErrorScreen
 import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
@@ -84,7 +83,6 @@ private fun MovieScreenContent(
     onEvent: (HomeEvent) -> Unit
 ) {
     val gridState = rememberLazyGridState()
-    val isScrollingUp by gridState.isScrollingUp()
 
     val focusManager = LocalFocusManager.current
     LaunchedEffect(Unit) {
