@@ -15,10 +15,10 @@ data class MovieResponseDto(
 data class MovieDto(
     val id: Int,
     @SerialName("poster_path")
-    val posterPath: String? = null,
+    val posterPath: String?,
     @SerialName("genre_ids")
     val genreIds: List<Int> = emptyList(),
     @SerialName("release_date")
-    val releaseDate: String? = null,
-    val title: String? = ""
+    val releaseDate: String?,
+    val title: String?
 )

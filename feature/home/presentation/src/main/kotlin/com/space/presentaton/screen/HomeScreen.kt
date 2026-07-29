@@ -44,6 +44,7 @@ import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
+import com.space.ui.component.EmptyResultView
 import com.space.ui.component.ErrorScreen
 import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
@@ -106,6 +107,10 @@ private fun MovieScreenContent(
         SearchAndFilterHeader(state = state, onEvent = onEvent)
         when (movies.loadState.refresh) {
             is LoadState.Loading -> FullScreenLoading()
+            is LoadState.NotLoading if movies.itemCount == 0 -> {
+                EmptyResultView()
+            }
+
             is LoadState.Error -> {
                 val exception =
                     (movies.loadState.refresh as LoadState.Error).error as? PagingException
