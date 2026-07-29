@@ -112,15 +112,10 @@ private fun MovieScreenContent(
             }
 
             is LoadState.Error -> {
-                val exception =
-                    (movies.loadState.refresh as LoadState.Error).error as? PagingException
-                val descriptionRes =
-                    getErrorStrings(exception?.errorType ?: NetworkError.UNKNOWN)
-                ErrorScreen(
-                    title = stringResource(HomeR.string.data_can_t_be_loaded),
-                    description = stringResource(descriptionRes),
-                    onRefreshClick = { movies.retry() }
-                )
+                HomeScreenError(movies) {
+                    onEvent(HomeEvent.OnRetryClicked)
+                    movies.retry()
+                }
             }
 
             else -> {
@@ -255,4 +250,20 @@ private fun AppendLoadingIndicator() {
             color = colors.primary
         )
     }
+}
+
+@Composable
+private fun HomeScreenError(
+    movies: LazyPagingItems<MovieCardUiModel>,
+    onRefreshClick: () -> Unit
+) {
+    val exception =
+        (movies.loadState.refresh as LoadState.Error).error as? PagingException
+    val descriptionRes =
+        getErrorStrings(exception?.errorType ?: NetworkError.UNKNOWN)
+    ErrorScreen(
+        title = stringResource(HomeR.string.data_can_t_be_loaded),
+        description = stringResource(descriptionRes),
+        onRefreshClick = onRefreshClick
+    )
 }

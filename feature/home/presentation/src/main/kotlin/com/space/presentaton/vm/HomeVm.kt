@@ -82,6 +82,10 @@ class HomeVm(
                     toggleFavouriteUseCase(domainMovie)
                 }
             }
+
+            is HomeEvent.OnRetryClicked -> {
+                loadGenres()
+            }
         }
     }
 
@@ -127,6 +131,9 @@ class HomeVm(
         .map { !it.isLoading }
         .distinctUntilChanged()
 
+    private val genresFlow = state
+        .map { it.genres }
+        .distinctUntilChanged()
     private val favouriteIdsFlow = getAllFavouritesIdsUseCase()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -140,10 +147,13 @@ class HomeVm(
         .cachedIn(viewModelScope)
 
     val moviesPagingFlow: Flow<PagingData<MovieCardUiModel>> = combine(
-        combinePagingFlow, favouriteIdsFlow
-    ) { pagingData, favouriteId ->
+        combinePagingFlow, favouriteIdsFlow, genresFlow
+    ) { pagingData, favouriteId, genres ->
         pagingData.map { movie ->
-            movieUiMapper.mapToUiModel(movie).copy(isFavourite = favouriteId.contains(movie.id))
+            movieUiMapper.mapToUiModel(movie, genres)
+                .copy(
+                    isFavourite = favouriteId.contains(movie.id),
+                )
         }
     }
 

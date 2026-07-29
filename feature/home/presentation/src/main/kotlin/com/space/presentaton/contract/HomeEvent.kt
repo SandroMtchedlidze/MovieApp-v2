@@ -10,4 +10,6 @@ sealed class HomeEvent {
     data object OnFilterClicked : HomeEvent()
     data class OnSearchFocusedChanged(val isFocused: Boolean) : HomeEvent()
     data class OnFavouriteClicked(val movie: MovieCardUiModel) : HomeEvent()
+
+    data object OnRetryClicked : HomeEvent()
 }
