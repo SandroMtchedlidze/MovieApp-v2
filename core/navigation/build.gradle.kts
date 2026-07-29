@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.movie.android.library)
-    alias(libs.plugins.movie.android.feature)
     alias(libs.plugins.kotlin.compose)
 }
 android {

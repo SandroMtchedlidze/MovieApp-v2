@@ -86,7 +86,7 @@ private fun MovieScreenContent(
 
     val focusManager = LocalFocusManager.current
     LaunchedEffect(Unit) {
-        snapshotFlow { state.isConnected to movies.loadState.append }
+        snapshotFlow { state.hasInternetConnection to movies.loadState.append }
             .collect { (isConnected, appendState) ->
                 if (isConnected && appendState is LoadState.Error) {
                     movies.retry()
@@ -122,7 +122,7 @@ private fun MovieScreenContent(
                 MovieGrid(
                     movies = movies,
                     gridState = gridState,
-                    isConnected = state.isConnected,
+                    isConnected = state.hasInternetConnection,
                     onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
                     onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) }
                 )
