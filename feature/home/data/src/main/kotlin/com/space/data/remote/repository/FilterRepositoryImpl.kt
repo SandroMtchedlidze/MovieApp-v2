@@ -3,7 +3,6 @@ package com.space.data.remote.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.space.data.remote.cache.GenreCache
 import com.space.data.remote.datasource.contract.DiscoverRemoteDataSource
 import com.space.data.remote.mapper.MovieMapper
 import com.space.data.remote.paging.DiscoverPagingSource
@@ -16,7 +15,6 @@ class FilterRepositoryImpl(
     private val discoverRemoteDataSource: DiscoverRemoteDataSource,
     private val movieMapper: MovieMapper,
     private val responseHandler: ResponseHandler,
-    private val genreCache: GenreCache,
     private val pagingConfig: PagingConfig
 ) : FilterRepository {
 
@@ -28,7 +26,6 @@ class FilterRepositoryImpl(
                     discoverRemoteDataSource,
                     movieMapper,
                     genreId,
-                    genreCache.get(),
                     responseHandler
                 )
             }

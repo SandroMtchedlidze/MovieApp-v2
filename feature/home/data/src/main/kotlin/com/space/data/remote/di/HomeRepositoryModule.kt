@@ -48,7 +48,6 @@ val homeRepositoryModule = module {
         MovieRepositoryImpl(
             remoteDataSource = get(),
             movieMapper = get(),
-            genreCache = get(),
             responseHandler = get(),
             pagingConfig = get()
         )
@@ -64,7 +63,6 @@ val homeRepositoryModule = module {
         SearchMoviesRepositoryImpl(
             searchRemoteDataSource = get(),
             movieMapper = get(),
-            genreCache = get(),
             responseHandler = get(),
             pagingConfig = get()
         )
@@ -73,7 +71,6 @@ val homeRepositoryModule = module {
         FilterRepositoryImpl(
             discoverRemoteDataSource = get(),
             movieMapper = get(),
-            genreCache = get(),
             responseHandler = get(),
             pagingConfig = get()
         )

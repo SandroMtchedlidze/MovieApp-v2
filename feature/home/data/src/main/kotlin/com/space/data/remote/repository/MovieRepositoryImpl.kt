@@ -3,7 +3,6 @@ package com.space.data.remote.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.space.data.remote.cache.GenreCache
 import com.space.data.remote.datasource.contract.MovieRemoteDataSource
 import com.space.data.remote.mapper.MovieMapper
 import com.space.data.remote.paging.MoviePagingSource
@@ -17,7 +16,6 @@ class MovieRepositoryImpl(
     private val movieMapper: MovieMapper,
     private val responseHandler: ResponseHandler,
     private val pagingConfig: PagingConfig,
-    private val genreCache: GenreCache
 ) : MovieRepository {
 
     override fun getMovies(): Flow<PagingData<MovieResponse>> {
@@ -26,7 +24,6 @@ class MovieRepositoryImpl(
             pagingSourceFactory = {
                 MoviePagingSource(
                     remoteDataSource,
-                    genreCache.get(),
                     movieMapper,
                     responseHandler
                 )

@@ -51,4 +51,6 @@ dependencies {
     implementation(projects.core.navigation)
     implementation(projects.feature.home.api)
     implementation(projects.feature.movieDetails.api)
+    implementation(projects.feature.home.di)
+    implementation(projects.feature.movieDetails.di)
 }

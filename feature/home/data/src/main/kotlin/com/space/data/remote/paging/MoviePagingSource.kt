@@ -11,7 +11,6 @@ import com.space.networking.network.ResponseHandler
 
 class MoviePagingSource(
     private val remoteDataSource: MovieRemoteDataSource,
-    private val genreCache: Map<Int, String>,
     private val movieMapper: MovieMapper,
     private val responseHandler: ResponseHandler
 ) : PagingSource<Int, MovieResponse>() {
@@ -29,7 +28,7 @@ class MoviePagingSource(
             responseHandler.pagingApiCall { remoteDataSource.getMovies(page) }) {
             is PagingResult.Success -> LoadResult.Page(
                 data = result.data.results.map { dto ->
-                    movieMapper.mapToDomain(dto, genreCache)
+                    movieMapper.mapToDomain(dto)
                 },
                 prevKey = if (page == 1) null else page - 1,
                 nextKey = if (result.data.results.isEmpty()) null else page + 1
