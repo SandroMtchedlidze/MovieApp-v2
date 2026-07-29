@@ -1,5 +1,6 @@
 package com.space.movieapp.ui.screen
 
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
     private val vm: MainActivityVm by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition {
             vm.state.value.isLoading
