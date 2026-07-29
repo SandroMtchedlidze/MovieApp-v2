@@ -31,6 +31,7 @@ class MovieDetailsVm(
         fetchMovieDetails()
         observeFavouriteState()
     }
+
     override fun onEvent(event: MovieDetailsEvent) {
         when (event) {
             is MovieDetailsEvent.OnRetryClicked -> fetchMovieDetails()

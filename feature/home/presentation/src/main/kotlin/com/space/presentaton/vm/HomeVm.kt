@@ -150,7 +150,7 @@ class HomeVm(
     private fun observeNetwork() {
         viewModelScope.launch {
             networkObserver.observe().collect { connected ->
-                updateState { copy(isConnected = connected) }
+                updateState { copy(hasInternetConnection = connected) }
             }
         }
     }
