@@ -9,13 +9,11 @@ import com.space.domain.model.MovieResponse
 import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetGenresUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
-import com.space.navigation.NavigationCommand
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
 import com.space.presentation.base.getErrorStrings
 import com.space.presentation.network_observer.ConnectivityObserver
 import com.space.presentaton.contract.HomeEvent
-import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.mapper.MovieResponseToUiModel
 import com.space.presentaton.mapper.MovieUiModelToDomain
@@ -41,7 +39,7 @@ class HomeVm(
     private val networkObserver: ConnectivityObserver,
     private val mapperToDomain: MovieUiModelToDomain,
     getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
-) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
+) : BaseViewModel<HomeState, HomeEvent>(
     initialState = HomeState()
 ) {
     init {
@@ -51,7 +49,8 @@ class HomeVm(
 
     override fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.OnMovieClicked -> onMovieClicked(event.movieId)
+            is HomeEvent.OnMovieClicked ->
+                globalNavigator { push(MovieDetailsRoute(event.movieId)) }
 
 
             is HomeEvent.OnSearchCleared -> {
@@ -163,14 +162,6 @@ class HomeVm(
                 updateState { copy(hasInternetConnection = connected) }
             }
         }
-    }
-
-    private fun onMovieClicked(movieId: Int) {
-        emitSideEffect(
-            HomeSideEffect.Navigate(
-                NavigationCommand.Push(MovieDetailsRoute(movieId))
-            )
-        )
     }
 
     companion object {

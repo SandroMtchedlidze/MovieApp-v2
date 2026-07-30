@@ -36,12 +36,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.space.navigation.requireGlobalNavigator
 import com.space.networking.network.NetworkError
 import com.space.networking.network.PagingException
+import com.space.presentation.base.NavigationCommandEffect
 import com.space.presentation.base.getErrorStrings
 import com.space.presentaton.contract.HomeEvent
-import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
 import com.space.ui.component.EmptyResultView
@@ -65,15 +64,9 @@ fun HomeScreen() {
     val viewModel: HomeVm = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movies = viewModel.moviesPagingFlow.collectAsLazyPagingItems()
-    val navigator = requireGlobalNavigator()
 
-    LaunchedEffect(Unit) {
-        viewModel.sideEffect.collect { sideEffect ->
-            when (sideEffect) {
-                is HomeSideEffect.Navigate -> sideEffect.command.execute(navigator)
-            }
-        }
-    }
+    NavigationCommandEffect(viewModel)
+
     MovieScreenContent(movies = movies, state = state, onEvent = viewModel::onEvent)
 }
 

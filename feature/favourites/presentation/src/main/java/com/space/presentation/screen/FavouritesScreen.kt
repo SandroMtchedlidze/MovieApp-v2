@@ -16,7 +16,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,8 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.space.navigation.requireGlobalNavigator
-import com.space.presentation.contract.FavouritesEffect
+import com.space.presentation.base.NavigationCommandEffect
 import com.space.presentation.contract.FavouritesEvent
 import com.space.presentation.contract.FavouritesState
 import com.space.presentation.vm.FavouritesVm
@@ -40,18 +38,12 @@ import org.koin.androidx.compose.koinViewModel
 import com.space.favourites.presentation.R as FavouritesR
 
 @Composable
-fun FavouritesScreen(
-    viewmodel: FavouritesVm = koinViewModel()
-) {
+fun FavouritesScreen() {
+
+    val viewmodel: FavouritesVm = koinViewModel()
     val state by viewmodel.state.collectAsStateWithLifecycle()
-    val navigator = requireGlobalNavigator()
-    LaunchedEffect(Unit) {
-        viewmodel.sideEffect.collect { effect ->
-            when (effect) {
-                is FavouritesEffect.Navigate -> effect.command.execute(navigator)
-            }
-        }
-    }
+
+    NavigationCommandEffect(viewmodel)
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -4,12 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.space.domain.usecase.GetMovieDetailsUseCase
 import com.space.domain.usecase.IsFavouriteUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
-import com.space.navigation.NavigationCommand
 import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
 import com.space.presentation.base.getErrorStrings
 import com.space.presentation.contract.MovieDetailsEvent
-import com.space.presentation.contract.MovieDetailsSideEffect
 import com.space.presentation.contract.MovieDetailsState
 import com.space.presentation.mapper.MovieDetailsToDomain
 import com.space.presentation.mapper.MovieDetailsUiMapper
@@ -24,7 +22,7 @@ class MovieDetailsVm(
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val isFavouriteUseCase: IsFavouriteUseCase,
     private val domainMapper: MovieDetailsToDomain,
-) : BaseViewModel<MovieDetailsState, MovieDetailsEvent, MovieDetailsSideEffect>(
+) : BaseViewModel<MovieDetailsState, MovieDetailsEvent>(
     MovieDetailsState()
 ) {
     init {
@@ -35,7 +33,7 @@ class MovieDetailsVm(
     override fun onEvent(event: MovieDetailsEvent) {
         when (event) {
             is MovieDetailsEvent.OnRetryClicked -> fetchMovieDetails()
-            is MovieDetailsEvent.OnBackClicked -> onBackClicked()
+            is MovieDetailsEvent.OnBackClicked -> globalNavigator { pop() }
             is MovieDetailsEvent.OnFavouriteClicked -> {
                 handleFavouriteClicked(event)
             }
@@ -81,9 +79,5 @@ class MovieDetailsVm(
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    private fun onBackClicked() {
-        emitSideEffect(MovieDetailsSideEffect.Navigate(NavigationCommand.Pop))
     }
 }
