@@ -45,6 +45,7 @@ import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Radius
 import com.space.ui.theme.Sizing
+import com.space.ui.theme.Spacing
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import com.space.movie.details.presentation.R as DetailsR
@@ -224,32 +225,32 @@ private fun MovieInfoChips(
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
     ) {
-        InfoChip {
-            Icon(
-                painter = painterResource(R.drawable.star),
-                contentDescription = null,
-                tint = colors.primary,
-                modifier = Modifier.size(Sizing.size16)
-            )
-            Spacer(Modifier.width(Sizing.size4))
-            Text(ratingText, style = typography.bodyMedium, color = colors.textTertiary)
-        }
-        InfoChip {
-            Text(genreText, style = typography.bodyMedium, color = colors.textTertiary)
-        }
-        InfoChip {
-            Icon(
-                painter = painterResource(R.drawable.clock),
-                contentDescription = null,
-                tint = colors.primary,
-                modifier = Modifier.size(Sizing.size16)
-            )
-            Spacer(Modifier.width(Sizing.size4))
-            Text(runtimeText, style = typography.bodyMedium, color = colors.textTertiary)
-        }
-        InfoChip {
-            Text(yearText, style = typography.bodyMedium, color = colors.textTertiary)
-        }
+        InfoChip(
+            text = ratingText,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.star),
+                    contentDescription = null,
+                    tint = colors.primary,
+                    modifier = Modifier.size(Sizing.size16)
+                )
+                Spacer(Modifier.width(Sizing.size4))
+            }
+        )
+        InfoChip(text = genreText)
+        InfoChip(
+            text = runtimeText,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.clock),
+                    contentDescription = null,
+                    tint = colors.primary,
+                    modifier = Modifier.size(Sizing.size16)
+                )
+            }
+
+        )
+        InfoChip(text = yearText)
     }
 }
 
@@ -283,15 +284,25 @@ private fun MovieTitleRow(
 }
 
 @Composable
-private fun InfoChip(content: @Composable () -> Unit) {
-    Row(
-        modifier = Modifier
-            .clip(Radius.radius16)
-            .background(colors.surface)
-            .padding(horizontal = Sizing.size12, vertical = Sizing.size6),
-        verticalAlignment = Alignment.CenterVertically,
-
+private fun InfoChip(
+    text: String,
+    icon: (@Composable () -> Unit)? = null
+) {
+    if (text.isNotEmpty()) {
+        Row(
+            modifier = Modifier
+                .background(color = colors.surface, shape = Radius.radius16)
+                .padding(horizontal = Spacing.spacing10, vertical = Spacing.spacing4),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.spacing4)
         ) {
-        content()
+            if (icon != null) icon()
+
+            Text(
+                text = text,
+                style = typography.bodyMedium,
+                color = colors.textSecondary
+            )
+        }
     }
 }
