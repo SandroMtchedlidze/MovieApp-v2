@@ -16,14 +16,58 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>()
                 .named("libs")
             dependencies {
-                add("implementation", libs.findBundle("coroutines").get())
-                add("implementation", project(":core:ui"))
-                add("implementation", libs.findBundle("koin").get())
-                add("implementation", libs.findBundle("retrofit").get())
-                add("implementation", libs.findLibrary("androidx-navigation3-runtime").get())
-                add("implementation", libs.findLibrary("androidx-navigation3-ui").get())
-                add("implementation", libs.findLibrary("androidx-paging").get())
-                add("implementation", libs.findLibrary("androidx-paging-compose").get())
+                add(
+                    "implementation",
+                    libs.findBundle("coroutines").get()
+                )
+                add(
+                    "implementation",
+                    project(":core:ui")
+                )
+                add(
+                    "implementation",
+                    libs.findBundle("koin").get()
+                )
+                add(
+                    "implementation",
+                    libs.findBundle("retrofit").get()
+                )
+                add(
+                    "implementation",
+                    libs.findLibrary("androidx-navigation3-runtime").get()
+                )
+                add(
+                    "implementation",
+                    libs.findLibrary("androidx-navigation3-ui").get()
+                )
+                add(
+                    "implementation",
+                    libs.findLibrary("androidx-paging").get()
+                )
+                add(
+                    "implementation",
+                    libs.findLibrary("androidx-paging-compose").get()
+                )
+                add(
+                    "implementation",
+                    project(":core:navigation")
+                )
+                add(
+                    "implementation",
+                    project(":core:ui")
+                )
+                add(
+                    "implementation",
+                    project(":core:networking")
+                )
+                add(
+                    "implementation",
+                    project(":core:domain")
+                )
+                add(
+                    "implementation",
+                    project(":core:presentation")
+                )
             }
         }
     }

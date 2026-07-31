@@ -7,11 +7,7 @@ android {
 
 }
 dependencies {
-    implementation(projects.core.networking)
-    implementation(projects.core.presentation)
     implementation(projects.feature.movieDetails.domain)
     implementation(libs.coil.compose)
-    implementation(projects.core.domain)
     implementation(projects.feature.movieDetails.api)
-    implementation(projects.core.navigation)
 }
