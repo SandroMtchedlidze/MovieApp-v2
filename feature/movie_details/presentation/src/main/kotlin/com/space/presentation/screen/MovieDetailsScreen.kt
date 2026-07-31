@@ -1,5 +1,6 @@
 package com.space.presentation.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.space.core.ui.R
 import com.space.presentation.base.NavigationCommandEffect
 import com.space.presentation.contract.MovieDetailsEvent
@@ -39,6 +40,7 @@ import com.space.presentation.model.MovieDetailsUiModel
 import com.space.presentation.vm.MovieDetailsVm
 import com.space.ui.component.ErrorScreen
 import com.space.ui.component.MovieappLoader
+import com.space.ui.component.shimmerEffect
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Radius
@@ -166,11 +168,26 @@ private fun MovieDetailsBody(
                 .aspectRatio(0.76f)
                 .clip(Radius.radius16)
         ) {
-            AsyncImage(
+            SubcomposeAsyncImage(
                 model = movie?.posterUrl,
                 contentDescription = movie?.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                error = {
+                    Image(
+                        painter = painterResource(R.drawable.placeholder),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                },
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .shimmerEffect()
+                    )
+                },
             )
         }
         Column(modifier = Modifier.padding(horizontal = Sizing.size16)) {
