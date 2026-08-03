@@ -8,6 +8,5 @@ android {
 
 dependencies {
     implementation(project(":feature:home:domain"))
-    implementation(project(":core:networking"))
     implementation(libs.retrofit.kotlinx.serialization)
 }
