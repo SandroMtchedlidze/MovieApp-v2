@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.space.presentation.base.NavigationCommandEffect
-import com.space.presentation.base.rememberOnClickWithArgument
+import com.space.presentation.base.rememberOnClick
 import com.space.presentation.contract.FavouritesEvent
 import com.space.presentation.contract.FavouritesState
 import com.space.presentation.vm.FavouritesVm
@@ -52,13 +52,7 @@ fun FavouritesScreen() {
     ) {
         FavouriteScreenContent(
             state = state,
-            onMovieClicked = { movieId ->
-                viewmodel.onEvent(FavouritesEvent.OnMovieClicked(movieId))
-            },
-            onFavouriteClicked = { movie ->
-                viewmodel.onEvent(FavouritesEvent.OnFavouriteToggle(movie))
-            },
-            onRetry = { viewmodel.onEvent(FavouritesEvent.OnRetryClicked) }
+            onEvent = viewmodel::onEvent
         )
     }
 }
@@ -66,9 +60,7 @@ fun FavouritesScreen() {
 @Composable
 private fun FavouriteScreenContent(
     state: FavouritesState,
-    onMovieClicked: (Int) -> Unit,
-    onRetry: () -> Unit,
-    onFavouriteClicked: (MovieCardUiModel) -> Unit
+    onEvent: (FavouritesEvent) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
@@ -86,13 +78,12 @@ private fun FavouriteScreenContent(
             state.error != null -> ErrorScreen(
                 title = stringResource(FavouritesR.string.something_went_wrong),
                 description = state.error,
-                onRefreshClick = onRetry
+                onRefreshClick = rememberOnClick { onEvent(FavouritesEvent.OnRetryClicked) }
             )
 
             else -> FavouritesGrid(
                 movies = state.favourites,
-                onMovieClicked = onMovieClicked,
-                onFavouriteClicked = onFavouriteClicked,
+                onEvent = onEvent,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -134,8 +125,7 @@ private fun EmptyFavouritesState() {
 private fun FavouritesGrid(
     movies: List<MovieCardUiModel>,
     modifier: Modifier = Modifier,
-    onMovieClicked: (Int) -> Unit,
-    onFavouriteClicked: (MovieCardUiModel) -> Unit,
+    onEvent: (FavouritesEvent) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -150,8 +140,10 @@ private fun FavouritesGrid(
         ) { movie ->
             MovieCard(
                 movie = movie,
-                onClick = rememberOnClickWithArgument { onMovieClicked(movie.id) },
-                onFavouriteClick = { onFavouriteClicked(movie) }
+                onClick = rememberOnClick {
+                    onEvent(FavouritesEvent.OnMovieClicked(movie.id))
+                },
+                onFavouriteClick = { onEvent(FavouritesEvent.OnFavouriteToggle(movie)) }
             )
         }
     }

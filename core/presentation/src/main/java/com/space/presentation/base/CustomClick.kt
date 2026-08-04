@@ -15,15 +15,6 @@ private fun canClick(duration: Long): Boolean {
 }
 
 @Composable
-fun <T> rememberOnClickWithArgument(
-    durationMs: Long = CLICK_DURATION_DEFAULT,
-    onClick: (T) -> Unit
-): (T) -> Unit {
-    val current by rememberUpdatedState(onClick)
-    return remember(durationMs) { { param: T -> if (canClick(durationMs)) current(param) } }
-}
-
-@Composable
 fun rememberOnClick(
     durationMs: Long = CLICK_DURATION_DEFAULT,
     onClick: () -> Unit

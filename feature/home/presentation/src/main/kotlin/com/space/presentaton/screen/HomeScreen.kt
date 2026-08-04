@@ -41,7 +41,6 @@ import com.space.networking.network.PagingException
 import com.space.presentation.base.NavigationCommandEffect
 import com.space.presentation.base.getErrorStrings
 import com.space.presentation.base.rememberOnClick
-import com.space.presentation.base.rememberOnClickWithArgument
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
@@ -153,7 +152,7 @@ private fun MovieGrid(
             movies[index]?.let { movie ->
                 MovieCard(
                     movie = movie,
-                    onClick = rememberOnClickWithArgument { onMovieClicked(movie.id) },
+                    onClick = rememberOnClick { onMovieClicked(movie.id) },
                     onFavouriteClick = { onFavouriteClicked(movie) }
                 )
             }
