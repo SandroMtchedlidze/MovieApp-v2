@@ -38,6 +38,7 @@ fun MainActivity.MovieAppContainer(
                     rememberViewModelStoreNavEntryDecorator()
                 ),
                 onBack = { if (backStack.size > 1) navigator.pop() else finishAffinity() },
+
                 entryProvider = entryProvider {
                     homeEntry()
                     favouritesEntry()

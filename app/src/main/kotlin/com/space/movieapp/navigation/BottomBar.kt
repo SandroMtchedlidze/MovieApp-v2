@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.space.core.ui.R
 import com.space.navigation.requireGlobalNavigator
+import com.space.presentation.base.rememberOnClick
 import com.space.ui.component.NavButton
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.Spacing
@@ -32,14 +33,14 @@ fun BottomBar(
                 label = stringResource(com.space.movieapp.R.string.home),
                 iconResId = R.drawable.home,
                 modifier = Modifier.weight(1f),
-                onClick = { navigator.navigateToHome() }
+                onClick = rememberOnClick { navigator.navigateToHome() }
             )
             NavButton(
                 selected = navigator.currentTab == AppTab.FAVOURITES,
                 label = stringResource(com.space.movieapp.R.string.favorites),
                 iconResId = R.drawable.heart,
                 modifier = Modifier.weight(1f),
-                onClick = { navigator.navigateToFavourites() }
+                onClick = rememberOnClick { navigator.navigateToFavourites() }
             )
         }
     }

@@ -34,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import com.space.core.ui.R
 import com.space.presentation.base.NavigationCommandEffect
+import com.space.presentation.base.rememberOnClick
 import com.space.presentation.contract.MovieDetailsEvent
 import com.space.presentation.contract.MovieDetailsState
 import com.space.presentation.model.MovieDetailsUiModel
@@ -121,7 +122,7 @@ private fun DetailsTopBar(onBackClick: () -> Unit) {
             .padding(horizontal = Sizing.size4, vertical = Sizing.size8),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onBackClick) {
+        IconButton(onClick = rememberOnClick { onBackClick() }) {
             Icon(
                 modifier = Modifier.padding(start = Sizing.size12, top = Sizing.size10),
                 painter = painterResource(R.drawable.back_arrow),

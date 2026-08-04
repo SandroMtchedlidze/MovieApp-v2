@@ -40,6 +40,8 @@ import com.space.networking.network.NetworkError
 import com.space.networking.network.PagingException
 import com.space.presentation.base.NavigationCommandEffect
 import com.space.presentation.base.getErrorStrings
+import com.space.presentation.base.rememberOnClick
+import com.space.presentation.base.rememberOnClickWithArgument
 import com.space.presentaton.contract.HomeEvent
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
@@ -116,7 +118,7 @@ private fun MovieScreenContent(
                     movies = movies,
                     gridState = gridState,
                     isConnected = state.hasInternetConnection,
-                    onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
+                    onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(movieId = it)) },
                     onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) }
                 )
             }
@@ -151,7 +153,7 @@ private fun MovieGrid(
             movies[index]?.let { movie ->
                 MovieCard(
                     movie = movie,
-                    onClick = { onMovieClicked(movie.id) },
+                    onClick = rememberOnClickWithArgument { onMovieClicked(movie.id) },
                     onFavouriteClick = { onFavouriteClicked(movie) }
                 )
             }
@@ -257,6 +259,6 @@ private fun HomeScreenError(
     ErrorScreen(
         title = stringResource(HomeR.string.data_can_t_be_loaded),
         description = stringResource(descriptionRes),
-        onRefreshClick = onRefreshClick
+        onRefreshClick = rememberOnClick { onRefreshClick() }
     )
 }

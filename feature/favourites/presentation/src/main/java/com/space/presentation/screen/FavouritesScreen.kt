@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.space.presentation.base.NavigationCommandEffect
+import com.space.presentation.base.rememberOnClickWithArgument
 import com.space.presentation.contract.FavouritesEvent
 import com.space.presentation.contract.FavouritesState
 import com.space.presentation.vm.FavouritesVm
@@ -132,9 +133,9 @@ private fun EmptyFavouritesState() {
 @Composable
 private fun FavouritesGrid(
     movies: List<MovieCardUiModel>,
+    modifier: Modifier = Modifier,
     onMovieClicked: (Int) -> Unit,
     onFavouriteClicked: (MovieCardUiModel) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -149,7 +150,7 @@ private fun FavouritesGrid(
         ) { movie ->
             MovieCard(
                 movie = movie,
-                onClick = { onMovieClicked(movie.id) },
+                onClick = rememberOnClickWithArgument { onMovieClicked(movie.id) },
                 onFavouriteClick = { onFavouriteClicked(movie) }
             )
         }
