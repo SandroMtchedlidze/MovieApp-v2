@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_can_t_be_loaded">Data can\'t be loaded</string>
+
+    <string name="error_description_no_internet">Check your connection and try again</string>
+    <string name="error_description_server_unreachable">Something went wrong on our end. Please try again</string>
+    <string name="error_description_unauthorized">Please try again</string>
+    <string name="error_description_not_found">We couldn\'t find what you\'re looking for</string>
+    <string name="error_description_empty">No results found</string>
+    <string name="error_description_unknown">Internet connection or some other server error</string>
+</resources>

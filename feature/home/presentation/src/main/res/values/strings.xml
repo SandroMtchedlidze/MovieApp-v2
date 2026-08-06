@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="movies">Movies</string>
+    <string name="data_can_t_be_loaded">Data can’t be loaded</string>
+</resources>

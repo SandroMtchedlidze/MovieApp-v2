@@ -1,56 +1,56 @@
+import java.util.Properties
+
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.movie.android.application)
+    alias(libs.plugins.movie.android.compose)
 }
 
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
 android {
-    namespace = "com.example.movieapp"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    namespace = "com.space.movieapp"
 
-    defaultConfig {
-        applicationId = "com.example.movieapp"
-        minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            optimization {
-                enable = false
-            }
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
     buildFeatures {
-        compose = true
+        buildConfig = true
+    }
+    buildTypes {
+        debug {
+            buildConfigField(
+                "String", "TMDB_TOKEN",
+                "\"${localProperties["TMDB_TOKEN"]}\""
+            )
+        }
+        release {
+            buildConfigField(
+                "String", "TMDB_TOKEN",
+                "\"${localProperties["TMDB_TOKEN"]}\""
+            )
+        }
     }
 }
-
 dependencies {
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.core.splashscreen)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(projects.core.ui)
+    implementation(projects.feature.home)
+    implementation(projects.feature.favourites)
+    implementation(projects.feature.home.data)
+    implementation(projects.feature.home.presentation)
+    implementation(projects.core.networking)
+    implementation(projects.feature.movieDetails)
+    implementation(projects.feature.movieDetails.data)
+    implementation(projects.feature.movieDetails.presentation)
+    implementation(projects.core.data)
+    implementation(projects.core.presentation)
+    implementation(projects.feature.favourites.api)
+    implementation(projects.feature.favourites.presentation)
+    implementation(projects.core.navigation)
+    implementation(projects.feature.home.api)
+    implementation(projects.feature.movieDetails.api)
+    implementation(projects.feature.home.di)
+    implementation(projects.feature.movieDetails.di)
 }

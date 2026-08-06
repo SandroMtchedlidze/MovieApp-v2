@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_movie">About movie</string>
+    <string name="back">back</string>
+    <string name="retry">retry</string>
+    <string name="favourites">favourites</string>
+    <string name="unknownTitle">Unknown title</string>
+    <string name="emptyText">-</string>
+    <string name="overview">No overview for this film</string>
+    <string name="details">Details</string>
+    <string name="something_went_wrong">Something went wrong</string>
+</resources>

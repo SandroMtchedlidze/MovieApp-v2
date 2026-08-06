@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="favorite_movies">Favorite movies</string>
+    <string name="no_movies_added_yet">No movies added yet</string>
+    <string name="something_went_wrong">Something went wrong</string>
+</resources>
