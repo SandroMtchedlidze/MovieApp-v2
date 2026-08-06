@@ -7,8 +7,6 @@ android {
 }
 dependencies {
     implementation(projects.feature.home.domain)
-    implementation(projects.core.networking)
-    implementation(projects.core.presentation)
-    implementation(projects.core.domain)
-    implementation(projects.core.data)
+    implementation(projects.feature.home.api)
+    implementation(projects.feature.movieDetails.api)
 }

@@ -8,7 +8,6 @@ import com.space.networking.network.ApiResult
 import com.space.presentation.base.BaseViewModel
 import com.space.presentation.base.getErrorStrings
 import com.space.presentation.contract.MovieDetailsEvent
-import com.space.presentation.contract.MovieDetailsSideEffect
 import com.space.presentation.contract.MovieDetailsState
 import com.space.presentation.mapper.MovieDetailsToDomain
 import com.space.presentation.mapper.MovieDetailsUiMapper
@@ -23,19 +22,18 @@ class MovieDetailsVm(
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val isFavouriteUseCase: IsFavouriteUseCase,
     private val domainMapper: MovieDetailsToDomain,
-) : BaseViewModel<MovieDetailsState, MovieDetailsEvent, MovieDetailsSideEffect>(
+) : BaseViewModel<MovieDetailsState, MovieDetailsEvent>(
     MovieDetailsState()
 ) {
     init {
         fetchMovieDetails()
         observeFavouriteState()
     }
+
     override fun onEvent(event: MovieDetailsEvent) {
         when (event) {
             is MovieDetailsEvent.OnRetryClicked -> fetchMovieDetails()
-            is MovieDetailsEvent.OnBackClicked ->
-                emitSideEffect(MovieDetailsSideEffect.NavigateToBack)
-
+            is MovieDetailsEvent.OnBackClicked -> globalNavigator { pop() }
             is MovieDetailsEvent.OnFavouriteClicked -> {
                 handleFavouriteClicked(event)
             }

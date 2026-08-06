@@ -11,5 +11,5 @@ data class HomeState(
     val isFilterVisible: Boolean = false,
     val selectedGenreId: Int? = null,
     val isSearchFocused: Boolean = false,
-    val isConnected: Boolean = true,
+    val hasInternetConnection: Boolean = true,
 )

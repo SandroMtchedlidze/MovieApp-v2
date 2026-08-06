@@ -1,5 +1,6 @@
 package com.space.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.space.presentation.contract.FavouritesEffect
+import com.space.presentation.base.NavigationCommandEffect
+import com.space.presentation.base.rememberOnClick
 import com.space.presentation.contract.FavouritesEvent
 import com.space.presentation.contract.FavouritesState
 import com.space.presentation.vm.FavouritesVm
@@ -38,37 +39,28 @@ import org.koin.androidx.compose.koinViewModel
 import com.space.favourites.presentation.R as FavouritesR
 
 @Composable
-fun FavouritesScreen(
-    onNavigateToDetails: (movieId: Int) -> Unit,
-    viewmodel: FavouritesVm = koinViewModel()
-) {
+fun FavouritesScreen() {
+
+    val viewmodel: FavouritesVm = koinViewModel()
     val state by viewmodel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewmodel.sideEffect.collect { effect ->
-            when (effect) {
-                is FavouritesEffect.NavigateToDetails -> onNavigateToDetails(effect.movieId)
-            }
-        }
+    NavigationCommandEffect(viewmodel)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.background)
+    ) {
+        FavouriteScreenContent(
+            state = state,
+            onEvent = viewmodel::onEvent
+        )
     }
-    FavouriteScreenContent(
-        state = state,
-        onMovieClicked = { movieId ->
-            viewmodel.onEvent(FavouritesEvent.OnMovieClicked(movieId))
-        },
-        onFavouriteClicked = { movie ->
-            viewmodel.onEvent(FavouritesEvent.OnFavouriteToggle(movie))
-        },
-        onRetry = { viewmodel.onEvent(FavouritesEvent.OnRetryClicked) }
-    )
 }
 
 @Composable
 private fun FavouriteScreenContent(
     state: FavouritesState,
-    onMovieClicked: (Int) -> Unit,
-    onRetry: () -> Unit,
-    onFavouriteClicked: (MovieCardUiModel) -> Unit
+    onEvent: (FavouritesEvent) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
@@ -86,13 +78,12 @@ private fun FavouriteScreenContent(
             state.error != null -> ErrorScreen(
                 title = stringResource(FavouritesR.string.something_went_wrong),
                 description = state.error,
-                onRefreshClick = onRetry
+                onRefreshClick = rememberOnClick { onEvent(FavouritesEvent.OnRetryClicked) }
             )
 
             else -> FavouritesGrid(
                 movies = state.favourites,
-                onMovieClicked = onMovieClicked,
-                onFavouriteClicked = onFavouriteClicked,
+                onEvent = onEvent,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -133,9 +124,8 @@ private fun EmptyFavouritesState() {
 @Composable
 private fun FavouritesGrid(
     movies: List<MovieCardUiModel>,
-    onMovieClicked: (Int) -> Unit,
-    onFavouriteClicked: (MovieCardUiModel) -> Unit,
     modifier: Modifier = Modifier,
+    onEvent: (FavouritesEvent) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -150,8 +140,10 @@ private fun FavouritesGrid(
         ) { movie ->
             MovieCard(
                 movie = movie,
-                onClick = { onMovieClicked(movie.id) },
-                onFavouriteClick = { onFavouriteClicked(movie) }
+                onClick = rememberOnClick {
+                    onEvent(FavouritesEvent.OnMovieClicked(movie.id))
+                },
+                onFavouriteClick = { onEvent(FavouritesEvent.OnFavouriteToggle(movie)) }
             )
         }
     }

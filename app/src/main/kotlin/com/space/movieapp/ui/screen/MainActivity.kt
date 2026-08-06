@@ -1,5 +1,6 @@
 package com.space.movieapp.ui.screen
 
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.space.movieapp.navigation.MainScreen
+import com.space.movieapp.navigation.MovieAppContainer
 import com.space.movieapp.ui.vm.MainActivityVm
 import com.space.ui.theme.MovieAppTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
     private val vm: MainActivityVm by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
         splashScreen.setKeepOnScreenCondition {
             vm.state.value.isLoading
@@ -36,7 +38,7 @@ class MainActivity : ComponentActivity() {
                     color = MovieAppTheme.colors.background
                 ) {
                     if (!state.isLoading) {
-                        MainScreen(isOnline = state.isOnline)
+                        MovieAppContainer(state.startDestination, state.isOnline)
                     }
                 }
             }

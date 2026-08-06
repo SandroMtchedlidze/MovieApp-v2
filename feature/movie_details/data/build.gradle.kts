@@ -8,7 +8,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.networking)
     implementation(libs.retrofit.kotlinx.serialization)
     implementation(projects.feature.movieDetails.domain)
 }

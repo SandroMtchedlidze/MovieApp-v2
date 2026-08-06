@@ -48,7 +48,7 @@ import com.space.ui.theme.TextSizing
 fun MovieCard(
     movie: MovieCardUiModel,
     modifier: Modifier = Modifier,
-    onClick: (Int) -> Unit,
+    onClick: () -> Unit,
     onFavouriteClick: () -> Unit
 ) {
     Column(modifier = modifier) {
@@ -57,7 +57,7 @@ fun MovieCard(
                 .fillMaxWidth()
                 .aspectRatio(2f / 3f)
                 .clip(Radius.radius16)
-                .clickable { onClick(movie.id) }
+                .clickable { onClick() }
         ) {
             SubcomposeAsyncImage(
                 model = movie.posterUrl,

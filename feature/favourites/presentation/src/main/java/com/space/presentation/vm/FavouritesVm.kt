@@ -1,11 +1,11 @@
 package com.space.presentation.vm
 
 import androidx.lifecycle.viewModelScope
+import com.space.api.navigation.MovieDetailsRoute
 import com.space.domain.usecase.GetAllFavouritesUseCase
 import com.space.domain.usecase.ToggleFavouriteUseCase
 import com.space.networking.network.NetworkError
 import com.space.presentation.base.BaseViewModel
-import com.space.presentation.contract.FavouritesEffect
 import com.space.presentation.contract.FavouritesEvent
 import com.space.presentation.contract.FavouritesState
 import com.space.presentation.mapper.MovieUiModelToDomain
@@ -21,24 +21,22 @@ class FavouritesVm(
     private val getAllFavouritesUseCase: GetAllFavouritesUseCase,
     private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
     private val mapper: MovieUiModelToDomain
-) : BaseViewModel<FavouritesState, FavouritesEvent, FavouritesEffect>(
+) : BaseViewModel<FavouritesState, FavouritesEvent>(
     FavouritesState()
 ) {
-    init {
-        loadFavourites()
-    }
-
     override fun onEvent(event: FavouritesEvent) {
         when (event) {
+            is FavouritesEvent.LoadFavourites -> loadFavourites()
             is FavouritesEvent.OnFavouriteToggle -> toggleFavourites(event.movie)
-            is FavouritesEvent.OnMovieClicked -> emitSideEffect(
-                FavouritesEffect.NavigateToDetails(
-                    event.movieId
-                )
-            )
+            is FavouritesEvent.OnMovieClicked ->
+                globalNavigator { push(MovieDetailsRoute(event.movieId)) }
 
             is FavouritesEvent.OnRetryClicked -> loadFavourites()
         }
+    }
+
+    init {
+        onEvent(FavouritesEvent.LoadFavourites)
     }
 
     private fun loadFavourites() {

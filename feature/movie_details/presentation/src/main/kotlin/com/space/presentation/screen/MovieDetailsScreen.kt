@@ -1,5 +1,6 @@
 package com.space.presentation.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,42 +31,35 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.space.core.ui.R
+import com.space.presentation.base.NavigationCommandEffect
+import com.space.presentation.base.rememberOnClick
 import com.space.presentation.contract.MovieDetailsEvent
-import com.space.presentation.contract.MovieDetailsSideEffect
 import com.space.presentation.contract.MovieDetailsState
 import com.space.presentation.model.MovieDetailsUiModel
 import com.space.presentation.vm.MovieDetailsVm
 import com.space.ui.component.ErrorScreen
 import com.space.ui.component.MovieappLoader
+import com.space.ui.component.shimmerEffect
 import com.space.ui.theme.MovieAppTheme.colors
 import com.space.ui.theme.MovieAppTheme.typography
 import com.space.ui.theme.Radius
 import com.space.ui.theme.Sizing
+import com.space.ui.theme.Spacing
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import com.space.movie.details.presentation.R as DetailsR
 
 @Composable
 fun MovieDetailsScreen(
-    movieId: Int,
-    onNavigateBack: () -> Unit,
-    viewModel: MovieDetailsVm = koinViewModel {
-        parametersOf(
-            movieId
-        )
-    }
+    movieId: Int
 ) {
+    val viewModel: MovieDetailsVm = koinViewModel { parametersOf(movieId) }
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.sideEffect.collect { effect ->
-            when (effect) {
-                is MovieDetailsSideEffect.NavigateToBack -> onNavigateBack()
-            }
-        }
-    }
+    NavigationCommandEffect(viewModel)
+
     MovieDetailsScreenContent(
         state = state,
         onBackClick = { viewModel.onEvent(MovieDetailsEvent.OnBackClicked) },
@@ -129,7 +122,7 @@ private fun DetailsTopBar(onBackClick: () -> Unit) {
             .padding(horizontal = Sizing.size4, vertical = Sizing.size8),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = onBackClick) {
+        IconButton(onClick = rememberOnClick { onBackClick() }) {
             Icon(
                 modifier = Modifier.padding(start = Sizing.size12, top = Sizing.size10),
                 painter = painterResource(R.drawable.back_arrow),
@@ -176,11 +169,26 @@ private fun MovieDetailsBody(
                 .aspectRatio(0.76f)
                 .clip(Radius.radius16)
         ) {
-            AsyncImage(
+            SubcomposeAsyncImage(
                 model = movie?.posterUrl,
                 contentDescription = movie?.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                error = {
+                    Image(
+                        painter = painterResource(R.drawable.placeholder),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                },
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .shimmerEffect()
+                    )
+                },
             )
         }
         Column(modifier = Modifier.padding(horizontal = Sizing.size16)) {
@@ -227,32 +235,32 @@ private fun MovieInfoChips(
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
     ) {
-        InfoChip {
-            Icon(
-                painter = painterResource(R.drawable.star),
-                contentDescription = null,
-                tint = colors.primary,
-                modifier = Modifier.size(Sizing.size16)
-            )
-            Spacer(Modifier.width(Sizing.size4))
-            Text(ratingText, style = typography.bodyMedium, color = colors.textTertiary)
-        }
-        InfoChip {
-            Text(genreText, style = typography.bodyMedium, color = colors.textTertiary)
-        }
-        InfoChip {
-            Icon(
-                painter = painterResource(R.drawable.clock),
-                contentDescription = null,
-                tint = colors.primary,
-                modifier = Modifier.size(Sizing.size16)
-            )
-            Spacer(Modifier.width(Sizing.size4))
-            Text(runtimeText, style = typography.bodyMedium, color = colors.textTertiary)
-        }
-        InfoChip {
-            Text(yearText, style = typography.bodyMedium, color = colors.textTertiary)
-        }
+        InfoChip(
+            text = ratingText,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.star),
+                    contentDescription = null,
+                    tint = colors.primary,
+                    modifier = Modifier.size(Sizing.size16)
+                )
+                Spacer(Modifier.width(Sizing.size4))
+            }
+        )
+        InfoChip(text = genreText)
+        InfoChip(
+            text = runtimeText,
+            icon = {
+                Icon(
+                    painter = painterResource(R.drawable.clock),
+                    contentDescription = null,
+                    tint = colors.primary,
+                    modifier = Modifier.size(Sizing.size16)
+                )
+            }
+
+        )
+        InfoChip(text = yearText)
     }
 }
 
@@ -286,15 +294,25 @@ private fun MovieTitleRow(
 }
 
 @Composable
-private fun InfoChip(content: @Composable () -> Unit) {
-    Row(
-        modifier = Modifier
-            .clip(Radius.radius16)
-            .background(colors.surface)
-            .padding(horizontal = Sizing.size12, vertical = Sizing.size6),
-        verticalAlignment = Alignment.CenterVertically,
-
+private fun InfoChip(
+    text: String,
+    icon: (@Composable () -> Unit)? = null
+) {
+    if (text.isNotEmpty()) {
+        Row(
+            modifier = Modifier
+                .background(color = colors.surface, shape = Radius.radius16)
+                .padding(horizontal = Spacing.spacing10, vertical = Spacing.spacing4),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.spacing4)
         ) {
-        content()
+            if (icon != null) icon()
+
+            Text(
+                text = text,
+                style = typography.bodyMedium,
+                color = colors.textSecondary
+            )
+        }
     }
 }

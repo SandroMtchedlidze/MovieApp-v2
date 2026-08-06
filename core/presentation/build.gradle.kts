@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.movie.android.library)
+    alias(libs.plugins.movie.android.compose)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -11,4 +12,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(projects.core.networking)
     implementation(libs.bundles.koin)
+    implementation(projects.core.navigation)
 }

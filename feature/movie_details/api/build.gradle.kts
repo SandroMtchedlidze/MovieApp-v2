@@ -11,5 +11,5 @@ android {
 dependencies {
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
-    implementation(projects.feature.movieDetails.presentation)
+    implementation(projects.core.navigation)
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.space.api.navigation.MovieDetailsRoute
 import com.space.domain.model.MovieResponse
 import com.space.domain.usecase.GetAllFavouritesIdsUseCase
 import com.space.domain.usecase.GetGenresUseCase
@@ -13,7 +14,6 @@ import com.space.presentation.base.BaseViewModel
 import com.space.presentation.base.getErrorStrings
 import com.space.presentation.network_observer.ConnectivityObserver
 import com.space.presentaton.contract.HomeEvent
-import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.mapper.MovieResponseToUiModel
 import com.space.presentaton.mapper.MovieUiModelToDomain
@@ -39,7 +39,7 @@ class HomeVm(
     private val networkObserver: ConnectivityObserver,
     private val mapperToDomain: MovieUiModelToDomain,
     getAllFavouritesIdsUseCase: GetAllFavouritesIdsUseCase,
-) : BaseViewModel<HomeState, HomeEvent, HomeSideEffect>(
+) : BaseViewModel<HomeState, HomeEvent>(
     initialState = HomeState()
 ) {
     init {
@@ -49,9 +49,9 @@ class HomeVm(
 
     override fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.OnMovieClicked -> emitSideEffect(
-                HomeSideEffect.NavigateToDetails(event.movieId)
-            )
+            is HomeEvent.OnMovieClicked ->
+                globalNavigator { push(MovieDetailsRoute(event.movieId)) }
+
 
             is HomeEvent.OnSearchCleared -> {
                 updateState { copy(searchQuery = "") }
@@ -80,6 +80,10 @@ class HomeVm(
                     val domainMovie = mapperToDomain.uiModelToDomain(event.movie)
                     toggleFavouriteUseCase(domainMovie)
                 }
+            }
+
+            is HomeEvent.OnRetryClicked -> {
+                loadGenres()
             }
         }
     }
@@ -126,6 +130,9 @@ class HomeVm(
         .map { !it.isLoading }
         .distinctUntilChanged()
 
+    private val genresFlow = state
+        .map { it.genres }
+        .distinctUntilChanged()
     private val favouriteIdsFlow = getAllFavouritesIdsUseCase()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -139,17 +146,20 @@ class HomeVm(
         .cachedIn(viewModelScope)
 
     val moviesPagingFlow: Flow<PagingData<MovieCardUiModel>> = combine(
-        combinePagingFlow, favouriteIdsFlow
-    ) { pagingData, favouriteId ->
+        combinePagingFlow, favouriteIdsFlow, genresFlow
+    ) { pagingData, favouriteId, genres ->
         pagingData.map { movie ->
-            movieUiMapper.mapToUiModel(movie).copy(isFavourite = favouriteId.contains(movie.id))
+            movieUiMapper.mapToUiModel(movie, genres)
+                .copy(
+                    isFavourite = favouriteId.contains(movie.id),
+                )
         }
     }
 
     private fun observeNetwork() {
         viewModelScope.launch {
             networkObserver.observe().collect { connected ->
-                updateState { copy(isConnected = connected) }
+                updateState { copy(hasInternetConnection = connected) }
             }
         }
     }

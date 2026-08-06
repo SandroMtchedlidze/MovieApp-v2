@@ -1,8 +1,10 @@
 package com.space.database.di
 
 import androidx.room.Room
-import com.space.database.MovieDatabase
-import com.space.database.mapper.MovieEntityMapper
+import com.space.database.database.MovieDatabase
+import com.space.database.datasource.contract.FavouritesLocalDataSource
+import com.space.database.datasource.implementation.FavouritesLocalDataSourceImpl
+import com.space.database.mapper.MovieMapper
 import com.space.database.repository.FavouriteRepositoryImpl
 import com.space.domain.repository.FavouriteRepository
 import org.koin.android.ext.koin.androidContext
@@ -18,10 +20,13 @@ val databaseModule = module {
     }
     single { get<MovieDatabase>().favouriteMovieDao() }
 
-    single { MovieEntityMapper() }
+    single { MovieMapper() }
+    single<FavouritesLocalDataSource> {
+        FavouritesLocalDataSourceImpl(favouriteMovieDao = get())
+    }
     single<FavouriteRepository> {
         FavouriteRepositoryImpl(
-            dao = get(),
+            favouritesLocalDataSource = get(),
             mapper = get()
         )
     }

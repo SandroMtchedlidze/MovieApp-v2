@@ -38,11 +38,13 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.space.networking.network.NetworkError
 import com.space.networking.network.PagingException
+import com.space.presentation.base.NavigationCommandEffect
 import com.space.presentation.base.getErrorStrings
+import com.space.presentation.base.rememberOnClick
 import com.space.presentaton.contract.HomeEvent
-import com.space.presentaton.contract.HomeSideEffect
 import com.space.presentaton.contract.HomeState
 import com.space.presentaton.vm.HomeVm
+import com.space.ui.component.EmptyResultView
 import com.space.ui.component.ErrorScreen
 import com.space.ui.component.GenreRow
 import com.space.ui.component.MovieCard
@@ -58,20 +60,14 @@ import org.koin.androidx.compose.koinViewModel
 import com.space.home.presentaton.R as HomeR
 
 @Composable
-fun MovieScreen(
-    viewModel: HomeVm = koinViewModel(),
-    onMovieClicked: (Int) -> Unit,
-) {
+fun HomeScreen() {
+
+    val viewModel: HomeVm = koinViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val movies = viewModel.moviesPagingFlow.collectAsLazyPagingItems()
 
-    LaunchedEffect(Unit) {
-        viewModel.sideEffect.collect { sideEffect ->
-            when (sideEffect) {
-                is HomeSideEffect.NavigateToDetails -> onMovieClicked(sideEffect.movieId)
-            }
-        }
-    }
+    NavigationCommandEffect(viewModel)
+
     MovieScreenContent(movies = movies, state = state, onEvent = viewModel::onEvent)
 }
 
@@ -85,7 +81,7 @@ private fun MovieScreenContent(
 
     val focusManager = LocalFocusManager.current
     LaunchedEffect(Unit) {
-        snapshotFlow { state.isConnected to movies.loadState.append }
+        snapshotFlow { state.hasInternetConnection to movies.loadState.append }
             .collect { (isConnected, appendState) ->
                 if (isConnected && appendState is LoadState.Error) {
                     movies.retry()
@@ -105,24 +101,23 @@ private fun MovieScreenContent(
         SearchAndFilterHeader(state = state, onEvent = onEvent)
         when (movies.loadState.refresh) {
             is LoadState.Loading -> FullScreenLoading()
+            is LoadState.NotLoading if movies.itemCount == 0 -> {
+                EmptyResultView()
+            }
+
             is LoadState.Error -> {
-                val exception =
-                    (movies.loadState.refresh as LoadState.Error).error as? PagingException
-                val descriptionRes =
-                    getErrorStrings(exception?.errorType ?: NetworkError.UNKNOWN)
-                ErrorScreen(
-                    title = stringResource(HomeR.string.data_can_t_be_loaded),
-                    description = stringResource(descriptionRes),
-                    onRefreshClick = { movies.retry() }
-                )
+                HomeScreenError(movies) {
+                    onEvent(HomeEvent.OnRetryClicked)
+                    movies.retry()
+                }
             }
 
             else -> {
                 MovieGrid(
                     movies = movies,
                     gridState = gridState,
-                    isConnected = state.isConnected,
-                    onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(it)) },
+                    isConnected = state.hasInternetConnection,
+                    onMovieClicked = { onEvent(HomeEvent.OnMovieClicked(movieId = it)) },
                     onFavouriteClicked = { movie -> onEvent(HomeEvent.OnFavouriteClicked(movie)) }
                 )
             }
@@ -157,7 +152,7 @@ private fun MovieGrid(
             movies[index]?.let { movie ->
                 MovieCard(
                     movie = movie,
-                    onClick = { onMovieClicked(movie.id) },
+                    onClick = rememberOnClick { onMovieClicked(movie.id) },
                     onFavouriteClick = { onFavouriteClicked(movie) }
                 )
             }
@@ -249,4 +244,20 @@ private fun AppendLoadingIndicator() {
             color = colors.primary
         )
     }
+}
+
+@Composable
+private fun HomeScreenError(
+    movies: LazyPagingItems<MovieCardUiModel>,
+    onRefreshClick: () -> Unit
+) {
+    val exception =
+        (movies.loadState.refresh as LoadState.Error).error as? PagingException
+    val descriptionRes =
+        getErrorStrings(exception?.errorType ?: NetworkError.UNKNOWN)
+    ErrorScreen(
+        title = stringResource(HomeR.string.data_can_t_be_loaded),
+        description = stringResource(descriptionRes),
+        onRefreshClick = rememberOnClick { onRefreshClick() }
+    )
 }
